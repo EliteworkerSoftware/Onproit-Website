@@ -180,6 +180,224 @@ export const LOCATIONS_DATA: LocationData[] = [
     ],
   },
   {
+    path: "managed-it-services-mount-laurel-nj",
+    focus: "managed-it",
+    heroImage:
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1600",
+    h1: "Managed IT Services in Mount Laurel, NJ | ONPRO IT",
+    metaTitle: "Managed IT Services in Mount Laurel, NJ | ONPRO IT",
+    metaDescription:
+      "Managed IT, cybersecurity, and structured cabling for Mount Laurel, NJ businesses along the Route 38 and Route 73 corridor, from ONPRO IT.",
+    keywords: "managed IT services Mount Laurel NJ, IT support Mount Laurel, IT company Mount Laurel NJ",
+    intro:
+      "Mount Laurel's mix of corporate offices, warehouses, and professional services firms along Route 38 and Route 73 all depend on technology that just works. ONPRO IT provides proactive managed IT, cybersecurity, structured cabling, and network installation for Mount Laurel businesses — backed by a team headquartered just down the road in Berlin Township.",
+    areasServed: [
+      "Mount Laurel (08054)",
+      "Moorestown (08057)",
+      "Hainesport (08036)",
+      "Lumberton (08048)",
+      "Marlton (08053)",
+      "Maple Shade (08052)",
+    ],
+    whyChoose: [
+      "Close proximity — our Berlin Township headquarters is a short drive from the Route 38/Route 73 corridor",
+      "Built for corporate parks — experience with the multi-suite office buildings common throughout Mount Laurel",
+      "One team for everything — managed IT, cabling, and network installation without juggling separate vendors",
+      "Proactive monitoring — we catch problems before they turn into a call to your help desk",
+    ],
+    faqs: [
+      {
+        question: "Do you support businesses in Mount Laurel's office parks and corporate centers?",
+        answer:
+          "Yes — we regularly work with multi-suite office buildings and corporate parks throughout Mount Laurel, including shared-infrastructure situations that require coordinating with building management or other tenants.",
+      },
+      {
+        question: "How quickly can you respond to an IT issue in Mount Laurel?",
+        answer:
+          "Our headquarters in Berlin Township is a short drive from Mount Laurel, so when remote support isn't enough, we can typically have a technician on-site the same day.",
+      },
+      {
+        question: "Do you handle cabling and network installation for new Mount Laurel offices?",
+        answer:
+          "Yes — structured cabling and network installation are part of the same service we provide alongside ongoing managed IT, so a new office buildout and its long-term support come from one team.",
+      },
+    ],
+  },
+  {
+    path: "managed-it-services-voorhees-nj",
+    focus: "managed-it",
+    heroImage:
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1600",
+    h1: "Managed IT Services in Voorhees, NJ | ONPRO IT",
+    metaTitle: "Managed IT Services in Voorhees, NJ | ONPRO IT",
+    metaDescription:
+      "Managed IT, cybersecurity, and structured cabling for Voorhees, NJ businesses along the Route 73 corridor, from ONPRO IT.",
+    keywords: "managed IT services Voorhees NJ, IT support Voorhees, IT company Voorhees NJ",
+    intro:
+      "Voorhees is home to a dense mix of medical offices, professional services firms, and retail businesses along the Route 73 corridor — all of which depend on technology that doesn't go down. ONPRO IT provides managed IT, cybersecurity, structured cabling, and network installation for Voorhees businesses, backed by a local team based just minutes away.",
+    areasServed: [
+      "Voorhees (08043)",
+      "Echelon",
+      "Kirkwood",
+      "Berlin Township (08091)",
+      "Lindenwold (08021)",
+      "Gibbsboro (08026)",
+    ],
+    whyChoose: [
+      "Local response — headquartered nearby in Berlin Township, not a call center hours away",
+      "Experience with medical and professional offices common throughout the Voorhees business community",
+      "One team for everything — managed IT, cabling, and network installation without juggling separate vendors",
+      "Proactive monitoring that catches problems before they interrupt your day",
+    ],
+    faqs: [
+      {
+        question: "Do you support medical and professional offices in Voorhees?",
+        answer:
+          "Yes — we work with medical practices, professional services firms, and retail businesses throughout Voorhees, understanding the day-to-day demands each type of office places on its network and systems.",
+      },
+      {
+        question: "How fast can you respond to an IT issue in Voorhees?",
+        answer:
+          "Our team is based just minutes away in Berlin Township, so when a problem can't be resolved remotely, we can typically get a technician to your Voorhees office quickly.",
+      },
+      {
+        question: "Can you help with an office move or expansion in Voorhees?",
+        answer:
+          "Yes — we handle structured cabling, network setup, and IT relocation as part of the same service we provide for ongoing managed IT, so your move and your long-term support come from one team.",
+      },
+    ],
+  },
+  {
+    path: "managed-it-services-marlton-nj",
+    focus: "managed-it",
+    heroImage:
+      "https://images.unsplash.com/photo-1544197150-b99a580bbcbf?auto=format&fit=crop&q=80",
+    h1: "Managed IT Services in Marlton, NJ | ONPRO IT",
+    metaTitle: "Managed IT Services in Marlton, NJ | ONPRO IT",
+    metaDescription:
+      "Managed IT, cybersecurity, and structured cabling for Marlton, NJ businesses in Evesham Township, from ONPRO IT.",
+    keywords: "managed IT services Marlton NJ, IT support Marlton, IT company Evesham Township",
+    intro:
+      "Marlton, in the heart of Evesham Township, is one of Burlington County's busiest business corridors — and ONPRO IT is right around the corner. We provide managed IT, cybersecurity, structured cabling, and network installation for Marlton businesses, backed by a team headquartered just down Route 73 in Berlin Township.",
+    areasServed: [
+      "Marlton / Evesham Township (08053)",
+      "Medford (08055)",
+      "Mount Laurel (08054)",
+      "Voorhees (08043)",
+      "Shamong",
+      "Tabernacle",
+    ],
+    whyChoose: [
+      "Down the road, not across the state — our Berlin Township headquarters is minutes from Marlton",
+      "Familiar with the retail, medical, and office mix along Route 73 and Route 70",
+      "One team for everything — managed IT, cabling, and network installation without juggling separate vendors",
+      "Proactive monitoring that catches problems before they interrupt your day",
+    ],
+    faqs: [
+      {
+        question: "Do you support small businesses along Route 73 and Route 70 in Marlton?",
+        answer:
+          "Yes — we work with the mix of retail, medical, and professional office businesses common along the Route 73 and Route 70 corridors in Marlton and greater Evesham Township.",
+      },
+      {
+        question: "How quickly can you respond to an IT issue in Marlton?",
+        answer:
+          "Our headquarters in Berlin Township is just down Route 73, so when remote support isn't enough, we can typically have a technician on-site quickly.",
+      },
+      {
+        question: "Do you provide structured cabling for new or renovated Marlton offices?",
+        answer:
+          "Yes — cabling and network installation are part of the same service as our ongoing managed IT, so your buildout and its long-term support come from one team instead of two separate vendors.",
+      },
+    ],
+  },
+  {
+    path: "managed-it-services-king-of-prussia-pa",
+    focus: "managed-it",
+    heroImage: "https://images.unsplash.com/photo-1558494949-ef526b0042a0?auto=format&fit=crop&q=80",
+    h1: "Managed IT Services in King of Prussia, PA | ONPRO IT",
+    metaTitle: "Managed IT Services in King of Prussia, PA | ONPRO IT",
+    metaDescription:
+      "Managed IT, cybersecurity, and structured cabling for King of Prussia, PA businesses, from ONPRO IT — serving the Route 202 and I-76 corporate corridor.",
+    keywords: "managed IT services King of Prussia PA, IT support King of Prussia, IT company King of Prussia",
+    intro:
+      "King of Prussia's corporate offices along Route 202 and the I-76 corridor need technology that keeps pace with a fast-moving business community. ONPRO IT provides managed IT, cybersecurity, structured cabling, and network installation for King of Prussia businesses, extending the same full-service approach we provide throughout our New Jersey home base into the Philadelphia suburbs.",
+    areasServed: [
+      "King of Prussia",
+      "Wayne",
+      "Conshohocken",
+      "Plymouth Meeting",
+      "Norristown",
+      "Malvern",
+    ],
+    whyChoose: [
+      "One team for everything — managed IT, cabling, and network installation without juggling separate vendors",
+      "Experience with corporate office suites and multi-tenant buildings common in King of Prussia",
+      "Security-first approach built into every system we manage, not added on afterward",
+      "Direct access to your support team instead of a national call center queue",
+    ],
+    faqs: [
+      {
+        question: "Do you support corporate office suites in King of Prussia?",
+        answer:
+          "Yes — we work with businesses in multi-tenant office buildings and corporate suites throughout King of Prussia, including coordination with building management when needed.",
+      },
+      {
+        question: "Do you handle both IT support and cabling for King of Prussia businesses?",
+        answer:
+          "Yes — structured cabling and network installation are part of the same service we provide alongside ongoing managed IT and cybersecurity, so one team handles the full picture.",
+      },
+      {
+        question: "Can you support a King of Prussia office alongside our New Jersey locations?",
+        answer:
+          "Yes — we manage multi-location businesses across New Jersey, Pennsylvania, and Delaware under one consistent set of standards and one point of contact.",
+      },
+    ],
+  },
+  {
+    path: "managed-it-services-wilmington-de",
+    focus: "managed-it",
+    heroImage: "https://images.unsplash.com/photo-1544197150-b99a580bbcbf?auto=format&fit=crop&q=80",
+    h1: "Managed IT Services in Wilmington, DE | ONPRO IT",
+    metaTitle: "Managed IT Services in Wilmington, DE | ONPRO IT",
+    metaDescription:
+      "Managed IT, cybersecurity, and structured cabling for Wilmington, DE businesses, from ONPRO IT — serving Delaware's financial and corporate hub.",
+    keywords: "managed IT services Wilmington DE, IT support Wilmington Delaware, IT company Wilmington DE",
+    intro:
+      "Wilmington's mix of financial, legal, and corporate offices depends on technology and security that can't afford downtime. ONPRO IT provides managed IT, cybersecurity, structured cabling, and network installation for Wilmington businesses, bringing the same full-service approach we provide throughout New Jersey and Pennsylvania into Delaware's largest city.",
+    areasServed: [
+      "Wilmington",
+      "Newark, DE",
+      "New Castle",
+      "Bear",
+      "Claymont",
+      "Hockessin",
+    ],
+    whyChoose: [
+      "One team for everything — managed IT, cabling, and network installation without juggling separate vendors",
+      "Security-first approach built into every system we manage, not added on afterward",
+      "Experience with the office and corporate environments common throughout Wilmington",
+      "Direct access to your support team instead of a national call center queue",
+    ],
+    faqs: [
+      {
+        question: "Does ONPRO IT provide ongoing managed IT support in Wilmington, or just cabling?",
+        answer:
+          "Both — in addition to structured cabling, we provide full managed IT services, cybersecurity, cloud, VoIP, and security camera installation for Wilmington businesses, all from one team.",
+      },
+      {
+        question: "How does ONPRO IT support a Wilmington business remotely from New Jersey?",
+        answer:
+          "Our remote monitoring and help desk tools let us support Wilmington businesses day-to-day just as effectively as our New Jersey clients, with on-site visits scheduled as needed for hands-on work.",
+      },
+      {
+        question: "Can you support our Wilmington office alongside other locations in NJ or PA?",
+        answer:
+          "Yes — we manage multi-location businesses across New Jersey, Pennsylvania, and Delaware under one consistent set of standards and one point of contact.",
+      },
+    ],
+  },
+  {
     path: "new-jersey-cabling",
     focus: "cabling",
     heroImage: "https://images.unsplash.com/photo-1544197150-b99a580bbcbf?auto=format&fit=crop&q=80",
