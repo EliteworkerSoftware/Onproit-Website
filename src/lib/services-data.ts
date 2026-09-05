@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Briefcase,
   Cable,
+  Camera,
   Cloud,
   HardDrive,
   Headphones,
@@ -496,6 +497,65 @@ export const SERVICES_DATA: ServiceData[] = [
     ],
   },
   {
+    slug: "security-cameras-access-control",
+    navTitle: "Security Cameras & Entry Access Control",
+    h1: "Network AI Security Cameras & Entry Access Control Systems",
+    metaTitle: "Security Camera & Entry Access Control Installation NJ | ONPRO IT",
+    metaDescription:
+      "AI-powered network security cameras and entry access control systems, designed, installed, and managed by ONPRO IT for businesses in Southern NJ, Philadelphia, and Delaware.",
+    keywords: "security camera installation NJ, entry access control systems NJ, business surveillance cameras, commercial door access control",
+    Icon: Camera,
+    heroImage: "/images/hero-cybersecurity.png",
+    secondaryImage: "/images/about-team.png",
+    intro:
+      "Know who's coming and going, and see what's happening at every entrance — without hiring a separate security vendor. We design, install, and manage network-based AI security cameras and entry access control systems as part of the same network we already build and support.",
+    whatIsIt: [
+      "Modern security cameras aren't standalone boxes anymore — they're network devices, which means they belong on the same network your IT provider is already responsible for. When your camera system and your IT provider are two different companies, nobody owns the whole picture: is the camera down because of the camera, the network switch, or the internet connection? We remove that ambiguity by designing, installing, and managing both as one system.",
+      "Our camera systems use AI-based analytics — motion and person detection, vehicle recognition, and smart alerts — instead of just recording footage nobody watches until after something happens. We pair that with entry access control systems (key fobs, keypads, and remote-managed door locks) so you control who can get into your building and when, from a single dashboard.",
+    ],
+    whoItsFor: [
+      "You want to see what's happening at your business remotely, from a phone or laptop",
+      "You're tired of managing keys and re-keying locks every time an employee leaves",
+      "You've had theft, vandalism, or unauthorized access and want a real deterrent and record",
+      "You're opening a new location and want cameras and entry access control designed in from day one",
+    ],
+    risks: [
+      "Blind spots — outdated or poorly placed cameras leave gaps that only become obvious after an incident",
+      "Lost or copied keys — traditional locks can't tell you who actually used them or when",
+      "Vendor confusion — a security camera vendor who doesn't manage your network can't diagnose whether an outage is the camera, the switch, or the internet",
+      "Footage you can't use — cameras that only record locally, with no remote access or smart alerts, are of little help after the fact",
+    ],
+    howWeDeliver: [
+      "System Design — we plan camera placement and access points based on your building's actual layout and risk areas",
+      "Professional Installation — cabling, mounting, and configuration completed by our own technicians, integrated with the network we already manage",
+      "Ongoing Management — remote access, health monitoring, and support for your cameras and entry access control system for the life of your business",
+    ],
+    benefits: [
+      "Remote visibility — check in on your business from anywhere with an internet connection",
+      "AI-based alerts — get notified of relevant activity instead of scrubbing through hours of footage",
+      "Keyless entry — grant or revoke building access instantly without re-keying a single lock",
+      "One point of accountability — the same team that manages your network also manages your cameras and entry access control",
+    ],
+    areasServed: SERVICE_AREA_LIST,
+    faqs: [
+      {
+        question: "Do your security cameras use AI?",
+        answer:
+          "Yes — our camera systems include AI-based analytics like person and vehicle detection and smart motion alerts, so you're notified about activity that actually matters instead of every passing car or shadow.",
+      },
+      {
+        question: "Can I control building access without traditional keys?",
+        answer:
+          "Yes — our entry access control systems support key fobs, keypads, and remote-managed door locks, so you can grant or revoke access instantly and see a log of who entered and when.",
+      },
+      {
+        question: "What happens if my camera system goes offline?",
+        answer:
+          "Because we also manage the network your cameras run on, we can immediately tell whether an outage is the camera, the switch, or the internet connection — instead of leaving you stuck between two vendors pointing fingers.",
+      },
+    ],
+  },
+  {
     slug: "consulting",
     navTitle: "IT Consulting",
     h1: "IT Consulting & vCIO Services",
@@ -584,7 +644,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Local installation, number porting, and staff training so the switch is seamless",
     ],
     benefits: [
-      "Lower monthly phone bills by up to 40% compared to traditional lines",
+      "Lower, more predictable monthly phone bills compared to traditional lines",
       "HD voice quality with call recording and analytics included standard",
       "Keep your existing phone numbers — no disruption to your business",
       "No long-term contracts — we earn your business every month",

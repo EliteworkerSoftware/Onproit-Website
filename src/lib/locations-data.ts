@@ -106,7 +106,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       {
         question: "What makes your managed IT services different for Cherry Hill businesses?",
         answer:
-          "We are a truly local partner based just minutes away in West Berlin. Unlike national providers who treat you like a ticket number, our team understands the local Cherry Hill business landscape and provides rapid onsite response times along Route 70, Haddonfield Road, and the Kings Highway corridor.",
+          "We are a truly local partner based just minutes away in Berlin Township. Unlike national providers who treat you like a ticket number, our team understands the local Cherry Hill business landscape and provides rapid onsite response times along Route 70, Haddonfield Road, and the Kings Highway corridor.",
       },
       {
         question: "Why do Cherry Hill businesses need enhanced cybersecurity?",

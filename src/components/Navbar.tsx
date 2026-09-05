@@ -16,6 +16,7 @@ const SERVICE_LINKS = [
   { title: "Data Backup & Recovery", href: "/services/backup-recovery" },
   { title: "Structured Cabling", href: "/services/cabling" },
   { title: "AV & Conference Rooms", href: "/services/av-integration" },
+  { title: "Security Cameras & Access Control", href: "/services/security-cameras-access-control" },
   { title: "IT Consulting", href: "/services/consulting" },
   { title: "VoIP Phone Systems", href: "/services/voip" },
 ];
