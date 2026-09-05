@@ -44,6 +44,7 @@ export const SERVICE_AREAS = [
   { title: "New Jersey", href: "/managed-it-services-new-jersey" },
   { title: "Cherry Hill, NJ", href: "/managed-it-services-cherry-hill-nj" },
   { title: "West Berlin, NJ", href: "/managed-it-services-west-berlin-nj" },
+  { title: "New Jersey Cabling", href: "/new-jersey-cabling" },
   { title: "Pennsylvania Cabling", href: "/pennsylvania-cabling" },
   { title: "Delaware Cabling", href: "/delaware-cabling" },
 ];
