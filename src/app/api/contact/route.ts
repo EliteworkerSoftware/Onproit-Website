@@ -45,11 +45,10 @@ export async function POST(req: NextRequest) {
       company: company?.trim() || null,
       service: service?.trim() || null,
       message: message?.trim() || null,
-      source: "website",
     };
 
     const supabase = getSupabaseAdmin();
-    const { error: dbError } = await supabase.from("contact_submissions").insert(payload);
+    const { error: dbError } = await supabase.from("contact_messages").insert(payload);
 
     if (dbError) {
       console.error("Supabase insert error:", dbError);
@@ -61,15 +60,9 @@ export async function POST(req: NextRequest) {
     // the visitor-facing request past its timeout.
     after(async () => {
       if (!isMailerConfigured()) return;
+      const to = process.env.CONTACT_TO_EMAIL;
+      if (!to) return;
       try {
-        const { data: recipients } = await supabase
-          .from("email_recipients")
-          .select("email")
-          .eq("notify_contact_forms", true);
-
-        const to = (recipients ?? []).map((r) => r.email);
-        if (to.length === 0) return;
-
         await sendMail({
           to,
           subject: `New ONPRO IT inquiry from ${payload.name}`,

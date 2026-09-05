@@ -4,22 +4,24 @@ import { useEffect, useState } from "react";
 import { Archive, ArchiveRestore, Inbox, Mail, Trash2 } from "lucide-react";
 import ReplyForm from "@/components/admin/ReplyForm";
 
-interface Submission {
+interface ContactMessage {
   id: string;
   name: string;
   email: string;
   phone: string | null;
   company: string | null;
+  subject: string | null;
   service: string | null;
   message: string | null;
-  status: "inbox" | "archived";
+  read: boolean;
+  archived: boolean;
   created_at: string;
 }
 
 export default function AdminInquiriesPage() {
-  const [submissions, setSubmissions] = useState<Submission[] | null>(null);
+  const [messages, setMessages] = useState<ContactMessage[] | null>(null);
   const [tab, setTab] = useState<"inbox" | "archived">("inbox");
-  const [replyingTo, setReplyingTo] = useState<Submission | null>(null);
+  const [replyingTo, setReplyingTo] = useState<ContactMessage | null>(null);
   const [error, setError] = useState("");
 
   async function load() {
@@ -27,7 +29,7 @@ export default function AdminInquiriesPage() {
       const res = await fetch("/api/admin/inquiries");
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to load inquiries");
-      setSubmissions(data.submissions);
+      setMessages(data.messages);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load inquiries");
     }
@@ -40,7 +42,7 @@ export default function AdminInquiriesPage() {
         const res = await fetch("/api/admin/inquiries");
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to load inquiries");
-        if (!cancelled) setSubmissions(data.submissions);
+        if (!cancelled) setMessages(data.messages);
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load inquiries");
       }
@@ -50,11 +52,11 @@ export default function AdminInquiriesPage() {
     };
   }, []);
 
-  async function setStatus(id: string, status: "inbox" | "archived") {
+  async function setArchived(id: string, archived: boolean) {
     await fetch(`/api/admin/inquiries/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
+      body: JSON.stringify({ archived, read: true }),
     });
     load();
   }
@@ -65,7 +67,7 @@ export default function AdminInquiriesPage() {
     load();
   }
 
-  const filtered = (submissions ?? []).filter((s) => s.status === tab);
+  const filtered = (messages ?? []).filter((m) => (tab === "archived" ? m.archived : !m.archived));
 
   return (
     <div>
@@ -90,7 +92,7 @@ export default function AdminInquiriesPage() {
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
 
       <div className="mt-6 space-y-4">
-        {!submissions ? (
+        {!messages ? (
           <p className="text-sm text-gray-500">Loading…</p>
         ) : filtered.length === 0 ? (
           <div className="rounded-xl border border-dashed border-gray-300 bg-white py-16 text-center">
@@ -103,23 +105,30 @@ export default function AdminInquiriesPage() {
             </p>
           </div>
         ) : (
-          filtered.map((s) => (
-            <div key={s.id} className="rounded-xl border border-gray-200 bg-white p-5">
+          filtered.map((m) => (
+            <div key={m.id} className="rounded-xl border border-gray-200 bg-white p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="font-semibold text-gray-900">{s.name}</p>
+                  <p className="font-semibold text-gray-900">
+                    {m.name}
+                    {!m.read && (
+                      <span className="ml-2 rounded-full bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand">
+                        New
+                      </span>
+                    )}
+                  </p>
                   <p className="flex items-center gap-1.5 text-sm text-gray-500">
                     <Mail className="h-3.5 w-3.5" />
-                    {s.email}
+                    {m.email}
                   </p>
-                  {(s.company || s.phone || s.service) && (
+                  {(m.company || m.phone || m.service) && (
                     <p className="mt-0.5 text-xs text-gray-400">
-                      {[s.company, s.phone, s.service].filter(Boolean).join(" · ")}
+                      {[m.company, m.phone, m.service].filter(Boolean).join(" · ")}
                     </p>
                   )}
                 </div>
                 <span className="text-xs text-gray-400">
-                  {new Date(s.created_at).toLocaleString("en-US", {
+                  {new Date(m.created_at).toLocaleString("en-US", {
                     month: "short",
                     day: "numeric",
                     hour: "numeric",
@@ -127,22 +136,22 @@ export default function AdminInquiriesPage() {
                   })}
                 </span>
               </div>
-              {s.message && (
+              {m.message && (
                 <p className="mt-3 rounded-lg border border-gray-100 bg-gray-50 p-3 text-sm text-gray-700">
-                  {s.message}
+                  {m.message}
                 </p>
               )}
               <div className="mt-4 flex flex-wrap justify-end gap-2">
                 <button
-                  onClick={() => setReplyingTo(s)}
+                  onClick={() => setReplyingTo(m)}
                   className="flex items-center gap-1.5 rounded-md bg-brand px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-dark"
                 >
                   <Mail className="h-3.5 w-3.5" />
                   Reply
                 </button>
-                {tab === "inbox" ? (
+                {!m.archived ? (
                   <button
-                    onClick={() => setStatus(s.id, "archived")}
+                    onClick={() => setArchived(m.id, true)}
                     className="flex items-center gap-1.5 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
                   >
                     <Archive className="h-3.5 w-3.5" />
@@ -150,7 +159,7 @@ export default function AdminInquiriesPage() {
                   </button>
                 ) : (
                   <button
-                    onClick={() => setStatus(s.id, "inbox")}
+                    onClick={() => setArchived(m.id, false)}
                     className="flex items-center gap-1.5 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
                   >
                     <ArchiveRestore className="h-3.5 w-3.5" />
@@ -158,7 +167,7 @@ export default function AdminInquiriesPage() {
                   </button>
                 )}
                 <button
-                  onClick={() => remove(s.id)}
+                  onClick={() => remove(m.id)}
                   className="flex items-center gap-1.5 rounded-md border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
@@ -174,7 +183,10 @@ export default function AdminInquiriesPage() {
         <ReplyForm
           submission={replyingTo}
           onClose={() => setReplyingTo(null)}
-          onSent={() => setReplyingTo(null)}
+          onSent={() => {
+            setReplyingTo(null);
+            load();
+          }}
         />
       )}
     </div>

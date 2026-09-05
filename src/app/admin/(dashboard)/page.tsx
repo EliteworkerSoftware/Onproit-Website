@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { Inbox, Mail, Shield, Calendar, Settings } from "lucide-react";
+import { Inbox, Shield, Calendar, Settings } from "lucide-react";
 import { getCurrentAdmin } from "@/lib/current-admin";
 
 const CARDS = [
   { title: "Inquiries", description: "Contact form messages, inbox and archived.", href: "/admin/inquiries", Icon: Inbox },
-  { title: "Email Recipients", description: "Who gets notified when a lead comes in.", href: "/admin/email-recipients", Icon: Mail },
   { title: "Admin Users", description: "Manage who can access this dashboard.", href: "/admin/admin-users", Icon: Shield },
   { title: "Bookings", description: "Consultation bookings from the Schedule a Call page.", href: "/admin/bookings", Icon: Calendar },
   { title: "Settings", description: "Public contact info and business hours.", href: "/admin/settings", Icon: Settings },
@@ -15,7 +14,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Welcome back{admin?.display_name ? `, ${admin.display_name}` : ""}</h1>
+      <h1 className="text-2xl font-bold text-gray-900">Welcome back{admin?.full_name ? `, ${admin.full_name}` : ""}</h1>
       <p className="mt-1 text-sm text-gray-500">Manage the ONPRO IT website from here.</p>
 
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

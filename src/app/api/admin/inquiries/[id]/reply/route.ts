@@ -14,28 +14,22 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   }
 
   const supabase = getSupabaseAdmin();
-  const { data: submission, error: fetchError } = await supabase
-    .from("contact_submissions")
+  const { data: contactMessage, error: fetchError } = await supabase
+    .from("contact_messages")
     .select("name, email")
     .eq("id", id)
     .single();
 
-  if (fetchError || !submission) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (fetchError || !contactMessage) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   try {
-    await sendReplyEmail({ to: submission.email, name: submission.name, message });
+    await sendReplyEmail({ to: contactMessage.email, name: contactMessage.name, message });
   } catch (err) {
     console.error("Admin reply email error:", err);
     return NextResponse.json({ error: "Failed to send email" }, { status: 500 });
   }
 
-  const { error: insertError } = await supabase.from("inquiry_replies").insert({
-    submission_id: id,
-    admin_id: admin.id,
-    admin_name: admin.display_name || admin.email,
-    message,
-  });
+  await supabase.from("contact_messages").update({ read: true }).eq("id", id);
 
-  if (insertError) return NextResponse.json({ error: insertError.message }, { status: 500 });
   return NextResponse.json({ ok: true });
 }

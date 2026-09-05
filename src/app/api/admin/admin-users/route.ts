@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomBytes } from "crypto";
 import { getCurrentAdmin } from "@/lib/current-admin";
-import { generateTempPassword, hashPassword } from "@/lib/admin-password";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { sendAdminInviteEmail } from "@/lib/send-admin-invite-email";
+import { SITE_URL } from "@/lib/constants";
+
+const INVITE_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
 
 export async function GET() {
   const admin = await getCurrentAdmin();
@@ -10,9 +13,9 @@ export async function GET() {
 
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
-    .from("admin_users")
-    .select("id, email, display_name, joined_at, last_login_at")
-    .order("joined_at", { ascending: true });
+    .from("profiles")
+    .select("id, email, full_name, role, created_at")
+    .order("created_at", { ascending: true });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ users: data, currentUserId: admin.id });
@@ -22,32 +25,34 @@ export async function POST(req: NextRequest) {
   const admin = await getCurrentAdmin();
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { email, displayName } = await req.json();
+  const { email } = await req.json();
   if (typeof email !== "string" || !email.trim()) {
     return NextResponse.json({ error: "Email is required" }, { status: 400 });
   }
 
   const normalizedEmail = email.trim().toLowerCase();
-  const tempPassword = generateTempPassword();
-  const supabase = getSupabaseAdmin();
+  const token = randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + INVITE_TTL_MS).toISOString();
 
-  const { error } = await supabase.from("admin_users").insert({
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase.from("admin_invites").insert({
     email: normalizedEmail,
-    display_name: displayName?.trim() || null,
-    password_hash: hashPassword(tempPassword),
+    token,
+    expires_at: expiresAt,
+    created_by: admin.id,
+    status: "pending",
   });
 
   if (error) {
-    const message = error.code === "23505" ? "An admin with that email already exists" : error.message;
-    return NextResponse.json({ error: message }, { status: 400 });
+    return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
-  // The account already exists at this point — a Mailgun hiccup shouldn't
-  // turn into a 500 for an account that now exists but has no way to know
-  // its own password, so this failure is reported, not thrown.
   let emailSent = true;
   try {
-    await sendAdminInviteEmail({ to: normalizedEmail, tempPassword });
+    await sendAdminInviteEmail({
+      to: normalizedEmail,
+      inviteLink: `${SITE_URL}/admin/accept-invite?token=${token}`,
+    });
   } catch (err) {
     console.error("Admin invite email error:", err);
     emailSent = false;

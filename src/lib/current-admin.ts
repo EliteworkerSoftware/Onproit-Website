@@ -1,30 +1,35 @@
 import "server-only";
 import { cache } from "react";
-import { cookies } from "next/headers";
-import { ADMIN_COOKIE_NAME, readSessionUserId } from "@/lib/admin-auth";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
 
 export interface AdminUser {
   id: string;
   email: string;
-  display_name: string | null;
+  full_name: string | null;
+  role: string | null;
 }
 
 // cache() dedupes this within a single request's render tree (e.g. the admin
 // layout and its page both call it) — it does not persist across separate
-// requests, so removing an admin takes effect on their next request.
+// requests, so removing an admin's profile row takes effect on their next
+// request even though their Supabase Auth session is still technically valid.
 export const getCurrentAdmin = cache(async (): Promise<AdminUser | null> => {
   if (!isSupabaseAdminConfigured()) return null;
 
-  const cookieStore = await cookies();
-  const userId = readSessionUserId(cookieStore.get(ADMIN_COOKIE_NAME)?.value);
-  if (!userId) return null;
+  const supabaseAuth = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabaseAuth.auth.getUser();
+  if (!user) return null;
 
+  // Looked up with the service-role client (not the user's own session)
+  // rather than relying on a same-row RLS policy existing on `profiles`.
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
-    .from("admin_users")
-    .select("id, email, display_name")
-    .eq("id", userId)
+    .from("profiles")
+    .select("id, full_name, email, role")
+    .eq("id", user.id)
     .single();
 
   if (error || !data) return null;

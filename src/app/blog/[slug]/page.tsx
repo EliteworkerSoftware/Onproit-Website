@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { BLOG_POSTS_FALLBACK } from "@/lib/blog-posts-fallback";
@@ -13,7 +14,8 @@ async function getPost(slug: string): Promise<BlogPost | null> {
       .from("blog_posts")
       .select("*")
       .eq("slug", slug)
-      .eq("published", true)
+      .not("published_at", "is", null)
+      .lte("published_at", new Date().toISOString())
       .single();
 
     if (!error && data) return data as BlogPost;
@@ -24,7 +26,11 @@ async function getPost(slug: string): Promise<BlogPost | null> {
 
 export async function generateStaticParams() {
   if (supabase) {
-    const { data } = await supabase.from("blog_posts").select("slug").eq("published", true);
+    const { data } = await supabase
+      .from("blog_posts")
+      .select("slug")
+      .not("published_at", "is", null)
+      .lte("published_at", new Date().toISOString());
     if (data && data.length > 0) {
       return data.map((post) => ({ slug: post.slug as string }));
     }
@@ -52,7 +58,8 @@ export async function generateMetadata({
       siteName: "ONPRO IT",
       type: "article",
       publishedTime: post.published_at ?? undefined,
-      authors: [post.author],
+      authors: ["ONPRO IT Team"],
+      images: post.image_url ? [post.image_url] : undefined,
     },
     alternates: {
       canonical: `${SITE_URL}/blog/${post.slug}`,
@@ -75,7 +82,7 @@ export default async function BlogPostPage({
     "@type": "Article",
     headline: post.title,
     description: post.excerpt ?? undefined,
-    author: { "@type": "Organization", name: post.author },
+    author: { "@type": "Organization", name: "ONPRO IT" },
     datePublished: post.published_at ?? post.created_at,
     publisher: { "@type": "Organization", name: "ONPRO IT" },
   };
@@ -94,15 +101,20 @@ export default async function BlogPostPage({
             </span>
           )}
           <h1 className="mt-4 text-4xl font-bold text-gray-900">{post.title}</h1>
-          <p className="mt-2 text-sm text-gray-500">
-            By {post.author}
-            {post.published_at &&
-              ` · ${new Date(post.published_at).toLocaleDateString("en-US", {
+          {post.published_at && (
+            <p className="mt-2 text-sm text-gray-500">
+              {new Date(post.published_at).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
-              })}`}
-          </p>
+              })}
+            </p>
+          )}
+          {post.image_url && (
+            <div className="relative mt-6 h-72 w-full overflow-hidden rounded-xl">
+              <Image src={post.image_url} alt={post.title} fill className="object-cover" unoptimized />
+            </div>
+          )}
           <div
             className="mt-8 max-w-none space-y-4 leading-relaxed text-gray-700 [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-gray-900 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-gray-900 [&_ul]:list-disc [&_ul]:pl-6"
             dangerouslySetInnerHTML={{ __html: post.content ?? "" }}

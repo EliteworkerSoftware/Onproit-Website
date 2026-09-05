@@ -6,9 +6,9 @@ import { Plus, Trash2, X } from "lucide-react";
 interface AdminUserRow {
   id: string;
   email: string;
-  display_name: string | null;
-  joined_at: string;
-  last_login_at: string | null;
+  full_name: string | null;
+  role: string | null;
+  created_at: string;
 }
 
 export default function AdminUsersPage() {
@@ -16,18 +16,8 @@ export default function AdminUsersPage() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [inviting, setInviting] = useState(false);
   const [email, setEmail] = useState("");
-  const [displayName, setDisplayName] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-
-  async function load() {
-    const res = await fetch("/api/admin/admin-users");
-    const data = await res.json();
-    if (res.ok) {
-      setUsers(data.users);
-      setCurrentUserId(data.currentUserId);
-    }
-  }
 
   useEffect(() => {
     let cancelled = false;
@@ -44,13 +34,22 @@ export default function AdminUsersPage() {
     };
   }, []);
 
+  async function load() {
+    const res = await fetch("/api/admin/admin-users");
+    const data = await res.json();
+    if (res.ok) {
+      setUsers(data.users);
+      setCurrentUserId(data.currentUserId);
+    }
+  }
+
   async function handleInvite(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     const res = await fetch("/api/admin/admin-users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, displayName }),
+      body: JSON.stringify({ email }),
     });
     const data = await res.json();
     if (!res.ok) {
@@ -58,13 +57,12 @@ export default function AdminUsersPage() {
       return;
     }
     setInviting(false);
-    setEmail("");
-    setDisplayName("");
     setNotice(
       data.emailSent
         ? `Invite sent to ${email}.`
-        : `Admin created, but the invite email failed to send. Check the Mailgun configuration and re-invite if needed.`
+        : `Invite created, but the email failed to send. Check the Mailgun configuration and try again.`
     );
+    setEmail("");
     load();
   }
 
@@ -121,10 +119,10 @@ export default function AdminUsersPage() {
                 <tr key={u.id}>
                   <td className="px-4 py-3">
                     <p className="font-medium text-gray-900">{u.email}</p>
-                    {u.display_name && <p className="text-xs text-gray-500">{u.display_name}</p>}
+                    {u.full_name && <p className="text-xs text-gray-500">{u.full_name}</p>}
                   </td>
                   <td className="px-4 py-3 text-gray-500">
-                    {new Date(u.joined_at).toLocaleDateString()}
+                    {new Date(u.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3 text-right">
                     {u.id === currentUserId ? (
@@ -158,7 +156,8 @@ export default function AdminUsersPage() {
               </button>
             </div>
             <p className="mb-4 text-sm text-gray-500">
-              They&apos;ll receive an email with a temporary password to log in with.
+              They&apos;ll receive an email with a secure link to set their password and join the
+              dashboard.
             </p>
             <form onSubmit={handleInvite} className="space-y-4">
               <div>
@@ -169,14 +168,6 @@ export default function AdminUsersPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@onproit.com"
-                  className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Display Name (optional)</label>
-                <input
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
                   className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                 />
               </div>

@@ -9,7 +9,6 @@ import type { AdminUser } from "@/lib/current-admin";
 
 const NAV_LINKS = [
   { title: "Inquiries", href: "/admin/inquiries" },
-  { title: "Email Recipients", href: "/admin/email-recipients" },
   { title: "Admin Users", href: "/admin/admin-users" },
   { title: "Bookings", href: "/admin/bookings" },
   { title: "Settings", href: "/admin/settings" },

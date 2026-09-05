@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { BLOG_POSTS_FALLBACK } from "@/lib/blog-posts-fallback";
@@ -22,7 +23,8 @@ async function getPosts(): Promise<BlogPost[]> {
   const { data, error } = await supabase
     .from("blog_posts")
     .select("*")
-    .eq("published", true)
+    .not("published_at", "is", null)
+    .lte("published_at", new Date().toISOString())
     .order("published_at", { ascending: false });
 
   if (error || !data || data.length === 0) return BLOG_POSTS_FALLBACK;
@@ -55,8 +57,14 @@ export default async function BlogIndexPage() {
               <Link
                 key={post.id}
                 href={`/blog/${post.slug}`}
-                className="flex flex-col rounded-xl border border-gray-200 p-6 shadow-sm transition-shadow hover:shadow-lg"
+                className="flex flex-col overflow-hidden rounded-xl border border-gray-200 shadow-sm transition-shadow hover:shadow-lg"
               >
+                {post.image_url && (
+                  <div className="relative h-40 w-full">
+                    <Image src={post.image_url} alt={post.title} fill className="object-cover" unoptimized />
+                  </div>
+                )}
+                <div className="flex flex-1 flex-col p-6">
                 {post.category && (
                   <span className="mb-2 inline-block w-fit rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand">
                     {post.category}
@@ -73,6 +81,7 @@ export default async function BlogIndexPage() {
                     })}
                   </p>
                 )}
+                </div>
               </Link>
             ))}
           </div>
