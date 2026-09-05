@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { BLOG_POSTS_FALLBACK } from "@/lib/blog-posts-fallback";
+import BlogThumbnail from "@/components/BlogThumbnail";
 import type { BlogPost } from "@/types";
 import { SITE_URL } from "@/lib/constants";
 
@@ -59,11 +59,7 @@ export default async function BlogIndexPage() {
                 href={`/blog/${post.slug}`}
                 className="flex flex-col overflow-hidden rounded-xl border border-gray-200 shadow-sm transition-shadow hover:shadow-lg"
               >
-                {post.image_url && (
-                  <div className="relative h-40 w-full">
-                    <Image src={post.image_url} alt={post.title} fill className="object-cover" unoptimized />
-                  </div>
-                )}
+                <BlogThumbnail category={post.category} />
                 <div className="flex flex-1 flex-col p-6">
                 {post.category && (
                   <span className="mb-2 inline-block w-fit rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand">

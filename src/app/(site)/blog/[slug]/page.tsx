@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { BLOG_POSTS_FALLBACK } from "@/lib/blog-posts-fallback";
+import BlogThumbnail from "@/components/BlogThumbnail";
 import type { BlogPost } from "@/types";
 import { SITE_URL } from "@/lib/constants";
 
@@ -59,7 +59,6 @@ export async function generateMetadata({
       type: "article",
       publishedTime: post.published_at ?? undefined,
       authors: ["ONPRO IT Team"],
-      images: post.image_url ? [post.image_url] : undefined,
     },
     alternates: {
       canonical: `${SITE_URL}/blog/${post.slug}`,
@@ -110,11 +109,9 @@ export default async function BlogPostPage({
               })}
             </p>
           )}
-          {post.image_url && (
-            <div className="relative mt-6 h-72 w-full overflow-hidden rounded-xl">
-              <Image src={post.image_url} alt={post.title} fill className="object-cover" unoptimized />
-            </div>
-          )}
+          <div className="mt-6 overflow-hidden rounded-xl">
+            <BlogThumbnail category={post.category} className="h-72" />
+          </div>
           <div
             className="mt-8 max-w-none space-y-4 leading-relaxed text-gray-700 [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-gray-900 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-gray-900 [&_ul]:list-disc [&_ul]:pl-6"
             dangerouslySetInnerHTML={{ __html: post.content ?? "" }}
