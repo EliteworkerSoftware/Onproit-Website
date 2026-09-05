@@ -114,12 +114,13 @@ export default function ContactForm() {
         </div>
         <div>
           <label htmlFor="company" className="mb-1 block text-sm font-medium text-gray-700">
-            Company
+            Company *
           </label>
           <input
             id="company"
             name="company"
             type="text"
+            required
             className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
           />
         </div>

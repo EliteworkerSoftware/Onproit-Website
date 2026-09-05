@@ -19,8 +19,8 @@ export async function POST(req: NextRequest) {
     if (typeof email !== "string" || !email.trim()) {
       return NextResponse.json({ error: "Enter a valid email address" }, { status: 400 });
     }
-    if (company != null && (typeof company !== "string" || company.length > COMPANY_LIMIT)) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    if (typeof company !== "string" || !company.trim() || company.length > COMPANY_LIMIT) {
+      return NextResponse.json({ error: "Company name is required" }, { status: 400 });
     }
     if (message != null && (typeof message !== "string" || message.length > MESSAGE_LIMIT)) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
