@@ -158,6 +158,102 @@ export default function AdminSettingsPage() {
           </button>
         </div>
       </form>
+
+      <div className="mt-6 max-w-md">
+        <ChangePasswordCard />
+      </div>
     </div>
+  );
+}
+
+function ChangePasswordCard() {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [error, setError] = useState("");
+
+  const inputClasses =
+    "mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand";
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+
+    if (newPassword !== confirmPassword) {
+      setError("New passwords don't match");
+      setStatus("error");
+      return;
+    }
+
+    setStatus("saving");
+    const res = await fetch("/api/admin/change-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.error || "Failed to change password");
+      setStatus("error");
+      return;
+    }
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setStatus("saved");
+    setTimeout(() => setStatus("idle"), 2500);
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="rounded-xl border border-gray-200 bg-white p-6">
+      <h2 className="text-lg font-semibold text-gray-900">Change Password</h2>
+      <p className="mt-1 text-sm text-gray-500">Update the password for your own admin account.</p>
+      <div className="mt-4 space-y-4">
+        <div>
+          <label className="text-sm font-medium text-gray-700">Current Password</label>
+          <input
+            type="password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            required
+            className={inputClasses}
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700">New Password</label>
+          <input
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            minLength={8}
+            required
+            className={inputClasses}
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700">Confirm New Password</label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            minLength={8}
+            required
+            className={inputClasses}
+          />
+        </div>
+      </div>
+
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {status === "saved" && <p className="mt-3 text-sm text-green-600">Password updated.</p>}
+
+      <button
+        type="submit"
+        disabled={status === "saving"}
+        className="mt-4 rounded-md bg-brand px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
+      >
+        {status === "saving" ? "Updating…" : "Update Password"}
+      </button>
+    </form>
   );
 }

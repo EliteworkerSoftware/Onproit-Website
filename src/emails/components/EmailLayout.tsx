@@ -1,6 +1,6 @@
 import { Head, Html, Preview } from "@react-email/components";
 import type { ReactNode } from "react";
-import { COLORS } from "../constants";
+import { COLORS, SITE_URL } from "../constants";
 
 const FONT_STACK = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
 
@@ -30,11 +30,14 @@ export function EmailLayout({ preview, children }: { preview: string; children: 
                 <table role="presentation" width="100%" cellPadding={0} cellSpacing={0} style={{ borderCollapse: "collapse" }}>
                   <tbody>
                     <tr>
-                      <td align="center" style={{ backgroundColor: COLORS.nav, padding: "40px 40px" }}>
-                        <span style={{ fontFamily: FONT_STACK, fontSize: 24, fontWeight: 800, letterSpacing: "-0.01em" }}>
-                          <span style={{ color: "#ffffff" }}>ONPRO</span>{" "}
-                          <span style={{ color: COLORS.brand }}>IT</span>
-                        </span>
+                      <td align="center" style={{ backgroundColor: COLORS.nav, padding: "32px 40px" }}>
+                        <img
+                          src={`${SITE_URL}/images/logo-email.png`}
+                          width="180"
+                          height="41"
+                          alt="ONPRO IT"
+                          style={{ display: "block", border: 0, outline: "none" }}
+                        />
                       </td>
                     </tr>
                   </tbody>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
@@ -14,9 +15,36 @@ const NAV_LINKS = [
   { title: "Settings", href: "/admin/settings" },
 ];
 
+const POLL_INTERVAL_MS = 30_000;
+
 export default function AdminNav({ admin }: { admin: AdminUser }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function poll() {
+      try {
+        const res = await fetch("/api/admin/inquiries/unread-count");
+        const data = await res.json();
+        if (!cancelled && res.ok) {
+          setUnreadCount(data.count);
+          document.title = data.count > 0 ? `(${data.count}) ONPRO IT Admin` : "ONPRO IT Admin";
+        }
+      } catch {
+        // ignore transient poll failures
+      }
+    }
+
+    poll();
+    const interval = setInterval(poll, POLL_INTERVAL_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [pathname]);
 
   async function handleSignOut() {
     await fetch("/api/admin/logout", { method: "POST" });
@@ -42,11 +70,16 @@ export default function AdminNav({ admin }: { admin: AdminUser }) {
                   key={link.href}
                   href={link.href}
                   className={clsx(
-                    "rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    "flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                     active ? "bg-white/10 text-white" : "text-white/60 hover:text-white"
                   )}
                 >
                   {link.title}
+                  {link.title === "Inquiries" && unreadCount > 0 && (
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-bold text-white">
+                      {unreadCount}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -84,11 +117,16 @@ export default function AdminNav({ admin }: { admin: AdminUser }) {
               key={link.href}
               href={link.href}
               className={clsx(
-                "shrink-0 rounded-md px-3 py-1.5 text-sm font-medium",
+                "flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium",
                 active ? "bg-white/10 text-white" : "text-white/60 hover:text-white"
               )}
             >
               {link.title}
+              {link.title === "Inquiries" && unreadCount > 0 && (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-bold text-white">
+                  {unreadCount}
+                </span>
+              )}
             </Link>
           );
         })}
