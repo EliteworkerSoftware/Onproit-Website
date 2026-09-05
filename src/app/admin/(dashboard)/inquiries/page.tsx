@@ -18,6 +18,9 @@ interface ContactMessage {
   created_at: string;
 }
 
+const FIELD_LABEL_CLASSES = "text-xs font-semibold uppercase tracking-wide text-gray-400";
+const FIELD_VALUE_CLASSES = "mt-0.5 truncate text-sm font-medium text-gray-900";
+
 export default function AdminInquiriesPage() {
   const [messages, setMessages] = useState<ContactMessage[] | null>(null);
   const [tab, setTab] = useState<"inbox" | "archived">("inbox");
@@ -107,26 +110,15 @@ export default function AdminInquiriesPage() {
         ) : (
           filtered.map((m) => (
             <div key={m.id} className="rounded-xl border border-gray-200 bg-white p-5">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="font-semibold text-gray-900">
-                    {m.name}
-                    {!m.read && (
-                      <span className="ml-2 rounded-full bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand">
-                        New
-                      </span>
-                    )}
-                  </p>
-                  <p className="flex items-center gap-1.5 text-sm text-gray-500">
-                    <Mail className="h-3.5 w-3.5" />
-                    {m.email}
-                  </p>
-                  {(m.company || m.phone || m.service) && (
-                    <p className="mt-0.5 text-xs text-gray-400">
-                      {[m.company, m.phone, m.service].filter(Boolean).join(" · ")}
-                    </p>
+              <div className="flex flex-wrap items-start justify-between gap-3 border-b border-gray-100 pb-4">
+                <p className="text-base font-semibold text-gray-900">
+                  {m.name}
+                  {!m.read && (
+                    <span className="ml-2 rounded-full bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand">
+                      New
+                    </span>
                   )}
-                </div>
+                </p>
                 <span className="text-xs text-gray-400">
                   {new Date(m.created_at).toLocaleString("en-US", {
                     month: "short",
@@ -136,11 +128,53 @@ export default function AdminInquiriesPage() {
                   })}
                 </span>
               </div>
-              {m.message && (
-                <p className="mt-3 rounded-lg border border-gray-100 bg-gray-50 p-3 text-sm text-gray-700">
-                  {m.message}
-                </p>
-              )}
+
+              <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
+                <div>
+                  <dt className={FIELD_LABEL_CLASSES}>Email</dt>
+                  <dd className={FIELD_VALUE_CLASSES}>
+                    <a href={`mailto:${m.email}`} className="hover:text-brand">
+                      {m.email}
+                    </a>
+                  </dd>
+                </div>
+                <div>
+                  <dt className={FIELD_LABEL_CLASSES}>Phone</dt>
+                  <dd className={FIELD_VALUE_CLASSES}>
+                    {m.phone ? (
+                      <a href={`tel:${m.phone}`} className="hover:text-brand">
+                        {m.phone}
+                      </a>
+                    ) : (
+                      <span className="text-gray-400">—</span>
+                    )}
+                  </dd>
+                </div>
+                <div>
+                  <dt className={FIELD_LABEL_CLASSES}>Company</dt>
+                  <dd className={FIELD_VALUE_CLASSES}>
+                    {m.company || <span className="text-gray-400">—</span>}
+                  </dd>
+                </div>
+                <div>
+                  <dt className={FIELD_LABEL_CLASSES}>Service Interest</dt>
+                  <dd className={FIELD_VALUE_CLASSES}>
+                    {m.service || <span className="text-gray-400">—</span>}
+                  </dd>
+                </div>
+              </dl>
+
+              <div className="mt-4">
+                <p className={FIELD_LABEL_CLASSES}>Message</p>
+                {m.message ? (
+                  <p className="mt-1 rounded-lg border border-gray-100 bg-gray-50 p-3 text-sm text-gray-700">
+                    {m.message}
+                  </p>
+                ) : (
+                  <p className="mt-1 text-sm text-gray-400">No message left.</p>
+                )}
+              </div>
+
               <div className="mt-4 flex flex-wrap justify-end gap-2">
                 <button
                   onClick={() => setReplyingTo(m)}
