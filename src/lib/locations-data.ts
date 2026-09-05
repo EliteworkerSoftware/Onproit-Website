@@ -46,7 +46,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Local & accessible — we aren't a faceless national call center, we're your neighbors in South Jersey",
       "Security-first mindset — we build security into everything we do, not as an afterthought",
       "Strategic partners — we act as your Virtual CIO, helping you budget and plan for the future",
-      "Predictable flat-rate monthly pricing, generally $100–$250 per user per month",
+      "Predictable flat-rate monthly pricing — no surprise invoices",
     ],
     faqs: [
       {
@@ -57,7 +57,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       {
         question: "How much do Managed IT Services cost in New Jersey?",
         answer:
-          "Costs vary based on the number of users, devices, and complexity of your network. Generally, businesses in NJ can expect to pay between $100 to $250 per user per month — often significantly more cost-effective than hiring full-time IT staff or paying for emergency break-fix repairs.",
+          "Costs vary based on the number of users, devices, and complexity of your network — we don't believe in one-size-fits-all pricing. Rather than quote a number that may not apply to your business, we provide a custom quote after a quick, free assessment.",
       },
       {
         question: "Do you support businesses outside of South Jersey?",
@@ -98,7 +98,7 @@ export const LOCATIONS_DATA: LocationData[] = [
     ],
     whyChoose: [
       "Local expertise — deep understanding of the local business environment in Cherry Hill, Marlton, and Mount Laurel",
-      "Compliance ready — helping medical, legal, and financial firms meet strict compliance standards (HIPAA, PCI)",
+      "Rapid response — a truly local team that can be on-site fast when remote support isn't enough",
       "Proactive management — stopping problems before they impact your bottom line with 24/7 monitoring",
       "Rapid onsite response along Route 70, Haddonfield Road, and the Kings Highway corridor",
     ],
@@ -154,7 +154,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Local headquarters right here in Berlin Township, ensuring the fastest possible onsite response times",
       "Security first — advanced tools and continuous monitoring prioritizing the security of your data",
       "Business aligned — we act as your strategic partner, ensuring technology investments drive real value",
-      "Industries served include healthcare, legal, manufacturing, finance, and professional services",
+      "Hands-on approach — we get to know your business, not just your ticket queue",
     ],
     faqs: [
       {
@@ -173,14 +173,9 @@ export const LOCATIONS_DATA: LocationData[] = [
           "We employ a multi-layered security strategy including next-generation firewalls, endpoint detection and response (EDR), email filtering, and regular security awareness training, proactively hunting for threats to keep your data safe.",
       },
       {
-        question: "What industries do you serve in Camden County?",
-        answer:
-          "We work with a diverse range of industries including healthcare, legal, manufacturing, finance, and professional services, and understand the specific compliance and operational requirements of businesses in the South Jersey region.",
-      },
-      {
         question: "How much does managed IT cost?",
         answer:
-          "Our pricing is transparent and based on the number of users and devices in your environment. Most plans range from $100 to $250 per user per month, with a custom quote provided after a free assessment.",
+          "Our pricing is based on the number of users and devices in your environment rather than a flat published rate, since every business's setup is different. We provide a custom quote after a free assessment.",
       },
     ],
   },

@@ -197,7 +197,7 @@ export const SERVICES_DATA: ServiceData[] = [
     ],
     howWeDeliver: [
       "Prevention (EDR & Firewalls) — AI-driven Endpoint Detection & Response tools and next-gen firewalls block threats before they enter",
-      "Detection (24/7 SOC) — our Security Operations Center monitors your network around the clock to spot suspicious activity immediately",
+      "Detection (24/7 Monitoring) — our team monitors your network around the clock to spot suspicious activity immediately",
       "Training (Human Firewall) — we train your employees to recognize phishing emails and social engineering attacks",
     ],
     benefits: [
@@ -251,7 +251,7 @@ export const SERVICES_DATA: ServiceData[] = [
     ],
     howWeDeliver: [
       "Site Survey & Heat Mapping — we analyze your physical space to identify interference and optimal access point placement",
-      "Custom Hardware Selection — we select enterprise-grade equipment (Ubiquiti, Cisco Meraki, Aruba) tailored to your needs",
+      "Custom Hardware Selection — we select enterprise-grade equipment (Ubiquiti, Aruba) tailored to your needs",
       "Professional Installation — our team runs cabling, mounts hardware, and configures VLANs for security and performance",
     ],
     benefits: [

@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
 import ServiceCard from "@/components/ServiceCard";
-import { PHONE_DISPLAY, PHONE_HREF, SERVICE_AREAS } from "@/lib/constants";
+import { PHONE_DISPLAY, PHONE_HREF } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Managed IT Services Southern NJ & Philadelphia | ONPRO IT",
@@ -249,29 +249,6 @@ export default function HomePage() {
                 <h3 className="mb-2 text-base font-semibold text-gray-900">{step.title}</h3>
                 <p className="text-sm text-gray-600">{step.description}</p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold text-gray-900">
-            Managed IT Services in Your Area
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-gray-600">
-            We provide specialized, high-touch managed IT and cybersecurity services tailored for
-            local businesses across the region. Explore our localized service offerings.
-          </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            {SERVICE_AREAS.filter((a) => !a.title.includes("Cabling")).map((area) => (
-              <Link
-                key={area.href}
-                href={area.href}
-                className="rounded-full border border-gray-200 px-6 py-3 text-sm font-medium text-gray-700 hover:border-brand hover:text-brand"
-              >
-                {area.title}
-              </Link>
             ))}
           </div>
         </div>
