@@ -37,7 +37,7 @@ export default function LocationPageTemplate({ location }: { location: LocationD
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{location.h1}</h1>
           <p className="mt-6 text-lg text-gray-300">{location.intro}</p>
           <div className="mt-8">
-            <ConsultationButton href="/schedule" variant="primary">
+            <ConsultationButton href="/contact" variant="primary">
               Schedule a Discovery Call
             </ConsultationButton>
           </div>

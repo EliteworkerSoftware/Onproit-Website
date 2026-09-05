@@ -34,8 +34,8 @@ export default function PrivacyPolicyPage() {
             <ul className="mt-2 list-disc space-y-1 pl-6">
               <li>
                 Information you give us: information you provide by filling in forms on our
-                website (such as our contact form or meeting scheduler) or by corresponding with
-                us by phone, email, or otherwise.
+                website (such as our contact form) or by corresponding with us by phone, email, or
+                otherwise.
               </li>
               <li>
                 Technical information: including the Internet protocol (IP) address used to

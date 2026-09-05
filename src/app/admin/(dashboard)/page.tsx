@@ -1,11 +1,10 @@
 import Link from "next/link";
-import { Inbox, Shield, Calendar, Settings } from "lucide-react";
+import { Inbox, Shield, Settings } from "lucide-react";
 import { getCurrentAdmin } from "@/lib/current-admin";
 
 const CARDS = [
   { title: "Inquiries", description: "Contact form messages, inbox and archived.", href: "/admin/inquiries", Icon: Inbox },
   { title: "Admin Users", description: "Manage who can access this dashboard.", href: "/admin/admin-users", Icon: Shield },
-  { title: "Bookings", description: "Consultation bookings from the Schedule a Call page.", href: "/admin/bookings", Icon: Calendar },
   { title: "Settings", description: "Public contact info and business hours.", href: "/admin/settings", Icon: Settings },
 ];
 

@@ -53,7 +53,7 @@ export default function ServicesOverviewPage() {
             area thrive.
           </p>
           <div className="mt-8">
-            <ConsultationButton href="/schedule" variant="primary">
+            <ConsultationButton href="/contact" variant="primary">
               Schedule a Consultation
             </ConsultationButton>
           </div>
@@ -118,7 +118,7 @@ export default function ServicesOverviewPage() {
             we can help your business grow.
           </p>
           <div className="mt-8">
-            <ConsultationButton href="/schedule" variant="outline-light">
+            <ConsultationButton href="/contact" variant="outline-light">
               Schedule a Consultation
             </ConsultationButton>
           </div>

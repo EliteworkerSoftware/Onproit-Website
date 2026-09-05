@@ -102,7 +102,7 @@ export default function HomePage() {
               Philadelphia Metro area.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
-              <ConsultationButton href="/schedule" variant="primary">
+              <ConsultationButton href="/contact" variant="primary">
                 Schedule a Discovery Call
               </ConsultationButton>
               <ConsultationButton href="/contact" variant="outline-light">
@@ -264,7 +264,7 @@ export default function HomePage() {
             your business thrive. Schedule a free consultation today.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <ConsultationButton href="/schedule" variant="outline-light">
+            <ConsultationButton href="/contact" variant="outline-light">
               Schedule a Call
             </ConsultationButton>
             <Link
