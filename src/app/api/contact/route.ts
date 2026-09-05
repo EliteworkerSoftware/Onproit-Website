@@ -3,6 +3,7 @@ import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admi
 import { verifyTurnstile } from "@/lib/turnstile";
 import { sendMail, isMailerConfigured } from "@/lib/mailer";
 import { ContactLeadEmail } from "@/emails/ContactLeadEmail";
+import { getSettings, parseNotificationEmails } from "@/lib/get-settings";
 
 const NAME_LIMIT = 200;
 const COMPANY_LIMIT = 200;
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
 
     if (dbError) {
       console.error("Supabase insert error:", dbError);
-      return NextResponse.json({ error: "Something went wrong", debug: dbError.message }, { status: 500 });
+      return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
     }
 
     // Team notification runs after the response is already sent — via
@@ -60,8 +61,9 @@ export async function POST(req: NextRequest) {
     // the visitor-facing request past its timeout.
     after(async () => {
       if (!isMailerConfigured()) return;
-      const to = process.env.CONTACT_TO_EMAIL;
-      if (!to) return;
+      const settings = await getSettings();
+      const to = parseNotificationEmails(settings.contact_notification_emails);
+      if (to.length === 0) return;
       try {
         await sendMail({
           to,
@@ -76,9 +78,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Contact form error:", err);
-    return NextResponse.json(
-      { error: "Something went wrong", debug: err instanceof Error ? err.message : String(err) },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

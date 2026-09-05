@@ -9,6 +9,7 @@ interface Settings {
   hours_weekdays: string;
   hours_saturday: string;
   hours_sunday: string;
+  contact_notification_emails: string;
 }
 
 export default function AdminSettingsPage() {
@@ -91,6 +92,26 @@ export default function AdminSettingsPage() {
               />
               <p className="mt-1 text-xs text-gray-400">This address is shown on the Contact page map section.</p>
             </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-gray-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-gray-900">Lead Notifications</h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Who gets emailed when someone submits the contact form.
+          </p>
+          <div className="mt-4">
+            <label className="text-sm font-medium text-gray-700">Notification Email(s)</label>
+            <textarea
+              value={settings.contact_notification_emails}
+              onChange={(e) => update("contact_notification_emails", e.target.value)}
+              rows={2}
+              className={inputClasses}
+              placeholder="you@onproit.com, teammate@onproit.com"
+            />
+            <p className="mt-1 text-xs text-gray-400">
+              Separate multiple addresses with commas — every address listed gets the notification.
+            </p>
           </div>
         </div>
 
