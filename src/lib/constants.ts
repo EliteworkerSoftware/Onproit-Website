@@ -41,10 +41,11 @@ export const SERVICES = [
   { title: "Managed IT Services", href: "/services/managed-it" },
 ];
 
+// One link per state we serve — no city-level entries here, so there's no
+// arbitrary "why this town and not that one" favoritism. City/town pages
+// still exist and are in the sitemap; they're just not in global nav.
 export const SERVICE_AREAS = [
   { title: "New Jersey", href: "/managed-it-services-new-jersey" },
-  { title: "Cherry Hill, NJ", href: "/managed-it-services-cherry-hill-nj" },
-  { title: "West Berlin, NJ", href: "/managed-it-services-west-berlin-nj" },
   { title: "Pennsylvania", href: "/pennsylvania-cabling" },
   { title: "Delaware", href: "/delaware-cabling" },
 ];
