@@ -1,0 +1,551 @@
+import type { LucideIcon } from "lucide-react";
+import {
+  Briefcase,
+  Cable,
+  Cloud,
+  HardDrive,
+  Headphones,
+  Network,
+  PhoneCall,
+  Server,
+  ShieldCheck,
+} from "lucide-react";
+
+export interface ServiceFaq {
+  question: string;
+  answer: string;
+}
+
+export interface ServiceData {
+  slug: string;
+  navTitle: string;
+  h1: string;
+  metaTitle: string;
+  metaDescription: string;
+  keywords: string;
+  Icon: LucideIcon;
+  intro: string;
+  whatIsIt: string[];
+  whoItsFor: string[];
+  risks: string[];
+  howWeDeliver: string[];
+  benefits: string[];
+  areasServed: string[];
+  faqs: ServiceFaq[];
+}
+
+export const SERVICES_DATA: ServiceData[] = [
+  {
+    slug: "managed-it",
+    navTitle: "Managed IT Services",
+    h1: "Managed IT Services for Growing Businesses in NJ & PA",
+    metaTitle: "Managed IT Services NJ | ONPRO IT",
+    metaDescription:
+      "ONPRO IT delivers fully managed IT services for businesses in Southern NJ and Philadelphia — proactive monitoring, help desk support, and strategic IT planning for one flat monthly rate.",
+    keywords: "managed IT services NJ, MSP Southern NJ, managed service provider New Jersey",
+    Icon: Server,
+    intro:
+      "Stop worrying about technology and focus on your business. We provide proactive, flat-rate IT management for companies in South Jersey, Delaware, and the Philadelphia Metro area.",
+    whatIsIt: [
+      "Managed IT Services represent a strategic shift from the traditional \"break-fix\" model — where you only call an IT guy when something breaks — to a proactive, holistic approach. When you partner with ONPRO IT, we take full responsibility for your entire technology environment.",
+      "This means we monitor your systems 24/7, apply security patches automatically, back up your critical data, and resolve issues often before you even know they exist. Our approach integrates seamlessly with our cybersecurity services to ensure your infrastructure is not just running, but running securely.",
+      "For small and mid-sized businesses in New Jersey and Pennsylvania, hiring a full internal IT department is often cost-prohibitive. Managed services bridge this gap by providing you with a team of certified experts and enterprise-grade tools for a predictable monthly fee.",
+    ],
+    whoItsFor: [
+      "You are a business with 10 to 200 employees",
+      "You are frustrated by recurring computer problems and downtime",
+      "You are concerned about cybersecurity threats like ransomware",
+      "You handle sensitive client data or financial information",
+      "You want to budget your IT expenses without surprise repair bills",
+      "You need your remote workforce to be secure and productive",
+    ],
+    risks: [
+      "Costly downtime — every minute your server or internet is down, you're losing money in lost productivity and frustrated customers",
+      "Security breaches — cybercriminals actively target small businesses as \"soft targets,\" and a single breach can cost hundreds of thousands in fines and remediation",
+      "Unpredictable spending — paying for IT support by the hour means costs spike exactly when you can least afford it",
+      "Employee frustration — slow computers and constant glitches kill morale and are a leading cause of staff turnover",
+    ],
+    howWeDeliver: [
+      "24/7 Remote Monitoring & Management — lightweight agents on every device feed health data back to our operations center, so we know if a hard drive is failing before it crashes",
+      "Unlimited Help Desk Support — your team gets direct access to our local support desk for anything from a password reset to a software error, with technicians dispatched on-site for complex problems",
+      "Strategic IT Planning (vCIO) — we meet with you regularly to review your technology roadmap, plan upgrades, and align technology with your long-term business goals",
+    ],
+    benefits: [
+      "Increased operational efficiency through streamlined workflows and reliable systems",
+      "Reduced risk with comprehensive security layers protecting your data",
+      "Scalability — add new users, locations, or applications effortlessly",
+      "Peace of mind knowing a team of professionals is watching over your business 24/7/365",
+    ],
+    areasServed: [
+      "Burlington County (Mount Laurel, Moorestown, Marlton)",
+      "Camden County (Cherry Hill, Voorhees, Haddonfield)",
+      "Gloucester County (Deptford, Glassboro, Washington Twp)",
+      "Mercer County (Princeton, Hamilton, Trenton)",
+      "Philadelphia City & Suburbs",
+      "Bucks County (Bensalem, Langhorne, Doylestown)",
+      "Montgomery County (King of Prussia, Norristown)",
+      "Delaware & Chester County, PA",
+      "New Castle County, DE (Wilmington, Newark)",
+    ],
+    faqs: [
+      {
+        question: "What does a managed IT services plan typically include?",
+        answer:
+          "Most ONPRO IT plans include 24/7 network monitoring, unlimited help desk support, patch management, endpoint security, backup monitoring, and a dedicated account manager — all billed at a flat monthly rate per user or device.",
+      },
+      {
+        question: "How is managed IT different from a break-fix IT company?",
+        answer:
+          "A break-fix provider only gets paid when something is broken, which creates an incentive to react rather than prevent. Managed IT flips that model — we're paid to keep your systems running, so our incentive is to stop problems before they start.",
+      },
+      {
+        question: "Can ONPRO IT work alongside our existing internal IT staff?",
+        answer:
+          "Yes. Many of our managed IT clients have an internal IT person or small team, and we act as an extension of that team — handling after-hours monitoring, specialized projects, and overflow support.",
+      },
+    ],
+  },
+  {
+    slug: "it-support",
+    navTitle: "IT Help Desk",
+    h1: "IT Support & Help Desk Services in NJ, PA & DE",
+    metaTitle: "IT Help Desk & Support NJ | ONPRO IT",
+    metaDescription:
+      "Fast, local IT help desk support for Southern NJ and Philadelphia businesses. Remote and on-site technicians who actually answer the phone.",
+    keywords: "IT help desk NJ, IT support Southern NJ, computer support New Jersey",
+    Icon: Headphones,
+    intro:
+      "Fast, reliable, and local tech support for your business. From rapid remote fixes to hands-on onsite troubleshooting, we keep your team productive.",
+    whatIsIt: [
+      "When technology fails, your business stops. Employees can't work, customers can't be served, and frustration mounts. Our IT Support & Help Desk Services provide you with a dedicated team of technical experts ready to resolve issues the moment they arise.",
+      "Unlike generic call centers, our help desk is staffed by local, certified technicians based in the Philadelphia and South Jersey area who understand your specific business environment. We handle everything from simple password resets to complex server outages with a focus on first-call resolution.",
+    ],
+    whoItsFor: [
+      "You need faster response times than your current provider offers",
+      "Your employees are wasting time trying to fix computer issues themselves",
+      "You want a friendly, local team that speaks plain English, not \"geek speak\"",
+      "You have a mix of remote and in-office staff needing support",
+    ],
+    risks: [
+      "Lost productivity — every hour an employee spends fighting with a slow computer is an hour of lost work",
+      "Security vulnerabilities — unresolved glitches often mask deeper security issues that hackers can exploit",
+      "Employee burnout — constant technical frustration is a leading cause of job dissatisfaction",
+      "Missed deadlines — system outages can cause you to miss critical client deliverables",
+    ],
+    howWeDeliver: [
+      "Phone & Chat Support — immediate access to live technicians for quick questions and issues",
+      "Secure Remote Access — we can securely view your screen to diagnose and fix 90% of issues instantly",
+      "Onsite Dispatch — if a hardware issue requires hands-on attention, we dispatch a technician to your office fast",
+    ],
+    benefits: [
+      "Fast response times — we answer calls quickly and start working on tickets immediately",
+      "Local presence — we're neighbors, serving NJ, PA, and DE with boots-on-the-ground support",
+      "Accountability — we own the problem until it's solved and don't point fingers at other vendors",
+      "Proactive fixes — we often spot and fix issues in the background before they disrupt your day",
+    ],
+    areasServed: [
+      "Burlington County, NJ",
+      "Camden County, NJ",
+      "Gloucester County, NJ",
+      "Mercer County, NJ",
+      "Philadelphia, PA",
+      "Montgomery County, PA",
+      "Bucks County, PA",
+      "Delaware County, PA",
+    ],
+    faqs: [
+      {
+        question: "How fast does ONPRO IT respond to help desk tickets?",
+        answer:
+          "Most tickets are acknowledged within minutes and critical issues are prioritized immediately. Our local team means we can also be on-site same-day when remote support isn't enough.",
+      },
+      {
+        question: "Do you support remote and hybrid employees?",
+        answer:
+          "Yes — our help desk supports employees wherever they're working, with remote access tools that let us troubleshoot laptops and home office setups just as easily as in-office workstations.",
+      },
+    ],
+  },
+  {
+    slug: "cybersecurity",
+    navTitle: "Cybersecurity",
+    h1: "Cybersecurity Services for NJ Small Businesses",
+    metaTitle: "Cybersecurity Services NJ | ONPRO IT",
+    metaDescription:
+      "Protect your business from ransomware, phishing, and data breaches with layered cybersecurity from ONPRO IT — serving Southern NJ, Philadelphia, and Delaware.",
+    keywords: "cybersecurity NJ, cyber security Southern NJ, ransomware protection New Jersey",
+    Icon: ShieldCheck,
+    intro:
+      "Defend your organization against evolving digital threats. We provide enterprise-level security tailored for small and mid-sized businesses in the Tri-State area.",
+    whatIsIt: [
+      "Many small business owners believe they are \"too small\" to be targeted by hackers. The reality is the opposite. Cybercriminals actively target small and mid-sized businesses because they typically have valuable data but lack the sophisticated defenses of large corporations.",
+      "A single ransomware attack or data breach can be devastating. Beyond the financial cost of the ransom, the downtime and reputational damage can force a company out of business. ONPRO IT implements a multi-layered \"Defense in Depth\" strategy to protect your assets 24/7.",
+    ],
+    whoItsFor: [
+      "You handle important business information, internal systems, or critical operational data",
+      "You are concerned about ransomware shutting down your operations",
+      "You want to ensure your internal data policies are robust and effective",
+      "You have employees working remotely on personal or company devices",
+    ],
+    risks: [
+      "Financial loss — ransom payments, remediation costs, and lost revenue from downtime can cripple cash flow",
+      "Reputational damage — losing client trust is often harder to recover from than the financial loss itself",
+      "Data liability — data breaches often trigger notification requirements and can lead to customer lawsuits",
+      "Operational paralysis — ransomware can lock your files for weeks, making it impossible to conduct business",
+    ],
+    howWeDeliver: [
+      "Prevention (EDR & Firewalls) — AI-driven Endpoint Detection & Response tools and next-gen firewalls block threats before they enter",
+      "Detection (24/7 SOC) — our Security Operations Center monitors your network around the clock to spot suspicious activity immediately",
+      "Training (Human Firewall) — we train your employees to recognize phishing emails and social engineering attacks",
+    ],
+    benefits: [
+      "Data privacy standards — strong security controls to protect sensitive information",
+      "Reduced insurance premiums — robust security controls can often help lower your cyber liability insurance costs",
+      "Business continuity — protection that minimizes the risk of downtime from cyber events",
+      "Client trust — demonstrate to your clients that you take their data privacy seriously",
+    ],
+    areasServed: ["Southern & Central New Jersey (statewide)", "Greater Philadelphia Area, PA & suburbs"],
+    faqs: [
+      {
+        question: "Is cybersecurity really necessary for a small business?",
+        answer:
+          "Yes — small and mid-sized businesses are targeted precisely because they tend to have valuable data but weaker defenses than large enterprises. A single incident can be financially devastating.",
+      },
+      {
+        question: "What's included in your cybersecurity package?",
+        answer:
+          "Our security stack includes next-generation antivirus (EDR), firewall management, email filtering, multi-factor authentication setup, regular security patches, and 24/7 threat monitoring.",
+      },
+    ],
+  },
+  {
+    slug: "network-wifi",
+    navTitle: "Network & WiFi",
+    h1: "Network & WiFi Design Services",
+    metaTitle: "Network & WiFi Installation NJ | ONPRO IT",
+    metaDescription:
+      "Enterprise-grade network design, installation, and WiFi solutions for offices, warehouses, and retail locations across Southern NJ and Philadelphia.",
+    keywords: "network installation NJ, WiFi setup Southern NJ, business network New Jersey",
+    Icon: Network,
+    intro:
+      "Build a foundation for success with robust, high-speed network infrastructure. We eliminate dead zones and ensure secure, seamless connectivity for your team.",
+    whatIsIt: [
+      "In an era of cloud computing and mobile workforces, your network is the single most critical component of your infrastructure. If your WiFi is spotty or your network is slow, productivity plummets. ONPRO IT provides comprehensive network design, installation, and management services to keep your business connected at lightning speeds.",
+      "We specialize in solving complex connectivity challenges for offices, warehouses, schools, and large facilities throughout New Jersey and Pennsylvania — engineering solutions that are scalable, secure, and reliable.",
+    ],
+    whoItsFor: [
+      "Offices experiencing slow internet or dropped connections",
+      "Warehouses needing wall-to-wall WiFi for scanners and inventory systems",
+      "Schools requiring secure separate networks for students and staff",
+      "Businesses moving to a new location needing a fresh network design",
+    ],
+    risks: [
+      "Reduced productivity — waiting for files to load or reconnecting to WiFi wastes hours of employee time",
+      "Security gaps — improperly configured routers can leave your internal network exposed to guests or hackers",
+      "Poor VoIP quality — network congestion causes choppy phone calls and dropped video conferences",
+      "Inventory errors — in warehouses, WiFi dead zones lead to scanning failures and shipping mistakes",
+    ],
+    howWeDeliver: [
+      "Site Survey & Heat Mapping — we analyze your physical space to identify interference and optimal access point placement",
+      "Custom Hardware Selection — we select enterprise-grade equipment (Ubiquiti, Cisco Meraki, Aruba) tailored to your needs",
+      "Professional Installation — our team runs cabling, mounts hardware, and configures VLANs for security and performance",
+    ],
+    benefits: [
+      "100% coverage — eliminate dead zones in offices and large industrial spaces",
+      "Guest security — safely offer WiFi to visitors without exposing internal business data",
+      "High speed — support bandwidth-heavy applications like video streaming and large file transfers",
+      "Seamless roaming — walk from one end of the building to the other without dropping your connection",
+    ],
+    areasServed: [
+      "Cherry Hill, Marlton, Moorestown, NJ",
+      "Princeton, Trenton, Hamilton, NJ",
+      "Deptford, Washington Twp, NJ",
+      "Philadelphia & Suburbs, PA",
+      "King of Prussia & Main Line, PA",
+      "Wilmington & Newark, DE",
+    ],
+    faqs: [
+      {
+        question: "Why is my office WiFi so unreliable?",
+        answer:
+          "Most WiFi problems come from underpowered consumer-grade routers, poor access point placement, or too many devices competing for bandwidth. A proper site survey identifies the root cause and fixes it permanently.",
+      },
+      {
+        question: "Do you provide guest WiFi separate from our business network?",
+        answer:
+          "Yes — we configure VLANs and segmented guest networks so visitors get internet access without any path into your internal business systems.",
+      },
+    ],
+  },
+  {
+    slug: "cloud",
+    navTitle: "Cloud Solutions",
+    h1: "Cloud Services & Microsoft 365 Migration",
+    metaTitle: "Cloud Services & Microsoft 365 NJ | ONPRO IT",
+    metaDescription:
+      "Migrate to the cloud with confidence. ONPRO IT manages Microsoft 365, cloud backup, and secure remote access for businesses across Southern NJ and Philadelphia.",
+    keywords: "cloud services NJ, Microsoft 365 NJ, cloud migration New Jersey",
+    Icon: Cloud,
+    intro:
+      "Modernize your business with secure, scalable cloud solutions. We simplify your transition to the cloud so you can work securely from anywhere.",
+    whatIsIt: [
+      "The cloud has revolutionized how businesses operate, eliminating the need for expensive on-premise servers and enabling seamless collaboration. ONPRO IT is your trusted partner for cloud adoption in New Jersey and Pennsylvania.",
+      "We specialize in migrating small and mid-sized businesses to modern platforms like Microsoft 365 and Azure. Whether you need to move email off a legacy server, set up secure file-sharing in SharePoint, or virtualize your desktop environment, we handle the planning, licensing, migration, and ongoing support.",
+    ],
+    whoItsFor: [
+      "You have a remote or hybrid workforce needing access to files from anywhere",
+      "You want to stop buying expensive physical servers every 5 years",
+      "You need better collaboration tools like Teams and real-time document editing",
+      "You are concerned about data backup and disaster recovery",
+    ],
+    risks: [
+      "Hardware failure — physical servers have a 100% failure rate eventually, leading to sudden downtime",
+      "Limited access — VPNs can be slow and clunky, frustrating remote employees",
+      "High upfront costs — capital expenditures for new servers hit your cash flow hard",
+      "Missed security patches — manual maintenance of local servers often leads to gaps in updates",
+    ],
+    howWeDeliver: [
+      "Assessment & Planning — we inventory your current data and applications to design the right cloud architecture",
+      "Seamless Migration — we move your email, files, and settings to the cloud with minimal disruption to your team",
+      "Training & Support — we help your staff master new tools like Microsoft Teams and OneDrive",
+    ],
+    benefits: [
+      "Scalability — add or remove users and storage instantly as your business changes",
+      "Cost predictability — move from capital expenses to predictable monthly subscription pricing",
+      "Enhanced security — benefit from Microsoft and Google's multi-billion dollar security investments",
+      "Automatic updates — always have the latest versions of software without manual upgrades",
+    ],
+    areasServed: ["South Jersey", "Central Jersey", "NJ Coastal Areas", "Philadelphia Metro, PA", "Eastern Pennsylvania"],
+    faqs: [
+      {
+        question: "Is it safe to move our email and files to the cloud?",
+        answer:
+          "Yes, when configured correctly. ONPRO IT sets up multi-factor authentication, proper permission structures, and backup policies so your cloud environment is more secure than most on-premise setups.",
+      },
+      {
+        question: "Do we still need backups if we use Microsoft 365?",
+        answer:
+          "Yes. Microsoft's built-in retention is not a full backup solution — we back up Microsoft 365 email and OneDrive data separately, since Microsoft does not protect it for you.",
+      },
+    ],
+  },
+  {
+    slug: "backup-recovery",
+    navTitle: "Data Backup & Recovery",
+    h1: "Backup & Disaster Recovery Services",
+    metaTitle: "Data Backup & Disaster Recovery NJ | ONPRO IT",
+    metaDescription:
+      "Protect your business from data loss with automated backup and disaster recovery from ONPRO IT — serving Southern NJ, Philadelphia, and Delaware.",
+    keywords: "data backup NJ, disaster recovery Southern NJ, business continuity New Jersey",
+    Icon: HardDrive,
+    intro:
+      "Protect your business data from ransomware, hardware failure, and human error. We ensure you can recover fast and keep working no matter what happens.",
+    whatIsIt: [
+      "Imagine walking into your office tomorrow and all your data was gone. Could your business survive? Traditional file backups are no longer enough in an age of sophisticated ransomware and immediate operational demands.",
+      "ONPRO IT provides robust Business Continuity and Disaster Recovery (BCDR) solutions for businesses in New Jersey and Pennsylvania. We ensure not only that your data is safe, but that your operations can get back up and running in minutes, not days.",
+    ],
+    whoItsFor: [
+      "You cannot afford to be offline for more than an hour",
+      "You are still using rotating external hard drives or tapes",
+      "You are concerned about ransomware locking your files",
+      "You have not tested a restore in the last 6 months",
+    ],
+    risks: [
+      "Ransomware payments — hackers demand thousands to unlock data, with no guarantee they will actually do it",
+      "Operational downtime — the cost of idle employees and halted production often exceeds the value of the data itself",
+      "Client trust — losing client records or project data can severely damage your professional reputation",
+      "Lost intellectual property — years of work can be wiped out in an instant by a server crash or fire",
+    ],
+    howWeDeliver: [
+      "Automated Hourly Backups — we take snapshots of your entire server every hour, not just once a night",
+      "Daily Verification — our team manually checks backup logs and screens to ensure successful completion",
+      "Rapid Virtualization — if a server dies, we can boot your backup as a virtual machine instantly, keeping you online",
+    ],
+    benefits: [
+      "Ransomware defense — our backups are immutable, meaning hackers cannot delete or encrypt them",
+      "Hybrid protection — local appliances for speed, cloud storage for disaster redundancy",
+      "SaaS protection — we also back up Microsoft 365 email and OneDrive, which Microsoft does not protect for you",
+      "Regular testing — we perform test restores to prove your data is recoverable before you need it",
+    ],
+    areasServed: ["New Jersey (available statewide)", "Greater Philadelphia Area, PA"],
+    faqs: [
+      {
+        question: "How often should our business data be backed up?",
+        answer:
+          "We take automated snapshots of your entire server every hour, not just once a night, with daily manual verification of backup logs to confirm every job completed successfully.",
+      },
+      {
+        question: "What's the difference between backup and disaster recovery?",
+        answer:
+          "Backup is having a copy of your data. Disaster recovery is the full plan and process for getting your business back up and running after an outage — including rapid virtualization of a failed server, not just whether the files exist.",
+      },
+    ],
+  },
+  {
+    slug: "cabling",
+    navTitle: "Structured Cabling",
+    h1: "Structured Cabling & Low Voltage Wiring",
+    metaTitle: "Structured Cabling Installation NJ | ONPRO IT",
+    metaDescription:
+      "Cat6, fiber optic, and structured cabling installation for businesses across New Jersey, Philadelphia, and Delaware. Licensed, certified, and code-compliant.",
+    keywords: "structured cabling NJ, Cat6 cabling NJ, fiber optic NJ, network cabling installation",
+    Icon: Cable,
+    intro:
+      "The physical backbone of your business network. We provide professional Cat6 and fiber optic installation, testing, and certification for offices and new construction in NJ, PA, and DE.",
+    whatIsIt: [
+      "Your network is only as strong as its weakest link. Often, that weak link is poor-quality cabling buried in your walls or ceilings. Structured cabling is the critical infrastructure that supports all your voice, data, and video traffic. At ONPRO IT, we deliver neat, code-compliant, and high-performance low-voltage wiring solutions.",
+      "Whether you are moving into a new office, constructing a building, or expanding your current facility, our team of experienced installers ensures your cabling is organized, labeled, and certified.",
+    ],
+    whoItsFor: [
+      "Companies moving to a new office space",
+      "General contractors managing new construction projects",
+      "Businesses upgrading their network for higher speeds",
+      "Warehouses needing fiber backbones for long distances",
+    ],
+    risks: [
+      "Intermittent connectivity — poor terminations cause random network drops that are hard to diagnose",
+      "Slow speeds — substandard cable or interference can severely limit your network bandwidth",
+      "Messy server rooms — \"spaghetti\" cabling makes it impossible to troubleshoot or trace connections",
+      "Code violations — improperly hung cable can violate fire codes and fail building inspections",
+    ],
+    howWeDeliver: [
+      "Site Survey & Design — we walk your site to plan cable paths, drop locations, and IDF/MDF placement",
+      "Rough-In & Installation — our team runs cable through ceilings, walls, and conduit using industry-standard support structures",
+      "Termination & Testing — we terminate jacks and panels, then test every run with professional Fluke meters for certification",
+    ],
+    benefits: [
+      "Certified performance — we guarantee our cabling meets TIA/EIA performance standards",
+      "Neat & organized — velcro, cable management arms, and proper labeling for a professional finish",
+      "Quality materials — only high-quality, plenum-rated cable and reliable connectors",
+      "Project management — we coordinate with your general contractor and other trades to stay on schedule",
+    ],
+    areasServed: [
+      "Cherry Hill, Moorestown, Marlton, NJ",
+      "Princeton, Trenton, NJ",
+      "All of Southern & Central NJ",
+      "Philadelphia & Suburbs, PA",
+      "King of Prussia, Malvern, PA",
+      "Wilmington & Newark, DE",
+    ],
+    faqs: [
+      {
+        question: "What's the difference between Cat6 and Cat6A cabling?",
+        answer:
+          "Cat6A supports higher bandwidth over longer distances than standard Cat6, making it a better choice for businesses planning for 10-gigabit network speeds or larger facilities.",
+      },
+      {
+        question: "Do you handle cabling for new construction and office renovations?",
+        answer:
+          "Yes, we work directly with general contractors on new builds and renovations to plan cable pathways, and every run is tested and certified to TIA/EIA standards with a Fluke meter before we close out the project.",
+      },
+    ],
+  },
+  {
+    slug: "consulting",
+    navTitle: "IT Consulting",
+    h1: "IT Consulting & vCIO Services",
+    metaTitle: "IT Consulting Services NJ | ONPRO IT",
+    metaDescription:
+      "Strategic IT consulting and technology planning for businesses in Southern NJ and Philadelphia. Align your technology budget with your business goals.",
+    keywords: "IT consulting NJ, IT strategy Southern NJ, technology consulting New Jersey",
+    Icon: Briefcase,
+    intro:
+      "Technology leadership without the C-suite salary. Strategic planning to help you make informed decisions, control costs, and align your IT roadmap with your business goals.",
+    whatIsIt: [
+      "Many small business owners make technology decisions in a vacuum — buying hardware when it breaks or subscribing to software without a long-term plan. This reactive approach leads to wasted budget, disjointed systems, and missed opportunities.",
+      "Our IT Consulting & Virtual CIO (vCIO) services bridge the gap between business strategy and technical execution. We act as your high-level technology partner, providing the same strategic guidance a Chief Information Officer would provide to a large enterprise, but at a fraction of the cost.",
+    ],
+    whoItsFor: [
+      "You feel your IT spending is a black hole with no clear ROI",
+      "You are planning a major move, expansion, or acquisition",
+      "You are worried about security gaps and operational risks",
+      "You want technology to drive growth, not just support operations",
+    ],
+    risks: [
+      "Buying incompatible software or hardware without a plan",
+      "Overspending on unnecessary licenses",
+      "Falling behind competitors who use technology more effectively",
+      "Security gaps due to ad-hoc policy implementation",
+    ],
+    howWeDeliver: [
+      "Tech Assessment — we evaluate your current maturity level and identify gaps",
+      "Roadmap Creation — we build a 1-3 year plan for upgrades, budgeting, and projects",
+      "Quarterly Business Reviews (QBR) — we meet regularly to review progress, budget, and new business needs",
+    ],
+    benefits: [
+      "Predictable budgeting — move from surprise bills to planned investments",
+      "Vendor management — we handle your ISPs and software vendors so you don't have to",
+      "Digital transformation — identify workflows that can be automated or digitized",
+      "Competitive edge — leverage new technology to serve your customers better",
+    ],
+    areasServed: ["New Jersey (statewide)", "Greater Philadelphia Region, PA"],
+    faqs: [
+      {
+        question: "Do we need a full IT department to benefit from consulting?",
+        answer:
+          "No. Many of our consulting clients have little or no internal IT staff. ONPRO IT provides the strategic guidance typically offered by a CIO, sized to fit a small or mid-sized business.",
+      },
+      {
+        question: "Can IT consulting work alongside our current managed IT provider?",
+        answer:
+          "Yes, consulting engagements can run independently as an unbiased second opinion, or be combined with ONPRO IT's managed services for a fully integrated approach.",
+      },
+    ],
+  },
+  {
+    slug: "voip",
+    navTitle: "VoIP Phone Systems",
+    h1: "VoIP Phone Systems for Modern Businesses",
+    metaTitle: "VoIP Phone Systems NJ | ONPRO IT",
+    metaDescription:
+      "Reliable, feature-rich VoIP business phone systems for companies across Southern NJ and Philadelphia. Lower costs, more features, easy to scale.",
+    keywords: "VoIP NJ, business phone systems Southern NJ, VoIP installation New Jersey",
+    Icon: PhoneCall,
+    intro:
+      "Replace your outdated phone lines with a flexible, cloud-based communication platform that travels with you everywhere.",
+    whatIsIt: [
+      "Your phone system is the lifeline of your business. In today's hybrid work environment, being tied to a desk phone is no longer an option. Our VoIP (Voice over IP) solutions provide crystal-clear voice quality, robust features, and the flexibility to work from anywhere — all while lowering your monthly telecommunications costs.",
+      "We don't just sell you phones; we deliver a fully managed communication platform that integrates perfectly with your existing IT infrastructure. Because we also manage your network, we can guarantee Quality of Service settings are correct, preventing choppy calls and eliminating \"vendor ping-pong\" between your phone company and IT provider.",
+    ],
+    whoItsFor: [
+      "Businesses paying high monthly costs for traditional phone lines (PRI/POTS)",
+      "Companies with remote or multi-location teams needing unified calling",
+      "Organizations that have outgrown a basic phone system's features",
+      "Businesses opening a new location and needing phones installed quickly",
+    ],
+    risks: [
+      "High and rising costs of traditional copper phone service",
+      "Limited features like call routing, voicemail-to-email, or mobile apps",
+      "Difficulty scaling phone service as the business adds staff or locations",
+      "Choppy calls and dropped video conferences when phone and IT vendors don't coordinate",
+    ],
+    howWeDeliver: [
+      "Cloud-hosted PBX setup with auto-attendant and IVR menus configured for your business",
+      "Mobile app and desktop softphone deployment for iOS, Android, and desktop",
+      "Local installation, number porting, and staff training so the switch is seamless",
+    ],
+    benefits: [
+      "Lower monthly phone bills by up to 40% compared to traditional lines",
+      "HD voice quality with call recording and analytics included standard",
+      "Keep your existing phone numbers — no disruption to your business",
+      "No long-term contracts — we earn your business every month",
+    ],
+    areasServed: ["Southern & Central New Jersey", "Greater Philadelphia Metro, PA", "Delaware"],
+    faqs: [
+      {
+        question: "Will VoIP call quality be as good as a traditional phone line?",
+        answer:
+          "With a properly configured network — which we assess and optimize for Quality of Service before installation — VoIP call quality matches or exceeds traditional phone lines, with far more features.",
+      },
+      {
+        question: "Can employees use VoIP phones when working remotely?",
+        answer:
+          "Yes — our mobile app and desktop softphone let remote employees make and receive calls on their business number from anywhere with internet access, while keeping their personal number private.",
+      },
+    ],
+  },
+];
+
+export function getServiceBySlug(slug: string) {
+  return SERVICES_DATA.find((s) => s.slug === slug);
+}

@@ -1,0 +1,34 @@
+import Link from "next/link";
+import clsx from "clsx";
+
+interface ConsultationButtonProps {
+  href?: string;
+  variant?: "primary" | "outline" | "outline-light";
+  className?: string;
+  children: React.ReactNode;
+}
+
+export default function ConsultationButton({
+  href = "/contact",
+  variant = "primary",
+  className,
+  children,
+}: ConsultationButtonProps) {
+  return (
+    <Link
+      href={href}
+      className={clsx(
+        "inline-flex items-center justify-center rounded-md px-6 py-3 font-semibold transition-colors",
+        variant === "primary" &&
+          "bg-brand text-white hover:bg-brand-dark",
+        variant === "outline" &&
+          "border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white",
+        variant === "outline-light" &&
+          "border-2 border-white text-white hover:bg-white hover:text-dark",
+        className
+      )}
+    >
+      {children}
+    </Link>
+  );
+}
