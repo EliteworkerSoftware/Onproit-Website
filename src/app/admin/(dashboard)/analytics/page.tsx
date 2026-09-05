@@ -1,15 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Eye, Globe, Smartphone, TrendingUp } from "lucide-react";
+import { Eye, MessageSquare, Phone, Smartphone } from "lucide-react";
 
 interface AnalyticsData {
   totalViews30d: number;
   totalViews7d: number;
   viewsByDay: { day: string; count: number }[];
   topPages: { path: string; count: number }[];
-  topReferrers: { referrer: string; count: number }[];
+  trafficSources: { source: string; count: number }[];
   mobilePct: number;
+  callClicks30d: number;
+  callClicks7d: number;
+  leads30d: number;
+  leads7d: number;
 }
 
 export default function AdminAnalyticsPage() {
@@ -39,7 +43,7 @@ export default function AdminAnalyticsPage() {
     <div>
       <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
       <p className="mt-1 text-sm text-gray-500">
-        Real visits to onproit.com, tracked directly — last 30 days.
+        Real visits, calls, and leads for onproit.com — last 30 days.
       </p>
 
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
@@ -48,20 +52,30 @@ export default function AdminAnalyticsPage() {
         <p className="mt-8 text-sm text-gray-500">Loading…</p>
       ) : (
         <>
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl border border-gray-200 bg-white p-5">
               <div className="flex items-center gap-2 text-gray-500">
                 <Eye className="h-4 w-4" />
-                <span className="text-sm font-medium">Page Views (30 days)</span>
+                <span className="text-sm font-medium">Page Views</span>
               </div>
               <p className="mt-2 text-3xl font-bold text-gray-900">{data.totalViews30d}</p>
+              <p className="mt-1 text-xs text-gray-400">{data.totalViews7d} in the last 7 days</p>
             </div>
-            <div className="rounded-xl border border-gray-200 bg-white p-5">
-              <div className="flex items-center gap-2 text-gray-500">
-                <TrendingUp className="h-4 w-4" />
-                <span className="text-sm font-medium">Page Views (7 days)</span>
+            <div className="rounded-xl border border-brand/30 bg-brand/5 p-5">
+              <div className="flex items-center gap-2 text-brand">
+                <Phone className="h-4 w-4" />
+                <span className="text-sm font-medium">Call Button Clicks</span>
               </div>
-              <p className="mt-2 text-3xl font-bold text-gray-900">{data.totalViews7d}</p>
+              <p className="mt-2 text-3xl font-bold text-gray-900">{data.callClicks30d}</p>
+              <p className="mt-1 text-xs text-gray-400">{data.callClicks7d} in the last 7 days</p>
+            </div>
+            <div className="rounded-xl border border-brand/30 bg-brand/5 p-5">
+              <div className="flex items-center gap-2 text-brand">
+                <MessageSquare className="h-4 w-4" />
+                <span className="text-sm font-medium">Contact Form Leads</span>
+              </div>
+              <p className="mt-2 text-3xl font-bold text-gray-900">{data.leads30d}</p>
+              <p className="mt-1 text-xs text-gray-400">{data.leads7d} in the last 7 days</p>
             </div>
             <div className="rounded-xl border border-gray-200 bg-white p-5">
               <div className="flex items-center gap-2 text-gray-500">
@@ -111,20 +125,15 @@ export default function AdminAnalyticsPage() {
             </div>
 
             <div className="rounded-xl border border-gray-200 bg-white p-6">
-              <div className="flex items-center gap-2">
-                <Globe className="h-4 w-4 text-gray-500" />
-                <h2 className="text-sm font-semibold text-gray-900">Top Referrers</h2>
-              </div>
-              {data.topReferrers.length === 0 ? (
-                <p className="mt-4 text-sm text-gray-500">
-                  No external referrers yet — visits are direct or from search.
-                </p>
+              <h2 className="text-sm font-semibold text-gray-900">Traffic Sources</h2>
+              {data.trafficSources.length === 0 ? (
+                <p className="mt-4 text-sm text-gray-500">No page views recorded yet.</p>
               ) : (
                 <ul className="mt-4 space-y-2">
-                  {data.topReferrers.map((r) => (
-                    <li key={r.referrer} className="flex items-center justify-between text-sm">
-                      <span className="truncate text-gray-700">{r.referrer}</span>
-                      <span className="ml-3 shrink-0 font-medium text-gray-900">{r.count}</span>
+                  {data.trafficSources.map((s) => (
+                    <li key={s.source} className="flex items-center justify-between text-sm">
+                      <span className="truncate text-gray-700">{s.source}</span>
+                      <span className="ml-3 shrink-0 font-medium text-gray-900">{s.count}</span>
                     </li>
                   ))}
                 </ul>

@@ -2,41 +2,74 @@ import { NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/current-admin";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
 
+const SEARCH_ENGINES = ["google.", "bing.", "yahoo.", "duckduckgo."];
+const SOCIAL_SITES = ["facebook.", "instagram.", "linkedin.", "twitter.", "x.com", "tiktok."];
+
+function categorizeReferrer(referrer: string | null): string {
+  if (!referrer) return "Direct";
+  let host: string;
+  try {
+    host = new URL(referrer).hostname.replace(/^www\./, "");
+  } catch {
+    return "Direct";
+  }
+  if (host === "onproit.com") return "Direct";
+  if (SEARCH_ENGINES.some((s) => host.includes(s))) return "Organic Search";
+  if (SOCIAL_SITES.some((s) => host.includes(s))) return "Social";
+  return `Referral: ${host}`;
+}
+
 export async function GET() {
   const admin = await getCurrentAdmin();
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  if (!isSupabaseAdminConfigured()) {
-    return NextResponse.json({
-      totalViews30d: 0,
-      totalViews7d: 0,
-      viewsByDay: [],
-      topPages: [],
-      topReferrers: [],
-      mobilePct: 0,
-    });
-  }
+  const empty = {
+    totalViews30d: 0,
+    totalViews7d: 0,
+    viewsByDay: [],
+    topPages: [],
+    trafficSources: [],
+    mobilePct: 0,
+    callClicks30d: 0,
+    callClicks7d: 0,
+    leads30d: 0,
+    leads7d: 0,
+  };
+
+  if (!isSupabaseAdminConfigured()) return NextResponse.json(empty);
 
   const supabase = getSupabaseAdmin();
   const since30d = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
   const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-  const { data, error } = await supabase
-    .from("page_views")
-    .select("path, referrer, is_mobile, created_at")
-    .gte("created_at", since30d)
-    .order("created_at", { ascending: false })
-    .limit(10000);
+  const [viewsResult, leadsResult] = await Promise.all([
+    supabase
+      .from("page_views")
+      .select("path, referrer, is_mobile, event_type, created_at")
+      .gte("created_at", since30d)
+      .order("created_at", { ascending: false })
+      .limit(10000),
+    supabase.from("contact_messages").select("created_at").gte("created_at", since30d),
+  ]);
 
-  if (error || !data) {
+  if (viewsResult.error || !viewsResult.data) {
     return NextResponse.json({ error: "Failed to load analytics" }, { status: 500 });
   }
 
-  const totalViews30d = data.length;
-  const totalViews7d = data.filter((r) => r.created_at >= since7d).length;
+  const allRows = viewsResult.data;
+  const pageviewRows = allRows.filter((r) => !r.event_type);
+  const callClickRows = allRows.filter((r) => r.event_type === "call_click");
+  const leads = leadsResult.data ?? [];
+
+  const totalViews30d = pageviewRows.length;
+  const totalViews7d = pageviewRows.filter((r) => r.created_at >= since7d).length;
+  const callClicks30d = callClickRows.length;
+  const callClicks7d = callClickRows.filter((r) => r.created_at >= since7d).length;
+  const leads30d = leads.length;
+  const leads7d = leads.filter((r) => r.created_at >= since7d).length;
 
   const dayCounts = new Map<string, number>();
-  for (const row of data) {
+  for (const row of pageviewRows) {
     const day = row.created_at.slice(0, 10);
     dayCounts.set(day, (dayCounts.get(day) ?? 0) + 1);
   }
@@ -45,7 +78,7 @@ export async function GET() {
     .sort((a, b) => a.day.localeCompare(b.day));
 
   const pageCounts = new Map<string, number>();
-  for (const row of data) {
+  for (const row of pageviewRows) {
     pageCounts.set(row.path, (pageCounts.get(row.path) ?? 0) + 1);
   }
   const topPages = Array.from(pageCounts.entries())
@@ -53,24 +86,29 @@ export async function GET() {
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
 
-  const referrerCounts = new Map<string, number>();
-  for (const row of data) {
-    if (!row.referrer) continue;
-    try {
-      const host = new URL(row.referrer).hostname.replace(/^www\./, "");
-      if (host === "onproit.com") continue;
-      referrerCounts.set(host, (referrerCounts.get(host) ?? 0) + 1);
-    } catch {
-      // ignore malformed referrer values
-    }
+  const sourceCounts = new Map<string, number>();
+  for (const row of pageviewRows) {
+    const source = categorizeReferrer(row.referrer);
+    sourceCounts.set(source, (sourceCounts.get(source) ?? 0) + 1);
   }
-  const topReferrers = Array.from(referrerCounts.entries())
-    .map(([referrer, count]) => ({ referrer, count }))
+  const trafficSources = Array.from(sourceCounts.entries())
+    .map(([source, count]) => ({ source, count }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 8);
 
-  const mobileCount = data.filter((r) => r.is_mobile).length;
+  const mobileCount = pageviewRows.filter((r) => r.is_mobile).length;
   const mobilePct = totalViews30d > 0 ? Math.round((mobileCount / totalViews30d) * 100) : 0;
 
-  return NextResponse.json({ totalViews30d, totalViews7d, viewsByDay, topPages, topReferrers, mobilePct });
+  return NextResponse.json({
+    totalViews30d,
+    totalViews7d,
+    viewsByDay,
+    topPages,
+    trafficSources,
+    mobilePct,
+    callClicks30d,
+    callClicks7d,
+    leads30d,
+    leads7d,
+  });
 }

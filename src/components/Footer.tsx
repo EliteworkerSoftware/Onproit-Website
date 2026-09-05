@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MapPin, Phone, Clock } from "lucide-react";
 import { SERVICES, SERVICE_AREAS, SISTER_COMPANIES } from "@/lib/constants";
 import { getSettings } from "@/lib/get-settings";
+import TrackedPhoneLink from "@/components/TrackedPhoneLink";
 
 export default async function Footer() {
   const settings = await getSettings();
@@ -32,9 +33,9 @@ export default async function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 shrink-0 text-brand" />
-                <a href={`tel:${phoneHref}`} className="hover:text-white">
+                <TrackedPhoneLink href={`tel:${phoneHref}`} className="hover:text-white">
                   {settings.contact_phone}
-                </a>
+                </TrackedPhoneLink>
               </li>
               <li className="flex items-center gap-2">
                 <Clock className="h-4 w-4 shrink-0 text-brand" />

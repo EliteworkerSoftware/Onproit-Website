@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Clock, MapPin, Phone } from "lucide-react";
 import ContactForm from "@/components/ContactForm";
+import TrackedPhoneLink from "@/components/TrackedPhoneLink";
 import { SITE_URL } from "@/lib/constants";
 import { getSettings, HOURS_NOTE_TEXT } from "@/lib/get-settings";
 
@@ -58,9 +59,9 @@ export default async function ContactPage() {
                   {card.label}
                 </h2>
                 {card.href ? (
-                  <a href={card.href} className="mt-1 block text-sm font-medium text-gray-900 hover:text-brand">
+                  <TrackedPhoneLink href={card.href} className="mt-1 block text-sm font-medium text-gray-900 hover:text-brand">
                     {card.value}
-                  </a>
+                  </TrackedPhoneLink>
                 ) : (
                   <p className="mt-1 text-sm font-medium text-gray-900">{card.value}</p>
                 )}

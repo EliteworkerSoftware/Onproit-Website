@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import clsx from "clsx";
 
 interface ConsultationButtonProps {
@@ -14,9 +17,22 @@ export default function ConsultationButton({
   className,
   children,
 }: ConsultationButtonProps) {
+  const pathname = usePathname();
+
+  function handleClick() {
+    if (!href.startsWith("tel:")) return;
+    fetch("/api/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: pathname, event: "call_click" }),
+      keepalive: true,
+    }).catch(() => {});
+  }
+
   return (
     <Link
       href={href}
+      onClick={handleClick}
       className={clsx(
         "inline-flex items-center justify-center rounded-md px-6 py-3 font-semibold transition-colors",
         variant === "primary" &&
