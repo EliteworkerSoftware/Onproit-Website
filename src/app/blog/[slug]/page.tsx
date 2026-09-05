@@ -1,30 +1,36 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { BLOG_POSTS_FALLBACK } from "@/lib/blog-posts-fallback";
 import type { BlogPost } from "@/types";
 import { SITE_URL } from "@/lib/constants";
 
 export const revalidate = 3600;
 
 async function getPost(slug: string): Promise<BlogPost | null> {
-  if (!supabase) return null;
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("blog_posts")
+      .select("*")
+      .eq("slug", slug)
+      .eq("published", true)
+      .single();
 
-  const { data, error } = await supabase
-    .from("blog_posts")
-    .select("*")
-    .eq("slug", slug)
-    .eq("published", true)
-    .single();
+    if (!error && data) return data as BlogPost;
+  }
 
-  if (error || !data) return null;
-  return data as BlogPost;
+  return BLOG_POSTS_FALLBACK.find((post) => post.slug === slug) ?? null;
 }
 
 export async function generateStaticParams() {
-  if (!supabase) return [];
+  if (supabase) {
+    const { data } = await supabase.from("blog_posts").select("slug").eq("published", true);
+    if (data && data.length > 0) {
+      return data.map((post) => ({ slug: post.slug as string }));
+    }
+  }
 
-  const { data } = await supabase.from("blog_posts").select("slug").eq("published", true);
-  return (data ?? []).map((post) => ({ slug: post.slug as string }));
+  return BLOG_POSTS_FALLBACK.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({

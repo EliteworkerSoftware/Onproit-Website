@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { MapPin } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
 import type { LocationData } from "@/lib/locations-data";
@@ -22,12 +23,21 @@ export default function LocationPageTemplate({ location }: { location: LocationD
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <section className="bg-dark py-20 text-white">
-        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden bg-dark py-20 text-white">
+        {location.heroImage && (
+          <Image
+            src={location.heroImage}
+            alt={location.h1}
+            fill
+            priority
+            className="object-cover opacity-30"
+          />
+        )}
+        <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{location.h1}</h1>
           <p className="mt-6 text-lg text-gray-300">{location.intro}</p>
           <div className="mt-8">
-            <ConsultationButton href="/contact" variant="primary">
+            <ConsultationButton href="/schedule" variant="primary">
               Schedule a Discovery Call
             </ConsultationButton>
           </div>

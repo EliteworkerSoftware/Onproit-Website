@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { supabase } from "@/lib/supabase";
+import Turnstile from "@/components/Turnstile";
 
 const SERVICE_OPTIONS = [
   "Managed IT Services",
@@ -24,11 +24,14 @@ export default function ContactForm() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    // Grab the element now, before the async gap below — React nulls out
+    // e.currentTarget once the handler returns, so it can't be read after an
+    // await, and calling .reset() on null would throw.
+    const formEl = e.currentTarget;
     setStatus("submitting");
     setErrorMessage("");
 
-    const form = e.currentTarget;
-    const formData = new FormData(form);
+    const formData = new FormData(formEl);
 
     const payload = {
       name: String(formData.get("name") || ""),
@@ -37,25 +40,27 @@ export default function ContactForm() {
       company: String(formData.get("company") || ""),
       service: String(formData.get("service") || ""),
       message: String(formData.get("message") || ""),
-      source: "website",
+      turnstileToken: formData.get("cf-turnstile-response"),
     };
 
-    if (!supabase) {
-      setStatus("error");
-      setErrorMessage("Form submission is not configured yet. Please call us instead.");
-      return;
-    }
-
-    const { error } = await supabase.from("contact_submissions").insert(payload);
-
-    if (error) {
-      setStatus("error");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setErrorMessage(data.error || "Something went wrong sending your message. Please try again or call us.");
+        setStatus("error");
+        return;
+      }
+      formEl.reset();
+      setStatus("success");
+    } catch {
       setErrorMessage("Something went wrong sending your message. Please try again or call us.");
-      return;
+      setStatus("error");
     }
-
-    setStatus("success");
-    form.reset();
   }
 
   if (status === "success") {
@@ -149,6 +154,8 @@ export default function ContactForm() {
           className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
         />
       </div>
+
+      <Turnstile siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} />
 
       {status === "error" && <p className="text-sm text-red-600">{errorMessage}</p>}
 

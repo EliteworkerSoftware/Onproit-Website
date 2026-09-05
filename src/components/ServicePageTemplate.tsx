@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { CheckCircle2, MapPin } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
 import type { ServiceData } from "@/lib/services-data";
@@ -35,15 +36,22 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <section className="bg-dark py-20 text-white">
-        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden bg-dark py-20 text-white">
+        <Image
+          src={service.heroImage}
+          alt={service.h1}
+          fill
+          priority
+          className="object-cover opacity-25"
+        />
+        <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-brand/20 text-brand">
             <service.Icon className="h-7 w-7" />
           </div>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{service.h1}</h1>
           <p className="mt-6 text-lg text-gray-300">{service.intro}</p>
           <div className="mt-8">
-            <ConsultationButton href="/contact" variant="primary">
+            <ConsultationButton href="/schedule" variant="primary">
               Schedule a Discovery Call
             </ConsultationButton>
           </div>

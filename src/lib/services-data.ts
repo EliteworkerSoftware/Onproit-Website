@@ -24,6 +24,7 @@ export interface ServiceData {
   metaDescription: string;
   keywords: string;
   Icon: LucideIcon;
+  heroImage: string;
   intro: string;
   whatIsIt: string[];
   whoItsFor: string[];
@@ -44,6 +45,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "ONPRO IT delivers fully managed IT services for businesses in Southern NJ and Philadelphia — proactive monitoring, help desk support, and strategic IT planning for one flat monthly rate.",
     keywords: "managed IT services NJ, MSP Southern NJ, managed service provider New Jersey",
     Icon: Server,
+    heroImage: "/images/hero-managed-it.png",
     intro:
       "Stop worrying about technology and focus on your business. We provide proactive, flat-rate IT management for companies in South Jersey, Delaware, and the Philadelphia Metro area.",
     whatIsIt: [
@@ -114,6 +116,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Fast, local IT help desk support for Southern NJ and Philadelphia businesses. Remote and on-site technicians who actually answer the phone.",
     keywords: "IT help desk NJ, IT support Southern NJ, computer support New Jersey",
     Icon: Headphones,
+    heroImage: "/images/hero-it-support.png",
     intro:
       "Fast, reliable, and local tech support for your business. From rapid remote fixes to hands-on onsite troubleshooting, we keep your team productive.",
     whatIsIt: [
@@ -175,6 +178,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Protect your business from ransomware, phishing, and data breaches with layered cybersecurity from ONPRO IT — serving Southern NJ, Philadelphia, and Delaware.",
     keywords: "cybersecurity NJ, cyber security Southern NJ, ransomware protection New Jersey",
     Icon: ShieldCheck,
+    heroImage: "/images/hero-cybersecurity.png",
     intro:
       "Defend your organization against evolving digital threats. We provide enterprise-level security tailored for small and mid-sized businesses in the Tri-State area.",
     whatIsIt: [
@@ -227,6 +231,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Enterprise-grade network design, installation, and WiFi solutions for offices, warehouses, and retail locations across Southern NJ and Philadelphia.",
     keywords: "network installation NJ, WiFi setup Southern NJ, business network New Jersey",
     Icon: Network,
+    heroImage: "/images/hero-network-wifi.png",
     intro:
       "Build a foundation for success with robust, high-speed network infrastructure. We eliminate dead zones and ensure secure, seamless connectivity for your team.",
     whatIsIt: [
@@ -286,6 +291,8 @@ export const SERVICES_DATA: ServiceData[] = [
       "Migrate to the cloud with confidence. ONPRO IT manages Microsoft 365, cloud backup, and secure remote access for businesses across Southern NJ and Philadelphia.",
     keywords: "cloud services NJ, Microsoft 365 NJ, cloud migration New Jersey",
     Icon: Cloud,
+    heroImage:
+      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
     intro:
       "Modernize your business with secure, scalable cloud solutions. We simplify your transition to the cloud so you can work securely from anywhere.",
     whatIsIt: [
@@ -338,6 +345,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Protect your business from data loss with automated backup and disaster recovery from ONPRO IT — serving Southern NJ, Philadelphia, and Delaware.",
     keywords: "data backup NJ, disaster recovery Southern NJ, business continuity New Jersey",
     Icon: HardDrive,
+    heroImage: "/images/hero-backup-recovery.png",
     intro:
       "Protect your business data from ransomware, hardware failure, and human error. We ensure you can recover fast and keep working no matter what happens.",
     whatIsIt: [
@@ -390,6 +398,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Cat6, fiber optic, and structured cabling installation for businesses across New Jersey, Philadelphia, and Delaware. Licensed, certified, and code-compliant.",
     keywords: "structured cabling NJ, Cat6 cabling NJ, fiber optic NJ, network cabling installation",
     Icon: Cable,
+    heroImage: "/images/hero-cabling.png",
     intro:
       "The physical backbone of your business network. We provide professional Cat6 and fiber optic installation, testing, and certification for offices and new construction in NJ, PA, and DE.",
     whatIsIt: [
@@ -449,6 +458,8 @@ export const SERVICES_DATA: ServiceData[] = [
       "Strategic IT consulting and technology planning for businesses in Southern NJ and Philadelphia. Align your technology budget with your business goals.",
     keywords: "IT consulting NJ, IT strategy Southern NJ, technology consulting New Jersey",
     Icon: Briefcase,
+    heroImage:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
     intro:
       "Technology leadership without the C-suite salary. Strategic planning to help you make informed decisions, control costs, and align your IT roadmap with your business goals.",
     whatIsIt: [
@@ -501,6 +512,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Reliable, feature-rich VoIP business phone systems for companies across Southern NJ and Philadelphia. Lower costs, more features, easy to scale.",
     keywords: "VoIP NJ, business phone systems Southern NJ, VoIP installation New Jersey",
     Icon: PhoneCall,
+    heroImage: "/images/hero-voip.jpg",
     intro:
       "Replace your outdated phone lines with a flexible, cloud-based communication platform that travels with you everywhere.",
     whatIsIt: [

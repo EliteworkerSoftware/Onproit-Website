@@ -22,7 +22,7 @@ const SERVICE_LINKS = [
 const NAV_LINKS = [
   { title: "Home", href: "/" },
   { title: "About Us", href: "/about-us" },
-  { title: "Blog", href: "/blog" },
+  { title: "Tech Insights", href: "/blog" },
   { title: "Contact", href: "/contact" },
 ];
 
@@ -41,7 +41,7 @@ export default function Navbar() {
   return (
     <header
       className={clsx(
-        "sticky top-0 z-50 w-full bg-white transition-shadow",
+        "sticky top-0 z-50 w-full bg-dark transition-shadow",
         scrolled && "shadow-md"
       )}
     >
@@ -51,7 +51,7 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden items-center gap-8 lg:flex">
-          <Link href="/" className="text-sm font-medium text-gray-700 hover:text-brand">
+          <Link href="/" className="text-sm font-medium text-gray-300 hover:text-white">
             Home
           </Link>
 
@@ -61,7 +61,7 @@ export default function Navbar() {
             onMouseLeave={() => setServicesOpen(false)}
           >
             <button
-              className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-brand"
+              className="flex items-center gap-1 text-sm font-medium text-gray-300 hover:text-white"
               onClick={() => setServicesOpen((v) => !v)}
               aria-expanded={servicesOpen}
             >
@@ -69,12 +69,12 @@ export default function Navbar() {
               <ChevronDown className="h-4 w-4" />
             </button>
             {servicesOpen && (
-              <div className="absolute left-0 top-full w-64 rounded-lg border border-gray-100 bg-white py-2 shadow-xl">
+              <div className="absolute left-0 top-full w-64 rounded-lg border border-gray-700 bg-slate-800 py-2 shadow-xl">
                 {SERVICE_LINKS.map((s) => (
                   <Link
                     key={s.href}
                     href={s.href}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand"
+                    className="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700 hover:text-white"
                   >
                     {s.title}
                   </Link>
@@ -87,7 +87,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-gray-700 hover:text-brand"
+              className="text-sm font-medium text-gray-300 hover:text-white"
             >
               {link.title}
             </Link>
@@ -103,7 +103,7 @@ export default function Navbar() {
         </a>
 
         <button
-          className="p-2 text-gray-700 lg:hidden"
+          className="p-2 text-gray-300 lg:hidden"
           onClick={() => setMobileOpen((v) => !v)}
           aria-label="Toggle menu"
         >
@@ -112,28 +112,28 @@ export default function Navbar() {
       </nav>
 
       {mobileOpen && (
-        <div className="border-t border-gray-100 bg-white px-4 pb-4 lg:hidden">
+        <div className="border-t border-gray-700 bg-dark px-4 pb-4 lg:hidden">
           <Link
             href="/"
-            className="block py-2 text-sm font-medium text-gray-700"
+            className="block py-2 text-sm font-medium text-gray-300"
             onClick={() => setMobileOpen(false)}
           >
             Home
           </Link>
           <button
-            className="flex w-full items-center justify-between py-2 text-sm font-medium text-gray-700"
+            className="flex w-full items-center justify-between py-2 text-sm font-medium text-gray-300"
             onClick={() => setServicesOpen((v) => !v)}
           >
             Services
             <ChevronDown className={clsx("h-4 w-4 transition-transform", servicesOpen && "rotate-180")} />
           </button>
           {servicesOpen && (
-            <div className="ml-4 border-l border-gray-100 pl-4">
+            <div className="ml-4 border-l border-gray-700 pl-4">
               {SERVICE_LINKS.map((s) => (
                 <Link
                   key={s.href}
                   href={s.href}
-                  className="block py-2 text-sm text-gray-600"
+                  className="block py-2 text-sm text-gray-400"
                   onClick={() => setMobileOpen(false)}
                 >
                   {s.title}
@@ -145,7 +145,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="block py-2 text-sm font-medium text-gray-700"
+              className="block py-2 text-sm font-medium text-gray-300"
               onClick={() => setMobileOpen(false)}
             >
               {link.title}

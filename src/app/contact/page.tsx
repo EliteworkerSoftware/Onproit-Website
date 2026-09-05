@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import ContactForm from "@/components/ContactForm";
-import {
-  ADDRESS_FULL,
-  EMAIL,
-  HOURS,
-  HOURS_NOTE,
-  PHONE_DISPLAY,
-  PHONE_HREF,
-  SITE_URL,
-} from "@/lib/constants";
+import { SITE_URL } from "@/lib/constants";
+import { getSettings, HOURS_NOTE_TEXT } from "@/lib/get-settings";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Contact ONPRO IT | IT Services Southern NJ & Philadelphia",
@@ -29,14 +24,17 @@ export const metadata: Metadata = {
   },
 };
 
-const INFO_CARDS = [
-  { Icon: Phone, label: "Phone", value: PHONE_DISPLAY, href: `tel:${PHONE_HREF}` },
-  { Icon: Mail, label: "Email", value: EMAIL, href: `mailto:${EMAIL}` },
-  { Icon: MapPin, label: "Address", value: ADDRESS_FULL, href: undefined },
-  { Icon: Clock, label: "Hours", value: HOURS, href: undefined },
-];
+export default async function ContactPage() {
+  const settings = await getSettings();
+  const hours = `Mon–Fri ${settings.hours_weekdays}`;
 
-export default function ContactPage() {
+  const INFO_CARDS = [
+    { Icon: Phone, label: "Phone", value: settings.contact_phone, href: `tel:${settings.contact_phone.replace(/[^0-9+]/g, "")}` },
+    { Icon: Mail, label: "Email", value: settings.contact_email, href: `mailto:${settings.contact_email}` },
+    { Icon: MapPin, label: "Address", value: settings.contact_address, href: undefined },
+    { Icon: Clock, label: "Hours", value: hours, href: undefined },
+  ];
+
   return (
     <>
       <section className="bg-dark py-20 text-white">
@@ -68,7 +66,7 @@ export default function ContactPage() {
                   <p className="mt-1 text-sm font-medium text-gray-900">{card.value}</p>
                 )}
                 {card.label === "Hours" && (
-                  <p className="mt-2 text-xs text-gray-500">{HOURS_NOTE}</p>
+                  <p className="mt-2 text-xs text-gray-500">{HOURS_NOTE_TEXT}</p>
                 )}
               </div>
             ))}
@@ -89,7 +87,7 @@ export default function ContactPage() {
               <div className="mt-6 overflow-hidden rounded-xl border border-gray-200">
                 <iframe
                   title="ONPRO IT location map"
-                  src="https://www.google.com/maps?q=409+Bloomfield+Dr+STE+5,+West+Berlin,+NJ+08091&output=embed"
+                  src={`https://www.google.com/maps?q=${encodeURIComponent(settings.contact_address)}&output=embed`}
                   width="100%"
                   height="400"
                   loading="lazy"

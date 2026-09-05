@@ -6,6 +6,7 @@ export interface LocationFaq {
 export interface LocationData {
   path: string;
   focus: "managed-it" | "cabling";
+  heroImage?: string;
   h1: string;
   metaTitle: string;
   metaDescription: string;
@@ -20,6 +21,8 @@ export const LOCATIONS_DATA: LocationData[] = [
   {
     path: "managed-it-services-new-jersey",
     focus: "managed-it",
+    heroImage:
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1600",
     h1: "Managed IT Services in New Jersey | ONPRO IT",
     metaTitle: "Managed IT Services in New Jersey | ONPRO IT",
     metaDescription:
@@ -76,6 +79,8 @@ export const LOCATIONS_DATA: LocationData[] = [
   {
     path: "managed-it-services-cherry-hill-nj",
     focus: "managed-it",
+    heroImage:
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1600",
     h1: "Managed IT Services in Cherry Hill, NJ | ONPRO IT",
     metaTitle: "Managed IT Services in Cherry Hill, NJ | ONPRO IT",
     metaDescription:
@@ -128,6 +133,8 @@ export const LOCATIONS_DATA: LocationData[] = [
   {
     path: "managed-it-services-west-berlin-nj",
     focus: "managed-it",
+    heroImage:
+      "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=1600",
     h1: "Managed IT Services in West Berlin, NJ | ONPRO IT",
     metaTitle: "Managed IT Services in West Berlin, NJ | ONPRO IT",
     metaDescription:
@@ -180,6 +187,7 @@ export const LOCATIONS_DATA: LocationData[] = [
   {
     path: "new-jersey-cabling",
     focus: "cabling",
+    heroImage: "https://images.unsplash.com/photo-1544197150-b99a580bbcbf?auto=format&fit=crop&q=80",
     h1: "New Jersey Structured Cabling & Network Installation",
     metaTitle: "Structured Cabling Services in New Jersey | ONPRO IT",
     metaDescription:
@@ -222,6 +230,7 @@ export const LOCATIONS_DATA: LocationData[] = [
   {
     path: "pennsylvania-cabling",
     focus: "cabling",
+    heroImage: "https://images.unsplash.com/photo-1558494949-ef526b0042a0?auto=format&fit=crop&q=80",
     h1: "Pennsylvania Structured Cabling & Network Wiring",
     metaTitle: "Structured Cabling Services in Pennsylvania & Philadelphia | ONPRO IT",
     metaDescription:
@@ -260,6 +269,7 @@ export const LOCATIONS_DATA: LocationData[] = [
   {
     path: "delaware-cabling",
     focus: "cabling",
+    heroImage: "https://images.unsplash.com/photo-1544197150-b99a580bbcbf?auto=format&fit=crop&q=80",
     h1: "Delaware Structured Cabling & Network Installation",
     metaTitle: "Structured Cabling Services in Delaware | ONPRO IT",
     metaDescription:

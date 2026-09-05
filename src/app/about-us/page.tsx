@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { ShieldCheck, Users } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
 import { SISTER_COMPANIES, SITE_URL } from "@/lib/constants";
@@ -37,41 +38,65 @@ export default function AboutUsPage() {
       </section>
 
       <section className="bg-white py-16">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">
-            Built for Small Businesses. Designed to Scale.
-          </h2>
-          <p className="mt-4 text-gray-600">
-            OnPro IT was founded on a simple premise: small and medium-sized businesses deserve
-            the same level of enterprise-grade technology support as large corporations. We
-            understand that your technology is the backbone of your operations.
-          </p>
-          <p className="mt-4 text-gray-600">
-            Whether you are a startup needing your first network installed or a growing firm
-            requiring managed security and helpdesk support, our solutions are tailored to fit
-            your specific needs and budget. We grow with you, ensuring your infrastructure is
-            always one step ahead of your business goals.
-          </p>
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900">
+              Built for Small Businesses. Designed to Scale.
+            </h2>
+            <p className="mt-4 text-gray-600">
+              OnPro IT was founded on a simple premise: small and medium-sized businesses deserve
+              the same level of enterprise-grade technology support as large corporations. We
+              understand that your technology is the backbone of your operations.
+            </p>
+            <p className="mt-4 text-gray-600">
+              Whether you are a startup needing your first network installed or a growing firm
+              requiring managed security and helpdesk support, our solutions are tailored to fit
+              your specific needs and budget. We grow with you, ensuring your infrastructure is
+              always one step ahead of your business goals.
+            </p>
+          </div>
+          <div className="overflow-hidden rounded-2xl shadow-xl">
+            <Image
+              src="/images/about-team.png"
+              alt="Diverse team collaborating at wooden desk with laptops and plants in a modern office"
+              width={1248}
+              height={832}
+              className="h-auto w-full object-cover"
+            />
+          </div>
         </div>
       </section>
 
       <section className="bg-gray-50 py-16">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">
-            One Technology Group Serving Residential and Business Environments
-          </h2>
-          <p className="mt-4 text-gray-600">
-            Technology doesn&apos;t stop at the office door. As part of a unified technology group
-            with Elite Smart Home, we bridge the gap between commercial reliability and
-            residential comfort. Our combined expertise allows us to service every aspect of your
-            digital life.
-          </p>
-          <p className="mt-4 text-gray-600">
-            From high-performance business networks and security systems to smart home automation
-            and luxury entertainment setups, our certified team delivers seamless integration
-            across all environments in New Jersey, Pennsylvania, and Delaware.
-          </p>
-          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+            <div className="order-2 lg:order-1 overflow-hidden rounded-2xl shadow-xl">
+              <Image
+                src="/images/about-conference-room.jpg"
+                alt="Modern conference room with long white table, gray chairs, display screen, and contemporary ceiling design"
+                width={1536}
+                height={2048}
+                className="h-auto w-full object-cover"
+              />
+            </div>
+            <div className="order-1 lg:order-2">
+              <h2 className="text-3xl font-bold text-gray-900">
+                One Technology Group Serving Residential and Business Environments
+              </h2>
+              <p className="mt-4 text-gray-600">
+                Technology doesn&apos;t stop at the office door. As part of a unified technology
+                group with Elite Smart Home, we bridge the gap between commercial reliability and
+                residential comfort. Our combined expertise allows us to service every aspect of
+                your digital life.
+              </p>
+              <p className="mt-4 text-gray-600">
+                From high-performance business networks and security systems to smart home
+                automation and luxury entertainment setups, our certified team delivers seamless
+                integration across all environments in New Jersey, Pennsylvania, and Delaware.
+              </p>
+            </div>
+          </div>
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="rounded-xl bg-white p-6 shadow-sm">
               <ShieldCheck className="h-8 w-8 text-brand" />
               <h3 className="mt-4 text-lg font-semibold text-gray-900">ONPRO IT</h3>

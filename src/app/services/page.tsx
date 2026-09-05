@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import ServiceCard from "@/components/ServiceCard";
@@ -34,8 +35,15 @@ const DIFFERENTIATORS = [
 export default function ServicesOverviewPage() {
   return (
     <>
-      <section className="bg-dark py-20 text-white">
-        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden bg-dark py-20 text-white">
+        <Image
+          src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1632&q=80"
+          alt="Business team discussing IT strategy in a modern office"
+          fill
+          priority
+          className="object-cover opacity-25"
+        />
+        <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
             Comprehensive IT Solutions for Growing Businesses
           </h1>
@@ -45,7 +53,7 @@ export default function ServicesOverviewPage() {
             area thrive.
           </p>
           <div className="mt-8">
-            <ConsultationButton href="/contact" variant="primary">
+            <ConsultationButton href="/schedule" variant="primary">
               Schedule a Consultation
             </ConsultationButton>
           </div>
@@ -110,7 +118,7 @@ export default function ServicesOverviewPage() {
             we can help your business grow.
           </p>
           <div className="mt-8">
-            <ConsultationButton href="/contact" variant="outline-light">
+            <ConsultationButton href="/schedule" variant="outline-light">
               Schedule a Consultation
             </ConsultationButton>
           </div>

@@ -1,22 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { BLOG_POSTS_FALLBACK } from "@/lib/blog-posts-fallback";
 import type { BlogPost } from "@/types";
 import { SITE_URL } from "@/lib/constants";
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "IT & Technology Blog | ONPRO IT",
+  title: "Tech Insights & Resources | ONPRO IT",
   description:
-    "News, tips, and insights on managed IT, cybersecurity, and technology for businesses in Southern NJ, Philadelphia, and Delaware.",
+    "Expert guidance on managed IT services, cybersecurity, cloud solutions, and technology best practices for businesses in Southern NJ, Philadelphia, and Delaware.",
   alternates: {
     canonical: `${SITE_URL}/blog`,
   },
 };
 
 async function getPosts(): Promise<BlogPost[]> {
-  if (!supabase) return [];
+  if (!supabase) return BLOG_POSTS_FALLBACK;
 
   const { data, error } = await supabase
     .from("blog_posts")
@@ -24,7 +25,7 @@ async function getPosts(): Promise<BlogPost[]> {
     .eq("published", true)
     .order("published_at", { ascending: false });
 
-  if (error || !data) return [];
+  if (error || !data || data.length === 0) return BLOG_POSTS_FALLBACK;
   return data as BlogPost[];
 }
 
@@ -34,10 +35,10 @@ export default async function BlogIndexPage() {
   return (
     <section className="bg-white py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold text-gray-900">IT & Technology Insights</h1>
+        <h1 className="text-4xl font-bold text-gray-900">Tech Insights & Resources</h1>
         <p className="mt-4 max-w-2xl text-gray-600">
-          Practical guidance on managed IT, cybersecurity, and technology strategy for businesses
-          in Southern NJ, Philadelphia, and Delaware.
+          Expert guidance on managed IT services, cybersecurity, cloud solutions, and technology
+          best practices.
         </p>
 
         {posts.length === 0 ? (

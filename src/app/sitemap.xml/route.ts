@@ -4,6 +4,7 @@ const pages = [
   { url: "/", priority: "1.0", changefreq: "weekly" },
   { url: "/about-us", priority: "0.8", changefreq: "monthly" },
   { url: "/contact", priority: "0.9", changefreq: "monthly" },
+  { url: "/schedule", priority: "0.8", changefreq: "monthly" },
   { url: "/services", priority: "0.9", changefreq: "weekly" },
   { url: "/services/managed-it", priority: "0.9", changefreq: "monthly" },
   { url: "/services/it-support", priority: "0.8", changefreq: "monthly" },

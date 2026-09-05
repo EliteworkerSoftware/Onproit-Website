@@ -1,18 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Mail, MapPin, Phone, Clock } from "lucide-react";
-import {
-  ADDRESS_FULL,
-  EMAIL,
-  HOURS,
-  PHONE_DISPLAY,
-  PHONE_HREF,
-  SERVICES,
-  SERVICE_AREAS,
-  SISTER_COMPANIES,
-} from "@/lib/constants";
+import { SERVICES, SERVICE_AREAS, SISTER_COMPANIES } from "@/lib/constants";
+import { getSettings } from "@/lib/get-settings";
 
-export default function Footer() {
+export default async function Footer() {
+  const settings = await getSettings();
+  const phoneHref = settings.contact_phone.replace(/[^0-9+]/g, "");
+  const hours = `Mon–Fri ${settings.hours_weekdays}`;
+
   return (
     <footer className="bg-dark text-gray-300">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -23,7 +19,7 @@ export default function Footer() {
               alt="ONPRO IT logo"
               width={180}
               height={40}
-              className="mb-4 h-10 w-auto brightness-0 invert"
+              className="mb-4 h-10 w-auto"
             />
             <p className="mb-4 text-sm text-gray-400">
               Professional managed IT services, structured cabling, and network installation for
@@ -32,23 +28,23 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
-                <span>{ADDRESS_FULL}</span>
+                <span>{settings.contact_address}</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 shrink-0 text-brand" />
-                <a href={`tel:${PHONE_HREF}`} className="hover:text-white">
-                  {PHONE_DISPLAY}
+                <a href={`tel:${phoneHref}`} className="hover:text-white">
+                  {settings.contact_phone}
                 </a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 shrink-0 text-brand" />
-                <a href={`mailto:${EMAIL}`} className="hover:text-white">
-                  {EMAIL}
+                <a href={`mailto:${settings.contact_email}`} className="hover:text-white">
+                  {settings.contact_email}
                 </a>
               </li>
               <li className="flex items-center gap-2">
                 <Clock className="h-4 w-4 shrink-0 text-brand" />
-                <span>{HOURS}</span>
+                <span>{hours}</span>
               </li>
             </ul>
           </div>

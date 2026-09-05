@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "horizons-cdn.hostinger.com" },
+      { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
   async redirects() {

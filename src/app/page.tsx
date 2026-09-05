@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Award,
@@ -82,6 +83,13 @@ export default function HomePage() {
   return (
     <>
       <section className="relative overflow-hidden bg-dark text-white">
+        <Image
+          src="/images/hero-home-bg.png"
+          alt="Managed IT and Network Cabling Services in NJ, DE and PA"
+          fill
+          priority
+          className="object-cover opacity-30"
+        />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(12,166,244,0.25),transparent_60%)]" />
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
           <div className="max-w-3xl">
@@ -94,7 +102,7 @@ export default function HomePage() {
               Philadelphia Metro area.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
-              <ConsultationButton href="/contact" variant="primary">
+              <ConsultationButton href="/schedule" variant="primary">
                 Schedule a Discovery Call
               </ConsultationButton>
               <ConsultationButton href="/contact" variant="outline-light">
@@ -132,13 +140,14 @@ export default function HomePage() {
               Visit Elite Smart Home
             </a>
           </div>
-          <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-gray-200 bg-gray-50 p-10 text-center shadow-sm">
-            <Award className="h-12 w-12 text-brand" />
-            <p className="text-lg font-semibold text-gray-900">One Technology Group</p>
-            <p className="text-sm text-gray-600">
-              ONPRO IT + Elite Smart Home — commercial IT and residential smart technology, under
-              one local partnership.
-            </p>
+          <div className="overflow-hidden rounded-xl border border-gray-200 shadow-lg">
+            <Image
+              src="/images/smart-home.png"
+              alt="Modern house with a view, representing smart home technology and integrated solutions"
+              width={1600}
+              height={764}
+              className="h-full w-full object-cover"
+            />
           </div>
         </div>
       </section>
@@ -255,7 +264,7 @@ export default function HomePage() {
             your business thrive. Schedule a free consultation today.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <ConsultationButton href="/contact" variant="outline-light">
+            <ConsultationButton href="/schedule" variant="outline-light">
               Schedule a Call
             </ConsultationButton>
             <Link
