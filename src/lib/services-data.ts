@@ -574,7 +574,6 @@ export const SERVICES_DATA: ServiceData[] = [
       "Businesses opening a new location and needing phones installed quickly",
     ],
     risks: [
-      "High and rising costs of traditional copper phone service",
       "Limited features like call routing, voicemail-to-email, or mobile apps",
       "Difficulty scaling phone service as the business adds staff or locations",
       "Choppy calls and dropped video conferences when phone and IT vendors don't coordinate",
