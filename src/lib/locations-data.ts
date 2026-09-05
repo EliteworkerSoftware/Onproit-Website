@@ -29,7 +29,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "ONPRO IT provides managed IT services across New Jersey — proactive support, cybersecurity, and cabling for businesses in Camden, Burlington, Gloucester, and beyond.",
     keywords: "managed IT services NJ, IT support New Jersey, MSP NJ",
     intro:
-      "Stop dealing with technology headaches. ONPRO IT provides comprehensive, proactive IT support and cybersecurity solutions tailored for New Jersey businesses. We keep your systems running so you can focus on growing your company.",
+      "Stop dealing with technology headaches. ONPRO IT provides comprehensive, proactive IT support and cybersecurity solutions tailored for New Jersey businesses — plus structured cabling, network installation, VoIP, AV, and security camera systems, all from the same team. We keep your systems running so you can focus on growing your company.",
     areasServed: [
       "Cherry Hill, NJ",
       "Mount Laurel, NJ",
@@ -87,7 +87,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Local managed IT services for Cherry Hill, NJ businesses. Proactive support, cybersecurity, and IT consulting from ONPRO IT.",
     keywords: "managed IT services Cherry Hill NJ, IT support Cherry Hill",
     intro:
-      "Empower your Cherry Hill business with proactive technology management. From rapid help desk support to advanced cybersecurity and cloud solutions, ONPRO IT is your dedicated local technology partner — headquartered just minutes away in Berlin Township.",
+      "Empower your Cherry Hill business with proactive technology management. From rapid help desk support to advanced cybersecurity, cloud solutions, structured cabling, and security cameras, ONPRO IT is your dedicated local technology partner — headquartered just minutes away in Berlin Township.",
     areasServed: [
       "Cherry Hill (08002, 08003, 08034)",
       "Marlton (08053)",
@@ -141,7 +141,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "ONPRO IT is headquartered in Berlin Township, NJ, delivering managed IT services, cabling, and cybersecurity to local businesses.",
     keywords: "managed IT services West Berlin NJ, IT company West Berlin NJ",
     intro:
-      "Enhance your business efficiency with proactive IT support right in your neighborhood. Located right on Haddon Avenue, ONPRO IT isn't just another vendor — we're your neighbors, and West Berlin and Camden County businesses are our home turf.",
+      "Enhance your business efficiency with proactive IT support right in your neighborhood — plus structured cabling, network installation, VoIP, and security cameras, all from one team. Located right on Haddon Avenue, ONPRO IT isn't just another vendor — we're your neighbors, and West Berlin and Camden County businesses are our home turf.",
     areasServed: [
       "West Berlin (08091)",
       "Berlin (08009)",
@@ -189,7 +189,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Cat6 and fiber optic structured cabling installation for businesses across New Jersey. Certified and code-compliant. Get a quote from ONPRO IT.",
     keywords: "structured cabling NJ, network cabling New Jersey, Cat6 installation NJ",
     intro:
-      "Your trusted local partner for low-voltage wiring, fiber optics, and network infrastructure throughout Southern and Central NJ. Based in Southern NJ, we understand the specific needs of New Jersey businesses, from historic buildings in Haddonfield to modern corporate centers in Mount Laurel.",
+      "Your trusted local partner for low-voltage wiring, fiber optics, and network infrastructure throughout Southern and Central NJ. Based in Southern NJ, we understand the specific needs of New Jersey businesses, from historic buildings in Haddonfield to modern corporate centers in Mount Laurel. Cabling is just the start — we also provide full managed IT, cybersecurity, VoIP, AV, and security camera services throughout the same area.",
     areasServed: [
       "Cherry Hill",
       "Voorhees",
@@ -220,6 +220,11 @@ export const LOCATIONS_DATA: LocationData[] = [
         answer:
           "Yes, we frequently work with contractors and property managers on new construction and renovation projects to plan and install cabling before walls are closed, meeting all local New Jersey building codes and industry standards.",
       },
+      {
+        question: "Does ONPRO IT only handle cabling in New Jersey, or other IT services too?",
+        answer:
+          "Cabling is one part of what we do — ONPRO IT also provides managed IT services, cybersecurity, cloud, VoIP, AV, and security camera installation throughout the same New Jersey service area, all from one team.",
+      },
     ],
   },
   {
@@ -232,7 +237,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Structured cabling installation for businesses in Philadelphia and the surrounding Pennsylvania region. Cat6, fiber optic, and network cabling from ONPRO IT.",
     keywords: "structured cabling Philadelphia, network cabling Pennsylvania, Cat6 installation PA",
     intro:
-      "Serving the Greater Philadelphia area and Southeastern PA with professional low-voltage and data cabling solutions. From the high-rises of Center City Philadelphia to the corporate parks of King of Prussia and Malvern, we deliver reliable structured cabling across Pennsylvania.",
+      "Serving the Greater Philadelphia area and Southeastern PA with professional low-voltage and data cabling solutions. From the high-rises of Center City Philadelphia to the corporate parks of King of Prussia and Malvern, we deliver reliable structured cabling across Pennsylvania — alongside the same managed IT, cybersecurity, VoIP, AV, and security camera services we provide throughout the region.",
     areasServed: [
       "Philadelphia",
       "King of Prussia",
@@ -259,6 +264,11 @@ export const LOCATIONS_DATA: LocationData[] = [
         answer:
           "Yes, ONPRO IT provides structured cabling installation throughout Philadelphia and the surrounding King of Prussia, Conshohocken, West Chester, Media, Bensalem, Langhorne, Doylestown, Exton, Malvern, Wayne, and Plymouth Meeting areas of Pennsylvania.",
       },
+      {
+        question: "Does ONPRO IT only handle cabling in Pennsylvania, or other IT services too?",
+        answer:
+          "Cabling is one part of what we do — ONPRO IT also provides managed IT services, cybersecurity, cloud, VoIP, AV, and security camera installation throughout the same Pennsylvania service area, all from one team.",
+      },
     ],
   },
   {
@@ -271,7 +281,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Cat6 and fiber optic structured cabling installation for businesses across Delaware, delivered by ONPRO IT's certified technicians.",
     keywords: "structured cabling Delaware, network cabling DE, Cat6 installation Delaware",
     intro:
-      "Expert low-voltage wiring and network infrastructure services for businesses across Wilmington, Newark, and Northern Delaware — The First State. We provide the essential connectivity backbone that modern DE businesses rely on for daily operations.",
+      "Expert low-voltage wiring and network infrastructure services for businesses across Wilmington, Newark, and Northern Delaware — The First State. We provide the essential connectivity backbone that modern DE businesses rely on for daily operations, along with the same managed IT, cybersecurity, VoIP, AV, and security camera services we provide throughout our full coverage area.",
     areasServed: [
       "Wilmington",
       "Newark",
@@ -295,6 +305,11 @@ export const LOCATIONS_DATA: LocationData[] = [
         question: "Does ONPRO IT serve businesses in Delaware?",
         answer:
           "Yes, ONPRO IT provides structured cabling installation for businesses throughout New Castle County and the greater Wilmington and Newark, DE area.",
+      },
+      {
+        question: "Does ONPRO IT only handle cabling in Delaware, or other IT services too?",
+        answer:
+          "Cabling is one part of what we do — ONPRO IT also provides managed IT services, cybersecurity, cloud, VoIP, AV, and security camera installation throughout the same Delaware service area, all from one team.",
       },
     ],
   },

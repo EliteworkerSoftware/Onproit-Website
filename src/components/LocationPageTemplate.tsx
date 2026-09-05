@@ -28,8 +28,12 @@ export default function LocationPageTemplate({ location }: { location: LocationD
 
   const serviceLabel = location.focus === "cabling" ? "Structured Cabling" : "Managed IT Services";
 
+  // Every service is available in every service area — this just varies which
+  // three get spotlighted so a "cabling" page doesn't imply that's all we do here.
   const relatedServiceSlugs =
-    location.focus === "cabling" ? ["cabling", "network-wifi"] : ["managed-it", "it-support", "cybersecurity"];
+    location.focus === "cabling"
+      ? ["cabling", "managed-it", "network-wifi"]
+      : ["managed-it", "cabling", "cybersecurity"];
   const relatedServices = SERVICES_DATA.filter((s) => relatedServiceSlugs.includes(s.slug));
 
   return (
