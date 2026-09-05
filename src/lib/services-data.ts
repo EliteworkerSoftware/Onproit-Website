@@ -35,6 +35,17 @@ export interface ServiceData {
   faqs: ServiceFaq[];
 }
 
+// Single canonical list reused by every service page so "areas we serve" is
+// consistent site-wide instead of each service inventing its own list/format.
+export const SERVICE_AREA_LIST = [
+  "Camden County, NJ (Cherry Hill, Voorhees, Haddonfield)",
+  "Burlington County, NJ (Mount Laurel, Moorestown, Marlton, Medford)",
+  "Gloucester County, NJ (Deptford, Glassboro, Washington Twp)",
+  "Mercer County, NJ (Princeton, Trenton, Hamilton)",
+  "Greater Philadelphia, PA (Montgomery, Bucks & Delaware Counties)",
+  "New Castle County, DE (Wilmington, Newark)",
+];
+
 export const SERVICES_DATA: ServiceData[] = [
   {
     slug: "managed-it",
@@ -42,7 +53,7 @@ export const SERVICES_DATA: ServiceData[] = [
     h1: "Managed IT Services for Growing Businesses in NJ & PA",
     metaTitle: "Managed IT Services NJ | ONPRO IT",
     metaDescription:
-      "ONPRO IT delivers fully managed IT services for businesses in Southern NJ and Philadelphia — proactive monitoring, help desk support, and strategic IT planning for one flat monthly rate.",
+      "ONPRO IT delivers fully managed IT services for businesses in Southern NJ, Philadelphia, and Delaware — proactive monitoring, help desk support, and strategic IT planning for one flat monthly rate.",
     keywords: "managed IT services NJ, MSP Southern NJ, managed service provider New Jersey",
     Icon: Server,
     heroImage: "/images/hero-managed-it.png",
@@ -78,17 +89,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Scalability — add new users, locations, or applications effortlessly",
       "Peace of mind knowing a team of professionals is watching over your business 24/7/365",
     ],
-    areasServed: [
-      "Burlington County (Mount Laurel, Moorestown, Marlton)",
-      "Camden County (Cherry Hill, Voorhees, Haddonfield)",
-      "Gloucester County (Deptford, Glassboro, Washington Twp)",
-      "Mercer County (Princeton, Hamilton, Trenton)",
-      "Philadelphia City & Suburbs",
-      "Bucks County (Bensalem, Langhorne, Doylestown)",
-      "Montgomery County (King of Prussia, Norristown)",
-      "Delaware & Chester County, PA",
-      "New Castle County, DE (Wilmington, Newark)",
-    ],
+    areasServed: SERVICE_AREA_LIST,
     faqs: [
       {
         question: "What does a managed IT services plan typically include?",
@@ -113,7 +114,7 @@ export const SERVICES_DATA: ServiceData[] = [
     h1: "IT Support & Help Desk Services in NJ, PA & DE",
     metaTitle: "IT Help Desk & Support NJ | ONPRO IT",
     metaDescription:
-      "Fast, local IT help desk support for Southern NJ and Philadelphia businesses. Remote and on-site technicians who actually answer the phone.",
+      "Fast, local IT help desk support for Southern NJ, Philadelphia, and Delaware businesses. Remote and on-site technicians who actually answer the phone.",
     keywords: "IT help desk NJ, IT support Southern NJ, computer support New Jersey",
     Icon: Headphones,
     heroImage: "/images/hero-it-support.png",
@@ -146,16 +147,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Accountability — we own the problem until it's solved and don't point fingers at other vendors",
       "Proactive fixes — we often spot and fix issues in the background before they disrupt your day",
     ],
-    areasServed: [
-      "Burlington County, NJ",
-      "Camden County, NJ",
-      "Gloucester County, NJ",
-      "Mercer County, NJ",
-      "Philadelphia, PA",
-      "Montgomery County, PA",
-      "Bucks County, PA",
-      "Delaware County, PA",
-    ],
+    areasServed: SERVICE_AREA_LIST,
     faqs: [
       {
         question: "How fast does ONPRO IT respond to help desk tickets?",
@@ -208,7 +200,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Business continuity — protection that minimizes the risk of downtime from cyber events",
       "Client trust — demonstrate to your clients that you take their data privacy seriously",
     ],
-    areasServed: ["Southern & Central New Jersey (statewide)", "Greater Philadelphia Area, PA & suburbs"],
+    areasServed: SERVICE_AREA_LIST,
     faqs: [
       {
         question: "Is cybersecurity really necessary for a small business?",
@@ -228,7 +220,7 @@ export const SERVICES_DATA: ServiceData[] = [
     h1: "Network & WiFi Design Services",
     metaTitle: "Network & WiFi Installation NJ | ONPRO IT",
     metaDescription:
-      "Enterprise-grade network design, installation, and WiFi solutions for offices, warehouses, and retail locations across Southern NJ and Philadelphia.",
+      "Enterprise-grade network design, installation, and WiFi solutions for offices, warehouses, and retail locations across Southern NJ, Philadelphia, and Delaware.",
     keywords: "network installation NJ, WiFi setup Southern NJ, business network New Jersey",
     Icon: Network,
     heroImage: "/images/hero-network-wifi.png",
@@ -261,14 +253,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "High speed — support bandwidth-heavy applications like video streaming and large file transfers",
       "Seamless roaming — walk from one end of the building to the other without dropping your connection",
     ],
-    areasServed: [
-      "Cherry Hill, Marlton, Moorestown, NJ",
-      "Princeton, Trenton, Hamilton, NJ",
-      "Deptford, Washington Twp, NJ",
-      "Philadelphia & Suburbs, PA",
-      "King of Prussia & Main Line, PA",
-      "Wilmington & Newark, DE",
-    ],
+    areasServed: SERVICE_AREA_LIST,
     faqs: [
       {
         question: "Why is my office WiFi so unreliable?",
@@ -288,7 +273,7 @@ export const SERVICES_DATA: ServiceData[] = [
     h1: "Cloud Services & Microsoft 365 Migration",
     metaTitle: "Cloud Services & Microsoft 365 NJ | ONPRO IT",
     metaDescription:
-      "Migrate to the cloud with confidence. ONPRO IT manages Microsoft 365, cloud backup, and secure remote access for businesses across Southern NJ and Philadelphia.",
+      "Migrate to the cloud with confidence. ONPRO IT manages Microsoft 365, cloud backup, and secure remote access for businesses across Southern NJ, Philadelphia, and Delaware.",
     keywords: "cloud services NJ, Microsoft 365 NJ, cloud migration New Jersey",
     Icon: Cloud,
     heroImage:
@@ -322,7 +307,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Enhanced security — benefit from Microsoft and Google's multi-billion dollar security investments",
       "Automatic updates — always have the latest versions of software without manual upgrades",
     ],
-    areasServed: ["South Jersey", "Central Jersey", "NJ Coastal Areas", "Philadelphia Metro, PA", "Eastern Pennsylvania"],
+    areasServed: SERVICE_AREA_LIST,
     faqs: [
       {
         question: "Is it safe to move our email and files to the cloud?",
@@ -375,7 +360,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "SaaS protection — we also back up Microsoft 365 email and OneDrive, which Microsoft does not protect for you",
       "Regular testing — we perform test restores to prove your data is recoverable before you need it",
     ],
-    areasServed: ["New Jersey (available statewide)", "Greater Philadelphia Area, PA"],
+    areasServed: SERVICE_AREA_LIST,
     faqs: [
       {
         question: "How often should our business data be backed up?",
@@ -428,14 +413,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Quality materials — only high-quality, plenum-rated cable and reliable connectors",
       "Project management — we coordinate with your general contractor and other trades to stay on schedule",
     ],
-    areasServed: [
-      "Cherry Hill, Moorestown, Marlton, NJ",
-      "Princeton, Trenton, NJ",
-      "All of Southern & Central NJ",
-      "Philadelphia & Suburbs, PA",
-      "King of Prussia, Malvern, PA",
-      "Wilmington & Newark, DE",
-    ],
+    areasServed: SERVICE_AREA_LIST,
     faqs: [
       {
         question: "What's the difference between Cat6 and Cat6A cabling?",
@@ -455,7 +433,7 @@ export const SERVICES_DATA: ServiceData[] = [
     h1: "IT Consulting & vCIO Services",
     metaTitle: "IT Consulting Services NJ | ONPRO IT",
     metaDescription:
-      "Strategic IT consulting and technology planning for businesses in Southern NJ and Philadelphia. Align your technology budget with your business goals.",
+      "Strategic IT consulting and technology planning for businesses in Southern NJ, Philadelphia, and Delaware. Align your technology budget with your business goals.",
     keywords: "IT consulting NJ, IT strategy Southern NJ, technology consulting New Jersey",
     Icon: Briefcase,
     heroImage:
@@ -489,7 +467,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Digital transformation — identify workflows that can be automated or digitized",
       "Competitive edge — leverage new technology to serve your customers better",
     ],
-    areasServed: ["New Jersey (statewide)", "Greater Philadelphia Region, PA"],
+    areasServed: SERVICE_AREA_LIST,
     faqs: [
       {
         question: "Do we need a full IT department to benefit from consulting?",
@@ -509,7 +487,7 @@ export const SERVICES_DATA: ServiceData[] = [
     h1: "VoIP Phone Systems for Modern Businesses",
     metaTitle: "VoIP Phone Systems NJ | ONPRO IT",
     metaDescription:
-      "Reliable, feature-rich VoIP business phone systems for companies across Southern NJ and Philadelphia. Lower costs, more features, easy to scale.",
+      "Reliable, feature-rich VoIP business phone systems for companies across Southern NJ, Philadelphia, and Delaware. Lower costs, more features, easy to scale.",
     keywords: "VoIP NJ, business phone systems Southern NJ, VoIP installation New Jersey",
     Icon: PhoneCall,
     heroImage: "/images/hero-voip.jpg",
@@ -542,7 +520,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Keep your existing phone numbers — no disruption to your business",
       "No long-term contracts — we earn your business every month",
     ],
-    areasServed: ["Southern & Central New Jersey", "Greater Philadelphia Metro, PA", "Delaware"],
+    areasServed: SERVICE_AREA_LIST,
     faqs: [
       {
         question: "Will VoIP call quality be as good as a traditional phone line?",

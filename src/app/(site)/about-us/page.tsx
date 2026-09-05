@@ -130,7 +130,7 @@ export default function AboutUsPage() {
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900">Where We Work</h2>
           <p className="mt-4 text-gray-600">
-            ONPRO IT is headquartered in West Berlin, NJ, and provides on-site and remote support
+            ONPRO IT is headquartered in Berlin Township, NJ, and provides on-site and remote support
             to businesses throughout Southern New Jersey, Philadelphia, and Delaware — including
             Cherry Hill, Voorhees, Marlton, Mount Laurel, Moorestown, and Medford.
           </p>

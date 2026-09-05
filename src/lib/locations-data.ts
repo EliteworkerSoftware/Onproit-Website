@@ -87,7 +87,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Local managed IT services for Cherry Hill, NJ businesses. Proactive support, cybersecurity, and IT consulting from ONPRO IT.",
     keywords: "managed IT services Cherry Hill NJ, IT support Cherry Hill",
     intro:
-      "Empower your Cherry Hill business with proactive technology management. From rapid help desk support to advanced cybersecurity and cloud solutions, ONPRO IT is your dedicated local technology partner — headquartered just minutes away in West Berlin.",
+      "Empower your Cherry Hill business with proactive technology management. From rapid help desk support to advanced cybersecurity and cloud solutions, ONPRO IT is your dedicated local technology partner — headquartered just minutes away in Berlin Township.",
     areasServed: [
       "Cherry Hill (08002, 08003, 08034)",
       "Marlton (08053)",
@@ -138,10 +138,10 @@ export const LOCATIONS_DATA: LocationData[] = [
     h1: "Managed IT Services in West Berlin, NJ | ONPRO IT",
     metaTitle: "Managed IT Services in West Berlin, NJ | ONPRO IT",
     metaDescription:
-      "ONPRO IT is headquartered in West Berlin, NJ, delivering managed IT services, cabling, and cybersecurity to local businesses.",
+      "ONPRO IT is headquartered in Berlin Township, NJ, delivering managed IT services, cabling, and cybersecurity to local businesses.",
     keywords: "managed IT services West Berlin NJ, IT company West Berlin NJ",
     intro:
-      "Enhance your business efficiency with proactive IT support right in your neighborhood. Located right on Bloomfield Drive, ONPRO IT isn't just another vendor — we're your neighbors, and West Berlin and Camden County businesses are our home turf.",
+      "Enhance your business efficiency with proactive IT support right in your neighborhood. Located right on Haddon Avenue, ONPRO IT isn't just another vendor — we're your neighbors, and West Berlin and Camden County businesses are our home turf.",
     areasServed: [
       "West Berlin (08091)",
       "Berlin (08009)",
@@ -151,7 +151,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Cherry Hill (08003)",
     ],
     whyChoose: [
-      "Local headquarters right here in West Berlin, ensuring the fastest possible onsite response times",
+      "Local headquarters right here in Berlin Township, ensuring the fastest possible onsite response times",
       "Security first — advanced tools and continuous monitoring prioritizing the security of your data",
       "Business aligned — we act as your strategic partner, ensuring technology investments drive real value",
       "Industries served include healthcare, legal, manufacturing, finance, and professional services",
@@ -160,7 +160,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       {
         question: "Why choose a local West Berlin IT provider?",
         answer:
-          "Choosing a local provider like ONPRO IT means faster onsite response times. We are headquartered right here in West Berlin at 409 Bloomfield Drive — unlike remote-only firms or national chains, we can be at your office in minutes, not hours.",
+          "Choosing a local provider like ONPRO IT means faster onsite response times. We are headquartered right here in Berlin Township at 127 Haddon Ave. — unlike remote-only firms or national chains, we can be at your office in minutes, not hours.",
       },
       {
         question: "What exactly are managed IT services?",
