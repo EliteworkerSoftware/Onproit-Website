@@ -3,7 +3,7 @@ import ServicePageTemplate from "@/components/ServicePageTemplate";
 import { getServiceBySlug } from "@/lib/services-data";
 import { SITE_URL } from "@/lib/constants";
 
-const service = getServiceBySlug("security-cameras-access-control")!;
+const service = getServiceBySlug("entry-access-control")!;
 
 export const metadata: Metadata = {
   title: service.metaTitle,
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default function SecurityCamerasAccessControlPage() {
+export default function EntryAccessControlPage() {
   return <ServicePageTemplate service={service} />;
 }

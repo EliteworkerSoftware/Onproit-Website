@@ -6,6 +6,7 @@ import {
   Cloud,
   HardDrive,
   Headphones,
+  KeyRound,
   Network,
   PhoneCall,
   Presentation,
@@ -497,44 +498,44 @@ export const SERVICES_DATA: ServiceData[] = [
     ],
   },
   {
-    slug: "security-cameras-access-control",
-    navTitle: "Security Cameras & Entry Access Control",
-    h1: "Network AI Security Cameras & Entry Access Control Systems",
-    metaTitle: "Security Camera & Entry Access Control Installation NJ | ONPRO IT",
+    slug: "security-cameras",
+    navTitle: "Network AI Security Cameras",
+    h1: "Network AI Security Cameras for Business",
+    metaTitle: "Security Camera Installation NJ | ONPRO IT",
     metaDescription:
-      "AI-powered network security cameras and entry access control systems, designed, installed, and managed by ONPRO IT for businesses in Southern NJ, Philadelphia, and Delaware.",
-    keywords: "security camera installation NJ, entry access control systems NJ, business surveillance cameras, commercial door access control",
+      "AI-powered network security cameras, designed, installed, and managed by ONPRO IT for businesses in Southern NJ, Philadelphia, and Delaware.",
+    keywords: "security camera installation NJ, business surveillance cameras, AI security cameras, video surveillance NJ",
     Icon: Camera,
     heroImage: "/images/hero-cybersecurity.png",
     secondaryImage: "/images/about-team.png",
     intro:
-      "Know who's coming and going, and see what's happening at every entrance — without hiring a separate security vendor. We design, install, and manage network-based AI security cameras and entry access control systems as part of the same network we already build and support.",
+      "See what's happening at your business from anywhere, without hiring a separate security vendor. We design, install, and manage AI-powered network security cameras as part of the same network we already build and support.",
     whatIsIt: [
       "Modern security cameras aren't standalone boxes anymore — they're network devices, which means they belong on the same network your IT provider is already responsible for. When your camera system and your IT provider are two different companies, nobody owns the whole picture: is the camera down because of the camera, the network switch, or the internet connection? We remove that ambiguity by designing, installing, and managing both as one system.",
-      "Our camera systems use AI-based analytics — motion and person detection, vehicle recognition, and smart alerts — instead of just recording footage nobody watches until after something happens. We pair that with entry access control systems (key fobs, keypads, and remote-managed door locks) so you control who can get into your building and when, from a single dashboard.",
+      "Our camera systems use AI-based analytics — motion and person detection, vehicle recognition, and smart alerts — instead of just recording footage nobody watches until after something happens.",
     ],
     whoItsFor: [
       "You want to see what's happening at your business remotely, from a phone or laptop",
-      "You're tired of managing keys and re-keying locks every time an employee leaves",
       "You've had theft, vandalism, or unauthorized access and want a real deterrent and record",
-      "You're opening a new location and want cameras and entry access control designed in from day one",
+      "You want smart alerts instead of scrubbing through hours of raw footage after an incident",
+      "You're opening a new location and want cameras designed in from day one",
     ],
     risks: [
       "Blind spots — outdated or poorly placed cameras leave gaps that only become obvious after an incident",
-      "Lost or copied keys — traditional locks can't tell you who actually used them or when",
       "Vendor confusion — a security camera vendor who doesn't manage your network can't diagnose whether an outage is the camera, the switch, or the internet",
       "Footage you can't use — cameras that only record locally, with no remote access or smart alerts, are of little help after the fact",
+      "Missed incidents — without smart alerts, footage often goes unwatched until it's too late to matter",
     ],
     howWeDeliver: [
-      "System Design — we plan camera placement and access points based on your building's actual layout and risk areas",
+      "Site Survey & Camera Placement — we plan coverage based on your building's actual layout and risk areas",
       "Professional Installation — cabling, mounting, and configuration completed by our own technicians, integrated with the network we already manage",
-      "Ongoing Management — remote access, health monitoring, and support for your cameras and entry access control system for the life of your business",
+      "AI Configuration & Ongoing Management — smart alerts and analytics set up and monitored for the life of your business",
     ],
     benefits: [
       "Remote visibility — check in on your business from anywhere with an internet connection",
       "AI-based alerts — get notified of relevant activity instead of scrubbing through hours of footage",
-      "Keyless entry — grant or revoke building access instantly without re-keying a single lock",
-      "One point of accountability — the same team that manages your network also manages your cameras and entry access control",
+      "One point of accountability — the same team that manages your network also manages your cameras",
+      "Scalable — add new locations using the same standardized design",
     ],
     areasServed: SERVICE_AREA_LIST,
     faqs: [
@@ -544,14 +545,73 @@ export const SERVICES_DATA: ServiceData[] = [
           "Yes — our camera systems include AI-based analytics like person and vehicle detection and smart motion alerts, so you're notified about activity that actually matters instead of every passing car or shadow.",
       },
       {
-        question: "Can I control building access without traditional keys?",
-        answer:
-          "Yes — our entry access control systems support key fobs, keypads, and remote-managed door locks, so you can grant or revoke access instantly and see a log of who entered and when.",
-      },
-      {
         question: "What happens if my camera system goes offline?",
         answer:
           "Because we also manage the network your cameras run on, we can immediately tell whether an outage is the camera, the switch, or the internet connection — instead of leaving you stuck between two vendors pointing fingers.",
+      },
+      {
+        question: "Do you install cameras for new construction or office moves?",
+        answer:
+          "Yes — we plan camera placement and cabling as part of the same design process we use for your network, so coverage is built in from day one instead of added as an afterthought.",
+      },
+    ],
+  },
+  {
+    slug: "entry-access-control",
+    navTitle: "Entry Access Control Systems",
+    h1: "Entry Access Control Systems for Business",
+    metaTitle: "Entry Access Control Installation NJ | ONPRO IT",
+    metaDescription:
+      "Keyless entry and access control systems, designed, installed, and managed by ONPRO IT for businesses in Southern NJ, Philadelphia, and Delaware.",
+    keywords: "entry access control NJ, keyless entry systems, commercial door access control, key fob access control",
+    Icon: KeyRound,
+    heroImage: "/images/about-conference-room.jpg",
+    secondaryImage: "/images/about-team.png",
+    intro:
+      "Control who can get into your building and when, without a drawer full of spare keys or a locksmith bill every time someone leaves. We design, install, and manage entry access control as part of the same network we already build and support.",
+    whatIsIt: [
+      "Traditional keys have a fundamental problem: they can't tell you who used them or when, and a lost or copied key means re-keying every affected lock. Entry access control replaces that with key fobs, keypads, and remote-managed door locks tied to a system you actually control.",
+      "Because we also manage the network these systems run on, access control isn't a standalone silo — credentials, access logs, and door hardware are integrated with the same infrastructure we already support, not a separate vendor's app you have to check independently.",
+    ],
+    whoItsFor: [
+      "You're tired of managing physical keys and re-keying locks every time an employee leaves",
+      "You need to restrict certain areas to certain employees or specific hours",
+      "You want a log of who entered your building and when",
+      "You're managing access across multiple doors or multiple locations and want it centralized",
+    ],
+    risks: [
+      "Lost or copied keys — traditional locks can't tell you who actually used them or when",
+      "Former employees with keys — physical keys don't get automatically revoked when someone leaves",
+      "No record of access — without logs, you have no way to know who entered a space or when",
+      "Inconsistent rules — managing access door-by-door or location-by-location gets unmanageable as you grow",
+    ],
+    howWeDeliver: [
+      "Access Plan Design — we map which doors and areas need control and who needs access to each",
+      "Professional Installation — door hardware, controllers, and credential readers installed and wired into the network we already manage",
+      "Ongoing Management — grant or revoke credentials remotely, monitor system health, and pull access logs whenever you need them",
+    ],
+    benefits: [
+      "Keyless entry — grant or revoke building access instantly without re-keying a single lock",
+      "Access logs — know who entered your building and when",
+      "Centralized control — manage every door across every location from one system",
+      "One point of accountability — the same team that manages your network also manages your access control",
+    ],
+    areasServed: SERVICE_AREA_LIST,
+    faqs: [
+      {
+        question: "Can I control building access without traditional keys?",
+        answer:
+          "Yes — our entry access control systems support key fobs, keypads, and remote-managed door locks, so you can grant or revoke access instantly instead of re-keying locks.",
+      },
+      {
+        question: "Can I see who entered our building and when?",
+        answer:
+          "Yes — every credential use is logged, so you can pull a record of who accessed a door and when, rather than relying on physical keys with no audit trail.",
+      },
+      {
+        question: "Do you handle access control across multiple locations?",
+        answer:
+          "Yes — we design centralized systems so you can manage credentials and view access logs across every location from a single system, instead of managing each site separately.",
       },
     ],
   },

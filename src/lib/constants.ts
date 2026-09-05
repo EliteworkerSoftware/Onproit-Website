@@ -35,7 +35,8 @@ export const SERVICES = [
   { title: "Network Solutions", href: "/services/network-wifi" },
   { title: "Data Backup & Recovery", href: "/services/backup-recovery" },
   { title: "AV & Conference Rooms", href: "/services/av-integration" },
-  { title: "Security Cameras & Access Control", href: "/services/security-cameras-access-control" },
+  { title: "Network AI Security Cameras", href: "/services/security-cameras" },
+  { title: "Entry Access Control", href: "/services/entry-access-control" },
   { title: "IT Consulting", href: "/services/consulting" },
   { title: "Managed IT Services", href: "/services/managed-it" },
 ];

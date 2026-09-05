@@ -5,6 +5,7 @@ import {
   Award,
   Cable,
   Camera,
+  KeyRound,
   Clock,
   Cloud,
   HardDrive,
@@ -72,7 +73,8 @@ const SERVICE_CARDS = [
   { title: "VoIP Phone Systems", description: "Modern business telephony solutions to keep your team connected anywhere.", href: "/services/voip", Icon: PhoneCall },
   { title: "Network Solutions", description: "Complete network design, WiFi setup, and infrastructure management for growing businesses.", href: "/services/network-wifi", Icon: Network },
   { title: "AV & Conference Rooms", description: "Video conferencing, displays, and digital signage installed and integrated with your network.", href: "/services/av-integration", Icon: Presentation },
-  { title: "Security Cameras & Access Control", description: "AI-powered security cameras and entry access control systems, installed and managed on the network we already run.", href: "/services/security-cameras-access-control", Icon: Camera },
+  { title: "Network AI Security Cameras", description: "AI-powered security cameras installed and managed on the network we already run.", href: "/services/security-cameras", Icon: Camera },
+  { title: "Entry Access Control", description: "Keyless entry and access control systems for your building, doors, and multiple locations.", href: "/services/entry-access-control", Icon: KeyRound },
   { title: "Data Backup", description: "Secure disaster recovery and data protection strategies for peace of mind.", href: "/services/backup-recovery", Icon: HardDrive },
   { title: "IT Consulting", description: "Strategic IT planning and budgeting to align technology with your business goals.", href: "/services/consulting", Icon: Briefcase },
 ];
