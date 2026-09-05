@@ -2,12 +2,12 @@ export const SITE_URL = "https://www.onproit.com";
 export const COMPANY_NAME = "ONPRO IT";
 export const PHONE_DISPLAY = "856-988-2663";
 export const PHONE_HREF = "+18569882663";
-export const EMAIL = "sales@onproit.com";
+export const EMAIL = "gregg@onproit.com";
 export const HOURS = "Mon–Fri 9:00 AM – 5:00 PM";
 export const HOURS_NOTE = "24/7 emergency support available for managed clients";
 export const ADDRESS = {
-  street: "409 Bloomfield Dr. STE 5",
-  city: "West Berlin",
+  street: "127 Haddon Ave.",
+  city: "Berlin Township",
   state: "NJ",
   zip: "08091",
 };

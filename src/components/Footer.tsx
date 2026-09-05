@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, MapPin, Phone, Clock } from "lucide-react";
+import { MapPin, Phone, Clock } from "lucide-react";
 import { SERVICES, SERVICE_AREAS, SISTER_COMPANIES } from "@/lib/constants";
 import { getSettings } from "@/lib/get-settings";
 
@@ -34,12 +34,6 @@ export default async function Footer() {
                 <Phone className="h-4 w-4 shrink-0 text-brand" />
                 <a href={`tel:${phoneHref}`} className="hover:text-white">
                   {settings.contact_phone}
-                </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <Mail className="h-4 w-4 shrink-0 text-brand" />
-                <a href={`mailto:${settings.contact_email}`} className="hover:text-white">
-                  {settings.contact_email}
                 </a>
               </li>
               <li className="flex items-center gap-2">

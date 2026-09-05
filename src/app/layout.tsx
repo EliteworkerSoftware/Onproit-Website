@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ADDRESS, EMAIL, PHONE_HREF, SITE_URL } from "@/lib/constants";
+import { ADDRESS, PHONE_HREF, SITE_URL } from "@/lib/constants";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,7 +36,6 @@ const localBusinessSchema = {
   "@type": "LocalBusiness",
   name: "ONPRO IT",
   telephone: `+1-${PHONE_HREF.slice(2, 5)}-${PHONE_HREF.slice(5, 8)}-${PHONE_HREF.slice(8)}`,
-  email: EMAIL,
   url: SITE_URL,
   address: {
     "@type": "PostalAddress",

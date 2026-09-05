@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { Clock, MapPin, Phone } from "lucide-react";
 import ContactForm from "@/components/ContactForm";
 import { SITE_URL } from "@/lib/constants";
 import { getSettings, HOURS_NOTE_TEXT } from "@/lib/get-settings";
@@ -30,7 +30,6 @@ export default async function ContactPage() {
 
   const INFO_CARDS = [
     { Icon: Phone, label: "Phone", value: settings.contact_phone, href: `tel:${settings.contact_phone.replace(/[^0-9+]/g, "")}` },
-    { Icon: Mail, label: "Email", value: settings.contact_email, href: `mailto:${settings.contact_email}` },
     { Icon: MapPin, label: "Address", value: settings.contact_address, href: undefined },
     { Icon: Clock, label: "Hours", value: hours, href: undefined },
   ];
@@ -51,7 +50,7 @@ export default async function ContactPage() {
 
       <section className="bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {INFO_CARDS.map((card) => (
               <div key={card.label} className="rounded-xl border border-gray-200 p-6 text-center">
                 <card.Icon className="mx-auto h-6 w-6 text-brand" />

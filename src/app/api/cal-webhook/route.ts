@@ -3,6 +3,7 @@ import { createHmac, timingSafeEqual } from "crypto";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
 import { sendMail, isMailerConfigured } from "@/lib/mailer";
 import { BookingConfirmedEmail } from "@/emails/BookingConfirmedEmail";
+import { EMAIL } from "@/lib/constants";
 
 // Cal.com signs the raw request body with the webhook secret you set when
 // creating the webhook in its dashboard — verify it here so this public URL
@@ -107,7 +108,7 @@ export async function POST(req: NextRequest) {
       : "unknown time";
 
     try {
-      const to = process.env.CONTACT_TO_EMAIL || "sales@onproit.com";
+      const to = process.env.CONTACT_TO_EMAIL || EMAIL;
       await sendMail({
         to,
         subject: `New consultation booked: ${attendee?.name || attendee?.email || "someone"}`,
