@@ -3,8 +3,8 @@ import Image from "next/image";
 import { MapPin } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
 import { LOCATIONS_DATA, type LocationData } from "@/lib/locations-data";
-import { SERVICES_DATA } from "@/lib/services-data";
-import { SITE_URL } from "@/lib/constants";
+import { HARDWARE_PHOTOS, SERVICES_DATA } from "@/lib/services-data";
+import { PHONE_DISPLAY, PHONE_HREF, SITE_URL } from "@/lib/constants";
 
 export default function LocationPageTemplate({ location }: { location: LocationData }) {
   const faqSchema = {
@@ -32,6 +32,7 @@ export default function LocationPageTemplate({ location }: { location: LocationD
     location.focus === "cabling" ? ["cabling", "network-wifi"] : ["managed-it", "it-support", "cybersecurity"];
   const relatedServices = SERVICES_DATA.filter((s) => relatedServiceSlugs.includes(s.slug));
   const otherLocations = LOCATIONS_DATA.filter((l) => l.path !== location.path).slice(0, 4);
+  const accentImage = location.focus === "cabling" ? HARDWARE_PHOTOS.cabling : HARDWARE_PHOTOS.serverRack;
 
   return (
     <>
@@ -57,9 +58,12 @@ export default function LocationPageTemplate({ location }: { location: LocationD
         <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{location.h1}</h1>
           <p className="mt-6 text-lg text-gray-300">{location.intro}</p>
-          <div className="mt-8">
-            <ConsultationButton href="/contact" variant="primary">
-              Schedule a Discovery Call
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <ConsultationButton href={`tel:${PHONE_HREF}`} variant="primary">
+              Call Now: {PHONE_DISPLAY}
+            </ConsultationButton>
+            <ConsultationButton href="/contact" variant="outline-light">
+              Get a Free Quote
             </ConsultationButton>
           </div>
         </div>
@@ -84,7 +88,7 @@ export default function LocationPageTemplate({ location }: { location: LocationD
 
       <section className="bg-gray-50 py-16 overflow-hidden">
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <div>
+          <div className="animate-fade-up">
             <h2 className="text-3xl font-bold text-gray-900">
               Why Local Businesses Call Us Instead of a Typical {serviceLabel} Company
             </h2>
@@ -97,14 +101,25 @@ export default function LocationPageTemplate({ location }: { location: LocationD
             </ul>
           </div>
           {location.heroImage && (
-            <div className="overflow-hidden rounded-2xl shadow-xl">
-              <Image
-                src={location.heroImage}
-                alt={location.h1}
-                width={1000}
-                height={750}
-                className="h-auto w-full object-cover"
-              />
+            <div className="relative animate-fade-up-delay">
+              <div className="overflow-hidden rounded-2xl shadow-xl">
+                <Image
+                  src={location.heroImage}
+                  alt={location.h1}
+                  width={1000}
+                  height={750}
+                  className="h-auto w-full object-cover"
+                />
+              </div>
+              <div className="absolute -bottom-8 -left-8 hidden h-32 w-32 rotate-[-4deg] overflow-hidden rounded-xl border-4 border-white shadow-2xl sm:block">
+                <Image
+                  src={accentImage}
+                  alt="ONPRO IT installed networking hardware"
+                  width={200}
+                  height={200}
+                  className="h-full w-full object-cover"
+                />
+              </div>
             </div>
           )}
         </div>
@@ -159,10 +174,16 @@ export default function LocationPageTemplate({ location }: { location: LocationD
           <p className="mt-4 text-white/90">
             Talk to your local ONPRO IT team about {serviceLabel.toLowerCase()} for your business.
           </p>
-          <div className="mt-8">
-            <ConsultationButton href="/contact" variant="outline-light">
-              Contact Us
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <ConsultationButton href={`tel:${PHONE_HREF}`} variant="outline-light">
+              Call {PHONE_DISPLAY}
             </ConsultationButton>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 font-semibold text-brand hover:bg-gray-100"
+            >
+              Get a Free Quote
+            </Link>
           </div>
         </div>
       </section>

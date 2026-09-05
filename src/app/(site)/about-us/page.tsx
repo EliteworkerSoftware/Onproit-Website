@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { ShieldCheck, Users } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
-import { SISTER_COMPANIES, SITE_URL } from "@/lib/constants";
+import { PHONE_DISPLAY, PHONE_HREF, SISTER_COMPANIES, SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "About ONPRO IT | Managed IT & Technology Services NJ",
@@ -161,9 +161,12 @@ export default function AboutUsPage() {
       <section className="bg-linear-to-br from-brand to-brand-dark py-16 text-white">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold">Let&apos;s Talk About Your Technology</h2>
-          <div className="mt-8">
-            <ConsultationButton href="/contact" variant="outline-light">
-              Contact Us
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <ConsultationButton href={`tel:${PHONE_HREF}`} variant="outline-light">
+              Call {PHONE_DISPLAY}
+            </ConsultationButton>
+            <ConsultationButton href="/contact" variant="primary">
+              Get a Free Quote
             </ConsultationButton>
           </div>
         </div>

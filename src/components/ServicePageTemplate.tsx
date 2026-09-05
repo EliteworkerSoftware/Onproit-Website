@@ -4,7 +4,7 @@ import { CheckCircle2, MapPin } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
 import { SERVICES_DATA, type ServiceData } from "@/lib/services-data";
 import { LOCATIONS_DATA } from "@/lib/locations-data";
-import { SITE_URL } from "@/lib/constants";
+import { PHONE_DISPLAY, PHONE_HREF, SITE_URL } from "@/lib/constants";
 
 export default function ServicePageTemplate({ service }: { service: ServiceData }) {
   const serviceSchema = {
@@ -71,9 +71,12 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
           </div>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{service.h1}</h1>
           <p className="mt-6 text-lg text-gray-300">{service.intro}</p>
-          <div className="mt-8">
-            <ConsultationButton href="/contact" variant="primary">
-              Schedule a Discovery Call
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <ConsultationButton href={`tel:${PHONE_HREF}`} variant="primary">
+              Call Now: {PHONE_DISPLAY}
+            </ConsultationButton>
+            <ConsultationButton href="/contact" variant="outline-light">
+              Get a Free Quote
             </ConsultationButton>
           </div>
         </div>
@@ -81,7 +84,7 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
 
       <section className="bg-white py-16 overflow-hidden">
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <div>
+          <div className="animate-fade-up">
             <h2 className="text-3xl font-bold text-gray-900">What {service.navTitle} Actually Involves</h2>
             <div className="mt-6 space-y-4 text-gray-600">
               {service.whatIsIt.map((p, i) => (
@@ -89,14 +92,27 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
               ))}
             </div>
           </div>
-          <div className="overflow-hidden rounded-2xl shadow-xl">
-            <Image
-              src={service.heroImage}
-              alt={service.h1}
-              width={1000}
-              height={750}
-              className="h-auto w-full object-cover"
-            />
+          <div className="relative animate-fade-up-delay">
+            <div className="overflow-hidden rounded-2xl shadow-xl">
+              <Image
+                src={service.heroImage}
+                alt={service.h1}
+                width={1000}
+                height={750}
+                className="h-auto w-full object-cover"
+              />
+            </div>
+            {service.accentImage && (
+              <div className="absolute -bottom-8 -left-8 hidden h-32 w-32 rotate-[-4deg] overflow-hidden rounded-xl border-4 border-white shadow-2xl sm:block">
+                <Image
+                  src={service.accentImage}
+                  alt="ONPRO IT installed networking hardware"
+                  width={200}
+                  height={200}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -117,16 +133,29 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
 
       <section className="bg-white py-16 overflow-hidden">
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <div className="order-2 overflow-hidden rounded-2xl shadow-xl lg:order-1">
-            <Image
-              src={service.secondaryImage ?? "/images/about-team.png"}
-              alt={`ONPRO IT team delivering ${service.navTitle.toLowerCase()}`}
-              width={1000}
-              height={750}
-              className="h-auto w-full object-cover"
-            />
+          <div className="relative order-2 animate-fade-up lg:order-1">
+            <div className="overflow-hidden rounded-2xl shadow-xl">
+              <Image
+                src={service.secondaryImage ?? "/images/about-team.png"}
+                alt={`ONPRO IT team delivering ${service.navTitle.toLowerCase()}`}
+                width={1000}
+                height={750}
+                className="h-auto w-full object-cover"
+              />
+            </div>
+            {service.accentImage && (
+              <div className="absolute -top-6 -right-6 hidden h-28 w-28 rotate-[5deg] overflow-hidden rounded-xl border-4 border-white shadow-2xl sm:block">
+                <Image
+                  src={service.accentImage}
+                  alt="ONPRO IT networking equipment"
+                  width={200}
+                  height={200}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
           </div>
-          <div className="order-1 lg:order-2">
+          <div className="order-1 animate-fade-up-delay lg:order-2">
             <h2 className="text-3xl font-bold text-gray-900">What It Costs You to Go Without It</h2>
             <ul className="mt-6 space-y-3">
               {service.risks.map((item) => (
@@ -240,10 +269,16 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
             Talk to a local ONPRO IT technology advisor about {service.navTitle.toLowerCase()} for
             your business.
           </p>
-          <div className="mt-8">
-            <ConsultationButton href="/contact" variant="outline-light">
-              Contact Us
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <ConsultationButton href={`tel:${PHONE_HREF}`} variant="outline-light">
+              Call {PHONE_DISPLAY}
             </ConsultationButton>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 font-semibold text-brand hover:bg-gray-100"
+            >
+              Get a Free Quote
+            </Link>
           </div>
         </div>
       </section>

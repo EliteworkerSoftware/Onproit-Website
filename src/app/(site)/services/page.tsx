@@ -5,7 +5,7 @@ import { CheckCircle2 } from "lucide-react";
 import ServiceCard from "@/components/ServiceCard";
 import ConsultationButton from "@/components/ConsultationButton";
 import { SERVICES_DATA } from "@/lib/services-data";
-import { SITE_URL } from "@/lib/constants";
+import { PHONE_DISPLAY, PHONE_HREF, SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "IT Services in Southern NJ & Philadelphia | ONPRO IT",
@@ -52,9 +52,12 @@ export default function ServicesOverviewPage() {
             ONPRO IT is the local technology partner that builds and supports it all for
             businesses in South Jersey and the Philadelphia Metro area.
           </p>
-          <div className="mt-8">
-            <ConsultationButton href="/contact" variant="primary">
-              Schedule a Consultation
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <ConsultationButton href={`tel:${PHONE_HREF}`} variant="primary">
+              Call Now: {PHONE_DISPLAY}
+            </ConsultationButton>
+            <ConsultationButton href="/contact" variant="outline-light">
+              Get a Free Quote
             </ConsultationButton>
           </div>
         </div>
@@ -117,10 +120,16 @@ export default function ServicesOverviewPage() {
             Contact us today for a free assessment of your current infrastructure and discover how
             we can help your business grow.
           </p>
-          <div className="mt-8">
-            <ConsultationButton href="/contact" variant="outline-light">
-              Schedule a Consultation
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <ConsultationButton href={`tel:${PHONE_HREF}`} variant="outline-light">
+              Call {PHONE_DISPLAY}
             </ConsultationButton>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 font-semibold text-brand hover:bg-gray-100"
+            >
+              Get a Free Quote
+            </Link>
           </div>
         </div>
       </section>

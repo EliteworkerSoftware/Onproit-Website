@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
 import ServiceCard from "@/components/ServiceCard";
-import { SERVICE_AREAS } from "@/lib/constants";
+import { PHONE_DISPLAY, PHONE_HREF, SERVICE_AREAS } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Managed IT Services Southern NJ & Philadelphia | ONPRO IT",
@@ -106,11 +106,11 @@ export default function HomePage() {
               business. Serving New Jersey, Pennsylvania, and Delaware.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
-              <ConsultationButton href="/contact" variant="primary">
-                Schedule a Discovery Call
+              <ConsultationButton href={`tel:${PHONE_HREF}`} variant="primary">
+                Call Now: {PHONE_DISPLAY}
               </ConsultationButton>
               <ConsultationButton href="/contact" variant="outline-light">
-                Contact Us
+                Get a Free Quote
               </ConsultationButton>
             </div>
           </div>
@@ -277,20 +277,20 @@ export default function HomePage() {
 
       <section className="bg-linear-to-br from-brand to-brand-dark py-20 text-white">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold">Ready to Upgrade Your Network Infrastructure?</h2>
+          <h2 className="text-3xl font-bold">Ready to Stop Juggling Vendors?</h2>
           <p className="mt-4 text-lg text-white/90">
-            Let&apos;s discuss how our structured cabling and local managed IT services can help
-            your business thrive. Schedule a free consultation today.
+            Tell us what you&apos;re building or what&apos;s broken, and we&apos;ll design, install,
+            and manage the fix. Free consultation, no obligation.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <ConsultationButton href="/contact" variant="outline-light">
-              Schedule a Call
+            <ConsultationButton href={`tel:${PHONE_HREF}`} variant="outline-light">
+              Call {PHONE_DISPLAY}
             </ConsultationButton>
             <Link
               href="/contact"
               className="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 font-semibold text-brand hover:bg-gray-100"
             >
-              Contact Us
+              Get a Free Quote
             </Link>
           </div>
         </div>
