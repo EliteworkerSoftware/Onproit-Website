@@ -15,6 +15,7 @@ const SERVICE_LINKS = [
   { title: "Cloud Solutions", href: "/services/cloud" },
   { title: "Data Backup & Recovery", href: "/services/backup-recovery" },
   { title: "Structured Cabling", href: "/services/cabling" },
+  { title: "AV & Conference Rooms", href: "/services/av-integration" },
   { title: "IT Consulting", href: "/services/consulting" },
   { title: "VoIP Phone Systems", href: "/services/voip" },
 ];

@@ -10,6 +10,7 @@ import {
   Headphones,
   Network,
   PhoneCall,
+  Presentation,
   ShieldCheck,
   Briefcase,
   Server,
@@ -24,13 +25,13 @@ import { SERVICE_AREAS } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Managed IT Services Southern NJ & Philadelphia | ONPRO IT",
   description:
-    "ONPRO IT provides managed IT services, structured cabling, cybersecurity, and smart home integration for businesses in Southern NJ, Philadelphia, and Delaware. One company. All systems integrated.",
+    "ONPRO IT designs, installs, and manages complete business technology environments — managed IT, structured cabling, VoIP, AV, and cybersecurity — for businesses in Southern NJ, Philadelphia, and Delaware.",
   keywords:
     "managed IT services NJ, IT support Southern NJ, structured cabling NJ, cybersecurity NJ, managed IT Philadelphia, MSP New Jersey",
   openGraph: {
     title: "Managed IT Services Southern NJ & Philadelphia | ONPRO IT",
     description:
-      "ONPRO IT provides managed IT services, structured cabling, cybersecurity, and smart home integration for businesses in Southern NJ, Philadelphia, and Delaware.",
+      "ONPRO IT designs, installs, and manages complete business technology environments for businesses in Southern NJ, Philadelphia, and Delaware.",
     url: "https://www.onproit.com/",
     siteName: "ONPRO IT",
     type: "website",
@@ -62,12 +63,14 @@ const VALUE_PROPS = [
 ];
 
 const SERVICE_CARDS = [
+  { title: "Managed IT Services", description: "24/7 monitoring, help desk support, and strategic planning for the systems we build.", href: "/services/managed-it", Icon: Server },
   { title: "Structured Cabling", description: "Professional installation of Cat6, Fiber Optic, and Low Voltage wiring for businesses in New Jersey, Delaware, and Philadelphia.", href: "/services/cabling", Icon: Cable },
-  { title: "Managed IT Helpdesk", description: "Round-the-clock remote support to resolve technical issues quickly.", href: "/services/it-support", Icon: Headphones },
+  { title: "IT Help Desk", description: "Round-the-clock remote support to resolve technical issues quickly.", href: "/services/it-support", Icon: Headphones },
   { title: "Cyber Security", description: "Comprehensive cybersecurity and security camera wiring to protect your organization.", href: "/services/cybersecurity", Icon: ShieldCheck },
   { title: "Cloud Solutions", description: "Seamless cloud migration and management for Microsoft 365 and Google Workspace.", href: "/services/cloud", Icon: Cloud },
   { title: "VoIP Phone Systems", description: "Modern business telephony solutions to keep your team connected anywhere.", href: "/services/voip", Icon: PhoneCall },
   { title: "Network Solutions", description: "Complete network design, WiFi setup, and infrastructure management for growing businesses.", href: "/services/network-wifi", Icon: Network },
+  { title: "AV & Conference Rooms", description: "Video conferencing, displays, and digital signage installed and integrated with your network.", href: "/services/av-integration", Icon: Presentation },
   { title: "Data Backup", description: "Secure disaster recovery and data protection strategies for peace of mind.", href: "/services/backup-recovery", Icon: HardDrive },
   { title: "IT Consulting", description: "Strategic IT planning and budgeting to align technology with your business goals.", href: "/services/consulting", Icon: Briefcase },
 ];
@@ -94,12 +97,13 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
           <div className="max-w-3xl">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              Your Local IT & Cabling Partner in New Jersey, Delaware & Philadelphia
+              We Design It. We Install It. We Manage It.
             </h1>
             <p className="mt-6 text-lg text-gray-300">
-              ONPRO IT delivers expert structured cabling, network installation, and managed IT
-              services for growing businesses. Serving Southern NJ, Central NJ, Delaware, and the
-              Philadelphia Metro area.
+              ONPRO IT is a full-scale technology partner for growing businesses — part managed IT
+              provider, part licensed integrator. We design your infrastructure, complete the
+              installation ourselves, and then manage and support it for the life of your
+              business. Serving New Jersey, Pennsylvania, and Delaware.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <ConsultationButton href="/contact" variant="primary">
@@ -114,40 +118,55 @@ export default function HomePage() {
       </section>
 
       <section className="bg-white py-20">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900">
-              Managed IT & Integrated Technology Solutions for South Jersey and Philadelphia
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-wide text-brand">
+              What Makes Us Different
+            </p>
+            <h2 className="mt-2 text-3xl font-bold text-gray-900">
+              A Standard IT Company Can&apos;t Do What We Do
             </h2>
             <p className="mt-4 text-gray-600">
-              OnPro IT is your dedicated partner for business technology, providing robust managed
-              IT services, structured cabling, and network infrastructure. We are proud to work
-              alongside our sister company, Elite Smart Home, to offer a complete spectrum of
-              technology solutions.
+              Most IT companies only manage whatever technology someone else already installed.
+              We&apos;re also the licensed integrator who designs and builds it in the first
+              place — cabling, networking, VoIP, and AV, completed in-house by our own
+              technicians. One company, accountable for your entire technology environment from
+              the first cable run to the help desk ticket five years from now.
             </p>
-            <p className="mt-4 text-gray-600">
-              While OnPro IT focuses on keeping your business connected and secure, Elite Smart
-              Home delivers premier automation, audio-video, and smart technology integration for
-              modern living and working spaces. Together, we are one technology group committed
-              to excellence in South Jersey and the Philadelphia Metro area.
-            </p>
-            <a
-              href="https://elitesmarthome.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center justify-center rounded-md bg-brand px-6 py-3 font-semibold text-white hover:bg-brand-dark"
-            >
-              Visit Elite Smart Home
-            </a>
           </div>
-          <div className="overflow-hidden rounded-xl border border-gray-200 shadow-lg">
-            <Image
-              src="/images/smart-home.png"
-              alt="Modern house with a view, representing smart home technology and integrated solutions"
-              width={1600}
-              height={764}
-              className="h-full w-full object-cover"
-            />
+          <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="rounded-xl bg-gray-50 p-8">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">
+                1
+              </div>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">Design</h3>
+              <p className="text-sm text-gray-600">
+                We architect your network, phone system, security, and cloud environment as one
+                connected plan — not a pile of point solutions from five different vendors.
+              </p>
+            </div>
+            <div className="rounded-xl bg-gray-50 p-8">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">
+                2
+              </div>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">Install</h3>
+              <p className="text-sm text-gray-600">
+                We complete the entire installation ourselves — structured cabling, network
+                hardware, VoIP phones, and conference room AV — with our own technicians, not a
+                subcontractor.
+              </p>
+            </div>
+            <div className="rounded-xl bg-gray-50 p-8">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">
+                3
+              </div>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">Manage</h3>
+              <p className="text-sm text-gray-600">
+                Once it&apos;s built, we don&apos;t walk away. Our help desk and security team
+                monitor, maintain, and support everything we installed for the life of your
+                business.
+              </p>
+            </div>
           </div>
         </div>
       </section>

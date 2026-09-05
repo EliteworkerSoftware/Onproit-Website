@@ -70,15 +70,19 @@ export default async function Footer() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white">Sister Company</h3>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white">Sister Companies</h3>
             <ul className="space-y-2 text-sm">
-              {SISTER_COMPANIES.map((c) => (
-                <li key={c.url}>
-                  <a href={c.url} target="_blank" rel="noopener noreferrer" className="hover:text-white">
-                    {c.name}
-                  </a>
-                </li>
-              ))}
+              {SISTER_COMPANIES.map((c) =>
+                c.url ? (
+                  <li key={c.name}>
+                    <a href={c.url} target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                      {c.name}
+                    </a>
+                  </li>
+                ) : (
+                  <li key={c.name}>{c.name}</li>
+                )
+              )}
             </ul>
           </div>
         </div>

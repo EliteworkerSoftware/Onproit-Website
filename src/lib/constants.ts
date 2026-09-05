@@ -14,7 +14,16 @@ export const ADDRESS = {
 export const ADDRESS_FULL = `${ADDRESS.street}, ${ADDRESS.city}, ${ADDRESS.state} ${ADDRESS.zip}`;
 
 export const SISTER_COMPANIES = [
-  { name: "Elite Smart Home", url: "https://elitesmarthome.com" },
+  {
+    name: "Elite Smart Home",
+    url: "https://elitesmarthome.com",
+    description: "Smart home automation, audio-video, and lighting control for residential and commercial spaces.",
+  },
+  {
+    name: "Elite Smart Security, LLC",
+    url: undefined,
+    description: "Security systems, access control, and surveillance for homes and businesses.",
+  },
 ];
 
 export const SERVICES = [
@@ -25,6 +34,7 @@ export const SERVICES = [
   { title: "VoIP Phone Systems", href: "/services/voip" },
   { title: "Network Solutions", href: "/services/network-wifi" },
   { title: "Data Backup & Recovery", href: "/services/backup-recovery" },
+  { title: "AV & Conference Rooms", href: "/services/av-integration" },
   { title: "IT Consulting", href: "/services/consulting" },
   { title: "Managed IT Services", href: "/services/managed-it" },
 ];

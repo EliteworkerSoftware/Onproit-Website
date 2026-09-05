@@ -7,6 +7,7 @@ import {
   Headphones,
   Network,
   PhoneCall,
+  Presentation,
   Server,
   ShieldCheck,
 } from "lucide-react";
@@ -25,6 +26,7 @@ export interface ServiceData {
   keywords: string;
   Icon: LucideIcon;
   heroImage: string;
+  secondaryImage?: string;
   intro: string;
   whatIsIt: string[];
   whoItsFor: string[];
@@ -50,13 +52,14 @@ export const SERVICES_DATA: ServiceData[] = [
   {
     slug: "managed-it",
     navTitle: "Managed IT Services",
-    h1: "Managed IT Services for Growing Businesses in NJ & PA",
+    h1: "Managed IT Services, Backed by the Team That Built Your Network",
     metaTitle: "Managed IT Services NJ | ONPRO IT",
     metaDescription:
       "ONPRO IT delivers fully managed IT services for businesses in Southern NJ, Philadelphia, and Delaware — proactive monitoring, help desk support, and strategic IT planning for one flat monthly rate.",
     keywords: "managed IT services NJ, MSP Southern NJ, managed service provider New Jersey",
     Icon: Server,
     heroImage: "/images/hero-managed-it.png",
+    secondaryImage: "/images/about-team.png",
     intro:
       "Stop worrying about technology and focus on your business. We provide proactive, flat-rate IT management for companies in South Jersey, Delaware, and the Philadelphia Metro area.",
     whatIsIt: [
@@ -118,6 +121,7 @@ export const SERVICES_DATA: ServiceData[] = [
     keywords: "IT help desk NJ, IT support Southern NJ, computer support New Jersey",
     Icon: Headphones,
     heroImage: "/images/hero-it-support.png",
+    secondaryImage: "/images/about-team.png",
     intro:
       "Fast, reliable, and local tech support for your business. From rapid remote fixes to hands-on onsite troubleshooting, we keep your team productive.",
     whatIsIt: [
@@ -171,6 +175,7 @@ export const SERVICES_DATA: ServiceData[] = [
     keywords: "cybersecurity NJ, cyber security Southern NJ, ransomware protection New Jersey",
     Icon: ShieldCheck,
     heroImage: "/images/hero-cybersecurity.png",
+    secondaryImage: "/images/about-team.png",
     intro:
       "Defend your organization against evolving digital threats. We provide enterprise-level security tailored for small and mid-sized businesses in the Tri-State area.",
     whatIsIt: [
@@ -224,6 +229,7 @@ export const SERVICES_DATA: ServiceData[] = [
     keywords: "network installation NJ, WiFi setup Southern NJ, business network New Jersey",
     Icon: Network,
     heroImage: "/images/hero-network-wifi.png",
+    secondaryImage: "/images/hero-cabling.png",
     intro:
       "Build a foundation for success with robust, high-speed network infrastructure. We eliminate dead zones and ensure secure, seamless connectivity for your team.",
     whatIsIt: [
@@ -278,6 +284,7 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Cloud,
     heroImage:
       "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
+    secondaryImage: "/images/about-team.png",
     intro:
       "Modernize your business with secure, scalable cloud solutions. We simplify your transition to the cloud so you can work securely from anywhere.",
     whatIsIt: [
@@ -331,6 +338,7 @@ export const SERVICES_DATA: ServiceData[] = [
     keywords: "data backup NJ, disaster recovery Southern NJ, business continuity New Jersey",
     Icon: HardDrive,
     heroImage: "/images/hero-backup-recovery.png",
+    secondaryImage: "/images/about-team.png",
     intro:
       "Protect your business data from ransomware, hardware failure, and human error. We ensure you can recover fast and keep working no matter what happens.",
     whatIsIt: [
@@ -384,6 +392,7 @@ export const SERVICES_DATA: ServiceData[] = [
     keywords: "structured cabling NJ, Cat6 cabling NJ, fiber optic NJ, network cabling installation",
     Icon: Cable,
     heroImage: "/images/hero-cabling.png",
+    secondaryImage: "/images/hero-network-wifi.png",
     intro:
       "The physical backbone of your business network. We provide professional Cat6 and fiber optic installation, testing, and certification for offices and new construction in NJ, PA, and DE.",
     whatIsIt: [
@@ -428,6 +437,65 @@ export const SERVICES_DATA: ServiceData[] = [
     ],
   },
   {
+    slug: "av-integration",
+    navTitle: "AV & Conference Room Systems",
+    h1: "Audio-Visual Integration for Conference Rooms & Workspaces",
+    metaTitle: "AV Installation & Conference Room Systems NJ | ONPRO IT",
+    metaDescription:
+      "Conference room displays, video conferencing, digital signage, and sound system installation for businesses in Southern NJ, Philadelphia, and Delaware — designed and installed by ONPRO IT.",
+    keywords: "AV installation NJ, conference room technology, video conferencing setup, digital signage NJ",
+    Icon: Presentation,
+    heroImage: "/images/about-conference-room.jpg",
+    secondaryImage: "/images/about-team.png",
+    intro:
+      "Meetings shouldn't start with ten minutes of someone fumbling with an HDMI cable. We design and install the audio-visual systems that make your conference rooms, huddle spaces, and lobbies actually work — and because we're already your network and IT provider, everything talks to everything else on day one.",
+    whatIsIt: [
+      "Most AV vendors show up once, mount a TV, plug in a soundbar, and leave — and if the video call drops or the display won't wake up six months later, you're on your own trying to figure out whether it's the display, the network, or the software. Because ONPRO IT designs your network, your WiFi, and your AV together as one system, that failure mode mostly disappears.",
+      "We handle conference room video conferencing (Teams Rooms, Zoom Rooms), display and projector mounting, ceiling and soundbar audio, digital signage for lobbies and break rooms, and the low-voltage cabling and network configuration that ties it all together — one crew, one invoice, one company to call when something's wrong.",
+    ],
+    whoItsFor: [
+      "You're outfitting a new office or renovating existing conference rooms",
+      "Video calls in your conference room are a constant struggle with cables, adapters, or dropped connections",
+      "You want digital signage in your lobby, break room, or retail space",
+      "You're standardizing multiple rooms so every space works the same way for every employee",
+    ],
+    risks: [
+      "Wasted meeting time — every minute spent troubleshooting a display or dial-in is a room full of people getting paid to wait",
+      "Inconsistent rooms — when every conference room is configured differently, employees never know what to expect walking in",
+      "Vendor finger-pointing — a separate AV vendor and IT provider can each blame the other when a system stops working",
+      "Outdated technology — legacy projectors and wired-only rooms make hybrid meetings frustrating for remote participants",
+    ],
+    howWeDeliver: [
+      "Room Design — we plan camera placement, display size, and audio coverage based on the actual room dimensions and how your team meets",
+      "Professional Installation — in-wall and in-ceiling cabling, display mounting, and equipment rack setup, all consistent across every room",
+      "Network Integration — because we manage your network too, we configure VLANs and bandwidth priority so video calls stay clear even when the office WiFi is busy",
+    ],
+    benefits: [
+      "Walk-in-and-go simplicity — one-touch meeting start on Teams or Zoom Rooms, no adapters or guesswork",
+      "Consistency — every conference room configured and labeled the same way, so training is a non-issue",
+      "One point of accountability — the same company that installed your AV also manages your network, so there's no vendor to point fingers at",
+      "Scalable — add new rooms or locations using the same standardized design",
+    ],
+    areasServed: SERVICE_AREA_LIST,
+    faqs: [
+      {
+        question: "Do you install video conferencing systems for Microsoft Teams or Zoom Rooms?",
+        answer:
+          "Yes — we design and install certified Teams Rooms and Zoom Rooms setups, including cameras, microphones, displays, and the room controller, configured for one-touch meeting joins.",
+      },
+      {
+        question: "Can you fix our existing conference room instead of a full replacement?",
+        answer:
+          "Often, yes. Many conference room problems come down to network configuration or an underpowered device rather than the hardware itself — we start with an assessment before recommending a full teardown.",
+      },
+      {
+        question: "Do you handle digital signage as well as conference rooms?",
+        answer:
+          "Yes — lobby displays, break room signage, and retail digital menus are all part of our AV integration work, managed through the same network infrastructure we already support for you.",
+      },
+    ],
+  },
+  {
     slug: "consulting",
     navTitle: "IT Consulting",
     h1: "IT Consulting & vCIO Services",
@@ -438,6 +506,7 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Briefcase,
     heroImage:
       "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
+    secondaryImage: "/images/about-team.png",
     intro:
       "Technology leadership without the C-suite salary. Strategic planning to help you make informed decisions, control costs, and align your IT roadmap with your business goals.",
     whatIsIt: [
@@ -491,6 +560,7 @@ export const SERVICES_DATA: ServiceData[] = [
     keywords: "VoIP NJ, business phone systems Southern NJ, VoIP installation New Jersey",
     Icon: PhoneCall,
     heroImage: "/images/hero-voip.jpg",
+    secondaryImage: "/images/voip-team.png",
     intro:
       "Replace your outdated phone lines with a flexible, cloud-based communication platform that travels with you everywhere.",
     whatIsIt: [

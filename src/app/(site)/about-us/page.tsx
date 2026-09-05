@@ -81,45 +81,46 @@ export default function AboutUsPage() {
             </div>
             <div className="order-1 lg:order-2">
               <h2 className="text-3xl font-bold text-gray-900">
-                One Technology Group Serving Residential and Business Environments
+                One Call for Every System in the Building
               </h2>
               <p className="mt-4 text-gray-600">
-                Technology doesn&apos;t stop at the office door. As part of a unified technology
-                group with Elite Smart Home, we bridge the gap between commercial reliability and
-                residential comfort. Our combined expertise allows us to service every aspect of
-                your digital life.
+                Outfitting a new office, restaurant, or retail space usually means coordinating a
+                network installer, an AV company, a security integrator, and a smart-automation
+                vendor separately — and hoping they all show up on schedule and agree on how the
+                pieces fit together.
               </p>
               <p className="mt-4 text-gray-600">
-                From high-performance business networks and security systems to smart home
-                automation and luxury entertainment setups, our certified team delivers seamless
-                integration across all environments in New Jersey, Pennsylvania, and Delaware.
+                Between ONPRO IT and our sister companies, Elite Smart Home and Elite Smart
+                Security, one group can handle all of it: networking, IT, AV, lighting and
+                automation, and security and access control — designed as one system instead of
+                four separate vendors pointing fingers at each other.
               </p>
             </div>
           </div>
-          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
             <div className="rounded-xl bg-white p-6 shadow-sm">
               <ShieldCheck className="h-8 w-8 text-brand" />
               <h3 className="mt-4 text-lg font-semibold text-gray-900">ONPRO IT</h3>
               <p className="mt-2 text-sm text-gray-600">
-                Managed IT, structured cabling, cybersecurity, and cloud services for businesses.
+                Managed IT, networking, structured cabling, VoIP, AV, and cybersecurity for
+                businesses.
               </p>
             </div>
             {SISTER_COMPANIES.map((c) => (
-              <div key={c.url} className="rounded-xl bg-white p-6 shadow-sm">
+              <div key={c.name} className="rounded-xl bg-white p-6 shadow-sm">
                 <Users className="h-8 w-8 text-brand" />
                 <h3 className="mt-4 text-lg font-semibold text-gray-900">{c.name}</h3>
-                <p className="mt-2 text-sm text-gray-600">
-                  Smart home automation, audio-video, and integrated technology for residential
-                  and commercial spaces.
-                </p>
-                <a
-                  href={c.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 inline-block text-sm font-medium text-brand hover:underline"
-                >
-                  Visit {c.name} →
-                </a>
+                <p className="mt-2 text-sm text-gray-600">{c.description}</p>
+                {c.url && (
+                  <a
+                    href={c.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 inline-block text-sm font-medium text-brand hover:underline"
+                  >
+                    Visit {c.name} →
+                  </a>
+                )}
               </div>
             ))}
           </div>

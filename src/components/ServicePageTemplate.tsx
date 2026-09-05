@@ -79,22 +79,31 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
         </div>
       </section>
 
-      <section className="bg-white py-16">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">
-            What Is {service.navTitle} and Why Do You Need It?
-          </h2>
-          <div className="mt-6 space-y-4 text-gray-600">
-            {service.whatIsIt.map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
+      <section className="bg-white py-16 overflow-hidden">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900">What {service.navTitle} Actually Involves</h2>
+            <div className="mt-6 space-y-4 text-gray-600">
+              {service.whatIsIt.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+          </div>
+          <div className="overflow-hidden rounded-2xl shadow-xl">
+            <Image
+              src={service.heroImage}
+              alt={service.h1}
+              width={1000}
+              height={750}
+              className="h-auto w-full object-cover"
+            />
           </div>
         </div>
       </section>
 
       <section className="bg-gray-50 py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">Who Is This Service For?</h2>
+          <h2 className="text-3xl font-bold text-gray-900">Is This the Right Fit for Your Business?</h2>
           <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {service.whoItsFor.map((item) => (
               <li key={item} className="flex items-start gap-3 rounded-lg bg-white p-4 shadow-sm">
@@ -106,27 +115,34 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
         </div>
       </section>
 
-      <section className="bg-white py-16">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">
-            The Business Risks of Going Without {service.navTitle}
-          </h2>
-          <ul className="mt-6 space-y-3">
-            {service.risks.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-gray-600">
-                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
+      <section className="bg-white py-16 overflow-hidden">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div className="order-2 overflow-hidden rounded-2xl shadow-xl lg:order-1">
+            <Image
+              src={service.secondaryImage ?? "/images/about-team.png"}
+              alt={`ONPRO IT team delivering ${service.navTitle.toLowerCase()}`}
+              width={1000}
+              height={750}
+              className="h-auto w-full object-cover"
+            />
+          </div>
+          <div className="order-1 lg:order-2">
+            <h2 className="text-3xl font-bold text-gray-900">What It Costs You to Go Without It</h2>
+            <ul className="mt-6 space-y-3">
+              {service.risks.map((item) => (
+                <li key={item} className="flex items-start gap-3 text-gray-600">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
       <section className="bg-gray-50 py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">
-            How ONPRO IT Delivers {service.navTitle}
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-900">How We Make It Happen</h2>
           <ul className="mt-6 space-y-3">
             {service.howWeDeliver.map((item) => (
               <li key={item} className="flex items-start gap-3 text-gray-600">
@@ -140,7 +156,7 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
 
       <section className="bg-white py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">Business Outcomes & Benefits</h2>
+          <h2 className="text-3xl font-bold text-gray-900">What You Get</h2>
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {service.benefits.map((item) => (
               <div key={item} className="rounded-lg border border-brand/20 bg-brand/5 p-4">
@@ -153,9 +169,7 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
 
       <section className="bg-gray-50 py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">
-            Serving Businesses Across {service.areasServed.length > 2 ? "the Region" : service.areasServed.join(" and ")}
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-900">Where We Work</h2>
           <div className="mt-6 flex flex-wrap gap-3">
             {service.areasServed.map((area) => (
               <span
@@ -186,7 +200,7 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
 
       <section className="bg-white py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">Related Services</h2>
+          <h2 className="text-3xl font-bold text-gray-900">Other Ways We Can Help</h2>
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
             {relatedServices.map((s) => (
               <Link
@@ -221,7 +235,7 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
 
       <section className="bg-linear-to-br from-brand to-brand-dark py-16 text-white">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold">Ready to Get Started?</h2>
+          <h2 className="text-3xl font-bold">Let&apos;s Build It</h2>
           <p className="mt-4 text-white/90">
             Talk to a local ONPRO IT technology advisor about {service.navTitle.toLowerCase()} for
             your business.

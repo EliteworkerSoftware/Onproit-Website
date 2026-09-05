@@ -45,12 +45,12 @@ export default function ServicesOverviewPage() {
         />
         <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Comprehensive IT Solutions for Growing Businesses
+            Every System, Designed, Installed & Managed by One Team
           </h1>
           <p className="mt-6 text-lg text-gray-300">
-            From day-to-day support to strategic infrastructure planning, ONPRO IT is the local
-            technology partner that helps businesses in South Jersey and the Philadelphia Metro
-            area thrive.
+            From the network cabling in your walls to the help desk ticket you file next year,
+            ONPRO IT is the local technology partner that builds and supports it all for
+            businesses in South Jersey and the Philadelphia Metro area.
           </p>
           <div className="mt-8">
             <ConsultationButton href="/contact" variant="primary">

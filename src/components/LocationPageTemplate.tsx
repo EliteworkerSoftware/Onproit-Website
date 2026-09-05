@@ -82,18 +82,31 @@ export default function LocationPageTemplate({ location }: { location: LocationD
         </div>
       </section>
 
-      <section className="bg-gray-50 py-16">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">
-            Why Local Businesses Choose ONPRO IT for {serviceLabel}
-          </h2>
-          <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {location.whyChoose.map((item) => (
-              <li key={item} className="rounded-lg bg-white p-4 text-sm text-gray-700 shadow-sm">
-                {item}
-              </li>
-            ))}
-          </ul>
+      <section className="bg-gray-50 py-16 overflow-hidden">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900">
+              Why Local Businesses Call Us Instead of a Typical {serviceLabel} Company
+            </h2>
+            <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {location.whyChoose.map((item) => (
+                <li key={item} className="rounded-lg bg-white p-4 text-sm text-gray-700 shadow-sm">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          {location.heroImage && (
+            <div className="overflow-hidden rounded-2xl shadow-xl">
+              <Image
+                src={location.heroImage}
+                alt={location.h1}
+                width={1000}
+                height={750}
+                className="h-auto w-full object-cover"
+              />
+            </div>
+          )}
         </div>
       </section>
 
@@ -113,7 +126,7 @@ export default function LocationPageTemplate({ location }: { location: LocationD
 
       <section className="bg-white py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">Related Services</h2>
+          <h2 className="text-3xl font-bold text-gray-900">What Else We Design, Install & Manage</h2>
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
             {relatedServices.map((s) => (
               <Link
@@ -142,7 +155,7 @@ export default function LocationPageTemplate({ location }: { location: LocationD
 
       <section className="bg-linear-to-br from-brand to-brand-dark py-16 text-white">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold">Ready to Get Started?</h2>
+          <h2 className="text-3xl font-bold">Let&apos;s Build It</h2>
           <p className="mt-4 text-white/90">
             Talk to your local ONPRO IT team about {serviceLabel.toLowerCase()} for your business.
           </p>
