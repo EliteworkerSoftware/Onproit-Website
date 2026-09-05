@@ -1,7 +1,9 @@
+import Link from "next/link";
 import Image from "next/image";
 import { CheckCircle2, MapPin } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
-import type { ServiceData } from "@/lib/services-data";
+import { SERVICES_DATA, type ServiceData } from "@/lib/services-data";
+import { LOCATIONS_DATA } from "@/lib/locations-data";
 import { SITE_URL } from "@/lib/constants";
 
 export default function ServicePageTemplate({ service }: { service: ServiceData }) {
@@ -25,6 +27,21 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
     })),
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Services", item: `${SITE_URL}/services` },
+      { "@type": "ListItem", position: 3, name: service.navTitle, item: `${SITE_URL}/services/${service.slug}` },
+    ],
+  };
+
+  const relatedServices = SERVICES_DATA.filter((s) => s.slug !== service.slug).slice(0, 3);
+  const relatedLocations = LOCATIONS_DATA.filter((l) =>
+    service.slug === "cabling" ? l.focus === "cabling" : l.focus === "managed-it"
+  ).slice(0, 3);
+
   return (
     <>
       <script
@@ -34,6 +51,10 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
       <section className="relative overflow-hidden bg-dark py-20 text-white">
@@ -160,6 +181,41 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-16">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900">Related Services</h2>
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {relatedServices.map((s) => (
+              <Link
+                key={s.slug}
+                href={`/services/${s.slug}`}
+                className="rounded-lg border border-gray-200 p-4 text-sm font-medium text-gray-800 hover:border-brand hover:text-brand"
+              >
+                {s.navTitle}
+              </Link>
+            ))}
+          </div>
+          {relatedLocations.length > 0 && (
+            <>
+              <h3 className="mt-10 text-lg font-semibold text-gray-900">
+                {service.navTitle} By Location
+              </h3>
+              <div className="mt-4 flex flex-wrap gap-3">
+                {relatedLocations.map((l) => (
+                  <Link
+                    key={l.path}
+                    href={`/${l.path}`}
+                    className="rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-700 hover:border-brand hover:text-brand"
+                  >
+                    {l.h1.replace(" | ONPRO IT", "")}
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
 
