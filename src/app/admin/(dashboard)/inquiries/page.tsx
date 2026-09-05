@@ -72,6 +72,32 @@ export default function AdminInquiriesPage() {
 
   const filtered = (messages ?? []).filter((m) => (tab === "archived" ? m.archived : !m.archived));
 
+  // Every field is already fully visible in the card — there's no separate
+  // "open" step — so viewing the inbox tab is what "viewing" a lead means.
+  // Clear the New badge for whatever's currently on screen, a beat after
+  // render so it doesn't disappear before the admin has actually seen it.
+  useEffect(() => {
+    if (tab !== "inbox") return;
+    const unread = filtered.filter((m) => !m.read);
+    if (unread.length === 0) return;
+
+    const timer = setTimeout(() => {
+      setMessages((prev) =>
+        prev ? prev.map((m) => (unread.some((u) => u.id === m.id) ? { ...m, read: true } : m)) : prev
+      );
+      unread.forEach((m) => {
+        fetch(`/api/admin/inquiries/${m.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ read: true }),
+        }).catch(() => {});
+      });
+    }, 1500);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, messages]);
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900">Inquiries</h1>
