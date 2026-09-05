@@ -15,11 +15,11 @@ export default async function Footer() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <Image
-              src="/images/logo.svg"
+              src="/images/logo-white.svg"
               alt="ONPRO IT logo"
-              width={180}
-              height={40}
-              className="mb-4 h-10 w-auto"
+              width={140}
+              height={31}
+              className="mb-4 h-7 w-auto"
             />
             <p className="mb-4 text-sm text-gray-400">
               Professional managed IT services, structured cabling, and network installation for

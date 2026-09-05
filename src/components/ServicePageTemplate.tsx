@@ -3,7 +3,6 @@ import Image from "next/image";
 import { CheckCircle2, MapPin } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
 import { SERVICES_DATA, type ServiceData } from "@/lib/services-data";
-import { LOCATIONS_DATA } from "@/lib/locations-data";
 import { PHONE_DISPLAY, PHONE_HREF, SITE_URL } from "@/lib/constants";
 
 export default function ServicePageTemplate({ service }: { service: ServiceData }) {
@@ -38,9 +37,6 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
   };
 
   const relatedServices = SERVICES_DATA.filter((s) => s.slug !== service.slug).slice(0, 3);
-  const relatedLocations = LOCATIONS_DATA.filter((l) =>
-    service.slug === "cabling" ? l.focus === "cabling" : l.focus === "managed-it"
-  ).slice(0, 3);
 
   return (
     <>
@@ -92,27 +88,14 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
               ))}
             </div>
           </div>
-          <div className="relative animate-fade-up-delay">
-            <div className="overflow-hidden rounded-2xl shadow-xl">
-              <Image
-                src={service.heroImage}
-                alt={service.h1}
-                width={1000}
-                height={750}
-                className="h-auto w-full object-cover"
-              />
-            </div>
-            {service.accentImage && (
-              <div className="absolute -bottom-8 -left-8 hidden h-32 w-32 rotate-[-4deg] overflow-hidden rounded-xl border-4 border-white shadow-2xl sm:block">
-                <Image
-                  src={service.accentImage}
-                  alt="ONPRO IT installed networking hardware"
-                  width={200}
-                  height={200}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            )}
+          <div className="animate-fade-up-delay overflow-hidden rounded-2xl shadow-xl">
+            <Image
+              src={service.heroImage}
+              alt={service.h1}
+              width={1000}
+              height={750}
+              className="h-auto w-full object-cover"
+            />
           </div>
         </div>
       </section>
@@ -133,27 +116,14 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
 
       <section className="bg-white py-16 overflow-hidden">
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <div className="relative order-2 animate-fade-up lg:order-1">
-            <div className="overflow-hidden rounded-2xl shadow-xl">
-              <Image
-                src={service.secondaryImage ?? "/images/about-team.png"}
-                alt={`ONPRO IT team delivering ${service.navTitle.toLowerCase()}`}
-                width={1000}
-                height={750}
-                className="h-auto w-full object-cover"
-              />
-            </div>
-            {service.accentImage && (
-              <div className="absolute -top-6 -right-6 hidden h-28 w-28 rotate-[5deg] overflow-hidden rounded-xl border-4 border-white shadow-2xl sm:block">
-                <Image
-                  src={service.accentImage}
-                  alt="ONPRO IT networking equipment"
-                  width={200}
-                  height={200}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            )}
+          <div className="order-2 animate-fade-up overflow-hidden rounded-2xl shadow-xl lg:order-1">
+            <Image
+              src={service.secondaryImage ?? "/images/about-team.png"}
+              alt={`ONPRO IT team delivering ${service.navTitle.toLowerCase()}`}
+              width={1000}
+              height={750}
+              className="h-auto w-full object-cover"
+            />
           </div>
           <div className="order-1 animate-fade-up-delay lg:order-2">
             <h2 className="text-3xl font-bold text-gray-900">What It Costs You to Go Without It</h2>
@@ -241,24 +211,6 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
               </Link>
             ))}
           </div>
-          {relatedLocations.length > 0 && (
-            <>
-              <h3 className="mt-10 text-lg font-semibold text-gray-900">
-                {service.navTitle} By Location
-              </h3>
-              <div className="mt-4 flex flex-wrap gap-3">
-                {relatedLocations.map((l) => (
-                  <Link
-                    key={l.path}
-                    href={`/${l.path}`}
-                    className="rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-700 hover:border-brand hover:text-brand"
-                  >
-                    {l.h1.replace(" | ONPRO IT", "")}
-                  </Link>
-                ))}
-              </div>
-            </>
-          )}
         </div>
       </section>
 

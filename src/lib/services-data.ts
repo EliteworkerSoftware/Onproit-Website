@@ -27,7 +27,6 @@ export interface ServiceData {
   Icon: LucideIcon;
   heroImage: string;
   secondaryImage?: string;
-  accentImage?: string;
   intro: string;
   whatIsIt: string[];
   whoItsFor: string[];
@@ -37,16 +36,6 @@ export interface ServiceData {
   areasServed: string[];
   faqs: ServiceFaq[];
 }
-
-// Real, freely-licensed hardware photos used as accent images to break up
-// the service page layout — swap these for actual job-site photos later.
-export const HARDWARE_PHOTOS = {
-  serverRack: "https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?fm=jpg&q=80&w=800&auto=format&fit=crop",
-  networkSwitch: "https://images.unsplash.com/photo-1680691257251-5fead813b73e?fm=jpg&q=80&w=800&auto=format&fit=crop",
-  wifiRouter: "https://images.unsplash.com/photo-1750711158632-5273ec9b9b86?fm=jpg&q=80&w=800&auto=format&fit=crop",
-  cabling: "https://images.unsplash.com/photo-1729549223893-b340db51e577?fm=jpg&q=80&w=800&auto=format&fit=crop",
-  voipPhone: "https://images.unsplash.com/photo-1598978655802-813b220e53ff?fm=jpg&q=80&w=800&auto=format&fit=crop",
-};
 
 // Single canonical list reused by every service page so "areas we serve" is
 // consistent site-wide instead of each service inventing its own list/format.
@@ -71,7 +60,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Server,
     heroImage: "/images/hero-managed-it.png",
     secondaryImage: "/images/about-team.png",
-    accentImage: HARDWARE_PHOTOS.serverRack,
     intro:
       "Stop worrying about technology and focus on your business. We provide proactive, flat-rate IT management for companies in South Jersey, Delaware, and the Philadelphia Metro area.",
     whatIsIt: [
@@ -134,7 +122,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Headphones,
     heroImage: "/images/hero-it-support.png",
     secondaryImage: "/images/about-team.png",
-    accentImage: HARDWARE_PHOTOS.networkSwitch,
     intro:
       "Fast, reliable, and local tech support for your business. From rapid remote fixes to hands-on onsite troubleshooting, we keep your team productive.",
     whatIsIt: [
@@ -189,7 +176,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: ShieldCheck,
     heroImage: "/images/hero-cybersecurity.png",
     secondaryImage: "/images/about-team.png",
-    accentImage: HARDWARE_PHOTOS.serverRack,
     intro:
       "Defend your organization against evolving digital threats. We provide enterprise-level security tailored for small and mid-sized businesses in the Tri-State area.",
     whatIsIt: [
@@ -244,7 +230,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Network,
     heroImage: "/images/hero-network-wifi.png",
     secondaryImage: "/images/hero-cabling.png",
-    accentImage: HARDWARE_PHOTOS.wifiRouter,
     intro:
       "Build a foundation for success with robust, high-speed network infrastructure. We eliminate dead zones and ensure secure, seamless connectivity for your team.",
     whatIsIt: [
@@ -300,7 +285,6 @@ export const SERVICES_DATA: ServiceData[] = [
     heroImage:
       "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
     secondaryImage: "/images/about-team.png",
-    accentImage: HARDWARE_PHOTOS.serverRack,
     intro:
       "Modernize your business with secure, scalable cloud solutions. We simplify your transition to the cloud so you can work securely from anywhere.",
     whatIsIt: [
@@ -355,7 +339,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: HardDrive,
     heroImage: "/images/hero-backup-recovery.png",
     secondaryImage: "/images/about-team.png",
-    accentImage: HARDWARE_PHOTOS.serverRack,
     intro:
       "Protect your business data from ransomware, hardware failure, and human error. We ensure you can recover fast and keep working no matter what happens.",
     whatIsIt: [
@@ -464,7 +447,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Presentation,
     heroImage: "/images/about-conference-room.jpg",
     secondaryImage: "/images/about-team.png",
-    accentImage: HARDWARE_PHOTOS.networkSwitch,
     intro:
       "Meetings shouldn't start with ten minutes of someone fumbling with an HDMI cable. We design and install the audio-visual systems that make your conference rooms, huddle spaces, and lobbies actually work — and because we're already your network and IT provider, everything talks to everything else on day one.",
     whatIsIt: [
@@ -525,7 +507,6 @@ export const SERVICES_DATA: ServiceData[] = [
     heroImage:
       "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
     secondaryImage: "/images/about-team.png",
-    accentImage: HARDWARE_PHOTOS.networkSwitch,
     intro:
       "Technology leadership without the C-suite salary. Strategic planning to help you make informed decisions, control costs, and align your IT roadmap with your business goals.",
     whatIsIt: [

@@ -2,8 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
-import { LOCATIONS_DATA, type LocationData } from "@/lib/locations-data";
-import { HARDWARE_PHOTOS, SERVICES_DATA } from "@/lib/services-data";
+import type { LocationData } from "@/lib/locations-data";
+import { SERVICES_DATA } from "@/lib/services-data";
 import { PHONE_DISPLAY, PHONE_HREF, SITE_URL } from "@/lib/constants";
 
 export default function LocationPageTemplate({ location }: { location: LocationData }) {
@@ -31,8 +31,6 @@ export default function LocationPageTemplate({ location }: { location: LocationD
   const relatedServiceSlugs =
     location.focus === "cabling" ? ["cabling", "network-wifi"] : ["managed-it", "it-support", "cybersecurity"];
   const relatedServices = SERVICES_DATA.filter((s) => relatedServiceSlugs.includes(s.slug));
-  const otherLocations = LOCATIONS_DATA.filter((l) => l.path !== location.path).slice(0, 4);
-  const accentImage = location.focus === "cabling" ? HARDWARE_PHOTOS.cabling : HARDWARE_PHOTOS.serverRack;
 
   return (
     <>
@@ -101,25 +99,14 @@ export default function LocationPageTemplate({ location }: { location: LocationD
             </ul>
           </div>
           {location.heroImage && (
-            <div className="relative animate-fade-up-delay">
-              <div className="overflow-hidden rounded-2xl shadow-xl">
-                <Image
-                  src={location.heroImage}
-                  alt={location.h1}
-                  width={1000}
-                  height={750}
-                  className="h-auto w-full object-cover"
-                />
-              </div>
-              <div className="absolute -bottom-8 -left-8 hidden h-32 w-32 rotate-[-4deg] overflow-hidden rounded-xl border-4 border-white shadow-2xl sm:block">
-                <Image
-                  src={accentImage}
-                  alt="ONPRO IT installed networking hardware"
-                  width={200}
-                  height={200}
-                  className="h-full w-full object-cover"
-                />
-              </div>
+            <div className="animate-fade-up-delay overflow-hidden rounded-2xl shadow-xl">
+              <Image
+                src={location.heroImage}
+                alt={location.h1}
+                width={1000}
+                height={750}
+                className="h-auto w-full object-cover"
+              />
             </div>
           )}
         </div>
@@ -150,18 +137,6 @@ export default function LocationPageTemplate({ location }: { location: LocationD
                 className="rounded-lg border border-gray-200 p-4 text-sm font-medium text-gray-800 hover:border-brand hover:text-brand"
               >
                 {s.navTitle}
-              </Link>
-            ))}
-          </div>
-          <h3 className="mt-10 text-lg font-semibold text-gray-900">Other Areas We Serve</h3>
-          <div className="mt-4 flex flex-wrap gap-3">
-            {otherLocations.map((l) => (
-              <Link
-                key={l.path}
-                href={`/${l.path}`}
-                className="rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-700 hover:border-brand hover:text-brand"
-              >
-                {l.h1.replace(" | ONPRO IT", "")}
               </Link>
             ))}
           </div>
