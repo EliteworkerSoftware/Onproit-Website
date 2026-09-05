@@ -9,6 +9,7 @@ export interface SiteSettings {
   hours_weekdays: string;
   hours_saturday: string;
   hours_sunday: string;
+  contact_notification_emails: string;
 }
 
 export const SETTINGS_KEYS = [
@@ -18,6 +19,7 @@ export const SETTINGS_KEYS = [
   "hours_weekdays",
   "hours_saturday",
   "hours_sunday",
+  "contact_notification_emails",
 ] as const;
 
 const FALLBACK: SiteSettings = {
@@ -27,7 +29,17 @@ const FALLBACK: SiteSettings = {
   hours_weekdays: "9:00 AM - 5:00 PM",
   hours_saturday: "Closed",
   hours_sunday: "Closed",
+  contact_notification_emails: EMAIL,
 };
+
+// Splits the comma-separated contact_notification_emails setting into a
+// clean array of addresses, used when sending the lead-notification email.
+export function parseNotificationEmails(value: string): string[] {
+  return value
+    .split(",")
+    .map((e) => e.trim())
+    .filter(Boolean);
+}
 
 // app_settings is a real, shared key-value table (44+ rows covering things
 // well beyond this site) — only the 6 keys above are this app's concern.

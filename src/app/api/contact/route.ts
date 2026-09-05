@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
 
     if (dbError) {
       console.error("Supabase insert error:", dbError);
-      return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+      return NextResponse.json({ error: "Something went wrong", debug: dbError.message }, { status: 500 });
     }
 
     // Team notification runs after the response is already sent — via
@@ -76,6 +76,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Contact form error:", err);
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong", debug: err instanceof Error ? err.message : String(err) },
+      { status: 500 }
+    );
   }
 }
