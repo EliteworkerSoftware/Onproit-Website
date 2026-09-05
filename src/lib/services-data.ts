@@ -388,7 +388,7 @@ export const SERVICES_DATA: ServiceData[] = [
     h1: "Structured Cabling & Low Voltage Wiring",
     metaTitle: "Structured Cabling Installation NJ | ONPRO IT",
     metaDescription:
-      "Cat6, fiber optic, and structured cabling installation for businesses across New Jersey, Philadelphia, and Delaware. Licensed, certified, and code-compliant.",
+      "Cat6, fiber optic, and structured cabling installation for businesses across New Jersey, Philadelphia, and Delaware. Certified and code-compliant.",
     keywords: "structured cabling NJ, Cat6 cabling NJ, fiber optic NJ, network cabling installation",
     Icon: Cable,
     heroImage: "/images/hero-cabling.png",

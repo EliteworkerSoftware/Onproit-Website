@@ -218,7 +218,7 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold">Let&apos;s Build It</h2>
           <p className="mt-4 text-white/90">
-            Talk to a local ONPRO IT technology advisor about {service.navTitle.toLowerCase()} for
+            Talk to an ONPRO IT technology advisor about {service.navTitle.toLowerCase()} for
             your business.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">

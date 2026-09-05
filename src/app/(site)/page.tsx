@@ -101,7 +101,7 @@ export default function HomePage() {
             </h1>
             <p className="mt-6 text-lg text-gray-300">
               ONPRO IT is a full-scale technology partner for growing businesses — part managed IT
-              provider, part licensed integrator. We design your infrastructure, complete the
+              provider, part technology integrator. We design your infrastructure, complete the
               installation ourselves, and then manage and support it for the life of your
               business. Serving New Jersey, Pennsylvania, and Delaware.
             </p>
@@ -128,7 +128,7 @@ export default function HomePage() {
             </h2>
             <p className="mt-4 text-gray-600">
               Most IT companies only manage whatever technology someone else already installed.
-              We&apos;re also the licensed integrator who designs and builds it in the first
+              We&apos;re also the technology integrator who designs and builds it in the first
               place — cabling, networking, VoIP, and AV, completed in-house by our own
               technicians. One company, accountable for your entire technology environment from
               the first cable run to the help desk ticket five years from now.

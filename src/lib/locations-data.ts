@@ -191,7 +191,7 @@ export const LOCATIONS_DATA: LocationData[] = [
     h1: "New Jersey Structured Cabling & Network Installation",
     metaTitle: "Structured Cabling Services in New Jersey | ONPRO IT",
     metaDescription:
-      "Cat6 and fiber optic structured cabling installation for businesses across New Jersey. Licensed, certified, and code-compliant. Get a quote from ONPRO IT.",
+      "Cat6 and fiber optic structured cabling installation for businesses across New Jersey. Certified and code-compliant. Get a quote from ONPRO IT.",
     keywords: "structured cabling NJ, network cabling New Jersey, Cat6 installation NJ",
     intro:
       "Your trusted local partner for low-voltage wiring, fiber optics, and network infrastructure throughout Southern and Central NJ. Based in Southern NJ, we understand the specific needs of New Jersey businesses, from historic buildings in Haddonfield to modern corporate centers in Mount Laurel.",
