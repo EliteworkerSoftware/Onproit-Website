@@ -234,6 +234,164 @@ function InfoTooltip({ text }: { text: string }) {
   );
 }
 
+interface TrackedKeyword {
+  id: string;
+  keyword: string;
+  target_url: string | null;
+  priority: string;
+  notes: string | null;
+  live: { impressions: number; clicks: number; position: number } | null;
+}
+
+function TargetKeywordsPanel() {
+  const [keywords, setKeywords] = useState<TrackedKeyword[] | null>(null);
+  const [keyword, setKeyword] = useState("");
+  const [targetUrl, setTargetUrl] = useState("");
+  const [priority, setPriority] = useState("medium");
+  const [error, setError] = useState("");
+  const [adding, setAdding] = useState(false);
+
+  async function load() {
+    const res = await fetch("/api/admin/keywords");
+    const data = await res.json();
+    if (res.ok) setKeywords(data.keywords);
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const res = await fetch("/api/admin/keywords");
+      const data = await res.json();
+      if (!cancelled && res.ok) setKeywords(data.keywords);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function handleAdd(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setAdding(true);
+    const res = await fetch("/api/admin/keywords", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ keyword, target_url: targetUrl, priority }),
+    });
+    const data = await res.json();
+    setAdding(false);
+    if (!res.ok) {
+      setError(data.error || "Failed to add keyword");
+      return;
+    }
+    setKeyword("");
+    setTargetUrl("");
+    setPriority("medium");
+    load();
+  }
+
+  async function handleRemove(id: string) {
+    await fetch(`/api/admin/keywords/${id}`, { method: "DELETE" });
+    load();
+  }
+
+  return (
+    <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
+      <div className="flex items-center gap-2">
+        <Search className="h-4 w-4 text-gray-500" />
+        <h2 className="text-sm font-semibold text-gray-900">Target Keywords</h2>
+        <InfoTooltip text="Keywords you've deliberately chosen to rank for, tracked over time. Position/impressions/clicks are pulled live from Search Console (last 30 days) whenever available — 'No data yet' means Google hasn't shown your site for that exact term in that window." />
+      </div>
+      <p className="mt-1 text-xs text-gray-400">
+        Add a keyword you want to SEO toward and see its live Search Console standing.
+      </p>
+
+      <form onSubmit={handleAdd} className="mt-4 flex flex-wrap items-end gap-2">
+        <div className="flex-1 min-w-40">
+          <label className="text-xs font-medium text-gray-500">Keyword</label>
+          <input
+            required
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            placeholder="managed it services camden nj"
+            className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+          />
+        </div>
+        <div className="flex-1 min-w-40">
+          <label className="text-xs font-medium text-gray-500">Target Page (optional)</label>
+          <input
+            value={targetUrl}
+            onChange={(e) => setTargetUrl(e.target.value)}
+            placeholder="/services/managed-it"
+            className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+          />
+        </div>
+        <div>
+          <label className="text-xs font-medium text-gray-500">Priority</label>
+          <select
+            value={priority}
+            onChange={(e) => setPriority(e.target.value)}
+            className="mt-1 rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+          >
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+        <button
+          type="submit"
+          disabled={adding}
+          className="rounded-md bg-brand px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
+        >
+          {adding ? "Adding…" : "Add"}
+        </button>
+      </form>
+      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+
+      {!keywords ? (
+        <p className="mt-4 text-sm text-gray-500">Loading…</p>
+      ) : keywords.length === 0 ? (
+        <p className="mt-4 text-sm text-gray-500">No target keywords yet — add one above.</p>
+      ) : (
+        <ul className="mt-4 divide-y divide-gray-100">
+          {keywords.map((k) => (
+            <li key={k.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-gray-900">{k.keyword}</span>
+                  <span
+                    className={
+                      k.priority === "high"
+                        ? "rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-red-600"
+                        : k.priority === "low"
+                          ? "rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-gray-500"
+                          : "rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-amber-600"
+                    }
+                  >
+                    {k.priority}
+                  </span>
+                </div>
+                {k.target_url && <p className="text-xs text-gray-400">{k.target_url}</p>}
+                <p className="mt-0.5 text-xs text-gray-500">
+                  {k.live
+                    ? `#${k.live.position.toFixed(1)} avg · ${k.live.impressions} shown · ${k.live.clicks} clicked (last 30 days)`
+                    : "No data yet — not showing in Google results for this exact term"}
+                </p>
+              </div>
+              <button
+                onClick={() => handleRemove(k.id)}
+                className="shrink-0 text-xs font-medium text-red-600 hover:underline"
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 const RANGE_PRESETS = [
   { label: "Today", from: () => todayIso(), to: () => todayIso() },
   { label: "Last 7 Days", from: () => isoDateNDaysAgo(6), to: () => todayIso() },
@@ -629,6 +787,8 @@ export default function AdminAnalyticsPage() {
               </div>
             </div>
           )}
+
+          {searchData?.configured && <TargetKeywordsPanel />}
 
           <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
             <div className="flex items-center gap-2">

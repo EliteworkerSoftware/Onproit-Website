@@ -32,6 +32,7 @@ export async function querySearchAnalytics(params: {
   endDate: string;
   dimensions: string[];
   rowLimit?: number;
+  dimensionFilterGroups?: unknown[];
 }): Promise<SearchAnalyticsRow[]> {
   const siteUrl = process.env.GOOGLE_SEARCH_CONSOLE_SITE_URL!;
   const client = getClient();
@@ -44,6 +45,7 @@ export async function querySearchAnalytics(params: {
       endDate: params.endDate,
       dimensions: params.dimensions,
       rowLimit: params.rowLimit ?? 25,
+      ...(params.dimensionFilterGroups ? { dimensionFilterGroups: params.dimensionFilterGroups } : {}),
     },
   });
 
