@@ -502,13 +502,13 @@ export default function AdminAnalyticsPage() {
                 {searchData.topQueries.length === 0 ? (
                   <p className="mt-4 text-sm text-gray-500">No search query data for this range yet.</p>
                 ) : (
-                  <ul className="mt-4 space-y-2">
+                  <ul className="mt-4 space-y-3">
                     {searchData.topQueries.map((q) => (
-                      <li key={q.query} className="flex items-center justify-between gap-3 text-sm">
-                        <span className="truncate text-gray-700">{q.query}</span>
-                        <span className="shrink-0 text-xs text-gray-400">
+                      <li key={q.query} className="text-sm">
+                        <p className="wrap-break-word text-gray-700">{q.query}</p>
+                        <p className="mt-0.5 text-xs text-gray-400">
                           {q.impressions} shown · {q.clicks} clicked · #{q.position.toFixed(1)} avg
-                        </span>
+                        </p>
                       </li>
                     ))}
                   </ul>
@@ -527,16 +527,16 @@ export default function AdminAnalyticsPage() {
                 {searchData.topQueriesByPage.length === 0 ? (
                   <p className="mt-4 text-sm text-gray-500">No search query data for this range yet.</p>
                 ) : (
-                  <ul className="mt-4 space-y-2">
+                  <ul className="mt-4 space-y-3">
                     {searchData.topQueriesByPage.map((p) => (
                       <li key={p.page} className="text-sm">
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="truncate font-medium text-gray-900">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
+                          <span className="font-medium text-gray-900">
                             {new URL(p.page).pathname === "/" ? "Home (/)" : new URL(p.page).pathname}
                           </span>
                           <span className="shrink-0 text-xs text-gray-400">{p.clicks} clicks</span>
                         </div>
-                        <p className="truncate text-xs text-gray-500">&quot;{p.query}&quot;</p>
+                        <p className="mt-0.5 wrap-break-word text-xs text-gray-500">&quot;{p.query}&quot;</p>
                       </li>
                     ))}
                   </ul>
