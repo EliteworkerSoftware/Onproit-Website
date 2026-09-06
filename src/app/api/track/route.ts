@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
 
-const BOT_PATTERN = /bot|crawl|spider|slurp|facebookexternalhit|preview|headless/i;
+// Blocks both named crawlers/bots and generic non-browser HTTP clients
+// (scripts, monitoring tools, link-checkers). Note this is defense-in-depth,
+// not the primary filter — most bots never reach this at all, since tracking
+// only fires from client-side JS in a real browser, not on the server.
+const BOT_PATTERN =
+  /bot|crawl|spider|slurp|facebookexternalhit|preview|headless|curl|wget|python-requests|python-urllib|go-http-client|java\/|libwww|okhttp|axios|node-fetch|postmanruntime|insomnia|http_?client|scrapy|phantomjs|selenium|puppeteer|playwright|lighthouse|pingdom|uptimerobot|monitor/i;
 
 export async function POST(req: NextRequest) {
   if (!isSupabaseAdminConfigured()) return NextResponse.json({ ok: true });
 
   const userAgent = req.headers.get("user-agent") ?? "";
-  if (BOT_PATTERN.test(userAgent)) return NextResponse.json({ ok: true });
+  if (!userAgent || BOT_PATTERN.test(userAgent)) return NextResponse.json({ ok: true });
 
   const { path, referrer, event } = await req.json().catch(() => ({ path: null, referrer: null, event: null }));
   if (typeof path !== "string" || !path) {

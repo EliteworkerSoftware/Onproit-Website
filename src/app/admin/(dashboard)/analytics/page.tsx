@@ -94,9 +94,9 @@ export default function AdminAnalyticsPage() {
             ) : (
               <div className="mt-4 flex h-40 items-end gap-1">
                 {data.viewsByDay.map((d) => (
-                  <div key={d.day} className="group relative flex-1">
+                  <div key={d.day} className="group relative h-full flex-1">
                     <div
-                      className="rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
+                      className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
                       style={{ height: `${Math.max(4, (d.count / maxDayCount) * 100)}%` }}
                     />
                     <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
@@ -117,7 +117,7 @@ export default function AdminAnalyticsPage() {
                 <ul className="mt-4 space-y-2">
                   {data.topPages.map((p) => (
                     <li key={p.path} className="flex items-center justify-between text-sm">
-                      <span className="truncate text-gray-700">{p.path}</span>
+                      <span className="truncate text-gray-700">{p.path === "/" ? "Home (/)" : p.path}</span>
                       <span className="ml-3 shrink-0 font-medium text-gray-900">{p.count}</span>
                     </li>
                   ))}
