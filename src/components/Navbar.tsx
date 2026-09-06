@@ -60,8 +60,14 @@ export default function Navbar() {
       )}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        {/* Invisible spacer matching the hamburger button's footprint, so the
+            logo lands visually centered on mobile via justify-between symmetry. */}
+        <div className="p-2 lg:hidden" aria-hidden="true">
+          <div className="h-6 w-6" />
+        </div>
+
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <Image src="/images/logo.svg" alt="ONPRO IT logo" width={180} height={40} className="h-10 w-auto" priority />
+          <Image src="/images/logo.svg" alt="ONPRO IT logo" width={144} height={32} className="h-8 w-auto" priority />
         </Link>
 
         <div className="hidden items-center gap-8 lg:flex">
