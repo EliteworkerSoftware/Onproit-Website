@@ -185,6 +185,11 @@ export default function AdminAnalyticsPage() {
   const maxHourCount = data ? Math.max(1, ...data.viewsByHour.map((d) => d.count)) : 1;
   const maxDowCount = data ? Math.max(1, ...data.viewsByDayOfWeek.map((d) => d.count)) : 1;
 
+  // Below 8 days, every weekday appears at most once in the range, so "Views
+  // by Day of Week" would just repeat "Views Per Day" with different labels.
+  const rangeDays = Math.round((new Date(to).getTime() - new Date(from).getTime()) / 86400000) + 1;
+  const showDayOfWeekChart = rangeDays > 7;
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
@@ -311,7 +316,7 @@ export default function AdminAnalyticsPage() {
             )}
           </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className={`mt-6 grid grid-cols-1 gap-6 ${showDayOfWeekChart ? "lg:grid-cols-2" : ""}`}>
             <div className="rounded-xl border border-gray-200 bg-white p-6">
               <h2 className="text-sm font-semibold text-gray-900">Views by Time of Day</h2>
               <p className="mt-1 text-xs text-gray-400">Eastern time, selected range</p>
@@ -339,30 +344,32 @@ export default function AdminAnalyticsPage() {
               </div>
             </div>
 
-            <div className="rounded-xl border border-gray-200 bg-white p-6">
-              <h2 className="text-sm font-semibold text-gray-900">Views by Day of Week</h2>
-              <p className="mt-1 text-xs text-gray-400">Eastern time, selected range</p>
-              <div className="mt-4 flex h-32 items-end gap-2">
-                {data.viewsByDayOfWeek.map((d) => (
-                  <div key={d.day} className="group relative h-full flex-1">
-                    <div
-                      className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
-                      style={{ height: `${Math.max(3, (d.count / maxDowCount) * 100)}%` }}
-                    />
-                    <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
-                      {d.count}
+            {showDayOfWeekChart && (
+              <div className="rounded-xl border border-gray-200 bg-white p-6">
+                <h2 className="text-sm font-semibold text-gray-900">Views by Day of Week</h2>
+                <p className="mt-1 text-xs text-gray-400">Eastern time, selected range</p>
+                <div className="mt-4 flex h-32 items-end gap-2">
+                  {data.viewsByDayOfWeek.map((d) => (
+                    <div key={d.day} className="group relative h-full flex-1">
+                      <div
+                        className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
+                        style={{ height: `${Math.max(3, (d.count / maxDowCount) * 100)}%` }}
+                      />
+                      <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
+                        {d.count}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+                <div className="mt-1 flex gap-2">
+                  {data.viewsByDayOfWeek.map((d) => (
+                    <div key={d.day} className="flex-1 text-center text-[10px] text-gray-400">
+                      {d.day}
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="mt-1 flex gap-2">
-                {data.viewsByDayOfWeek.map((d) => (
-                  <div key={d.day} className="flex-1 text-center text-[10px] text-gray-400">
-                    {d.day}
-                  </div>
-                ))}
-              </div>
-            </div>
+            )}
           </div>
 
           <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
