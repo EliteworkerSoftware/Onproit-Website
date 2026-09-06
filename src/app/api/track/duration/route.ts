@@ -9,6 +9,9 @@ const MAX_DURATION_SECONDS = 3600;
 export async function POST(req: NextRequest) {
   if (!isSupabaseAdminConfigured()) return NextResponse.json({ ok: true });
 
+  const host = req.headers.get("host") ?? "";
+  if (!host.includes("onproit.com")) return NextResponse.json({ ok: true });
+
   const body = await req.json().catch(() => null);
   const id = body?.id;
   const duration = Number(body?.duration);

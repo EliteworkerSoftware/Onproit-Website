@@ -17,6 +17,12 @@ const VALID_EVENTS = new Set(["call_click", "click"]);
 export async function POST(req: NextRequest) {
   if (!isSupabaseAdminConfigured()) return NextResponse.json({ ok: true });
 
+  // Local dev and preview deployments share the same production Supabase
+  // database (no separate dev DB), so without this check every local test
+  // load of the site shows up as real traffic in the admin dashboard.
+  const host = req.headers.get("host") ?? "";
+  if (!host.includes("onproit.com")) return NextResponse.json({ ok: true });
+
   const body = await req.json().catch(() => null);
   if (!body || typeof body.path !== "string" || !body.path) {
     return NextResponse.json({ error: "path is required" }, { status: 400 });
