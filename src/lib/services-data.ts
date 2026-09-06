@@ -39,6 +39,14 @@ export interface ServiceData {
   faqs: ServiceFaq[];
 }
 
+// The three ecosystems we set up and support day to day — shown once on the
+// homepage rather than repeated across every service page.
+export const PLATFORM_ECOSYSTEMS = [
+  { name: "Microsoft", logo: "/images/brands/windows.svg" },
+  { name: "Google", logo: "/images/brands/google.svg" },
+  { name: "Apple", logo: "/images/brands/apple.svg" },
+];
+
 // Single canonical list reused by every service page so "areas we serve" is
 // consistent site-wide instead of each service inventing its own list/format.
 export const SERVICE_AREA_LIST = [

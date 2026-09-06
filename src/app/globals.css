@@ -6,6 +6,8 @@
   --color-brand: #0ca6f4;
   --color-brand-dark: #0b8fd1;
   --color-dark: #111827;
+  --color-accent: #f59e0b;
+  --color-accent-dark: #d97706;
 }
 
 @theme inline {
@@ -14,6 +16,8 @@
   --color-brand: var(--color-brand);
   --color-brand-dark: var(--color-brand-dark);
   --color-dark: var(--color-dark);
+  --color-accent: var(--color-accent);
+  --color-accent-dark: var(--color-accent-dark);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

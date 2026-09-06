@@ -6,7 +6,7 @@ import clsx from "clsx";
 
 interface ConsultationButtonProps {
   href?: string;
-  variant?: "primary" | "outline" | "outline-light";
+  variant?: "primary" | "outline" | "outline-light" | "accent";
   className?: string;
   children: React.ReactNode;
 }
@@ -37,6 +37,8 @@ export default function ConsultationButton({
         "inline-flex items-center justify-center rounded-md px-6 py-3 font-semibold transition-colors",
         variant === "primary" &&
           "bg-brand text-white hover:bg-brand-dark",
+        variant === "accent" &&
+          "bg-accent text-white hover:bg-accent-dark",
         variant === "outline" &&
           "border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white",
         variant === "outline-light" &&

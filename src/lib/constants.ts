@@ -15,7 +15,7 @@ export const ADDRESS_FULL = `${ADDRESS.street}, ${ADDRESS.city}, ${ADDRESS.state
 
 export const SISTER_COMPANIES = [
   {
-    name: "Elite Smart Home",
+    name: "Elite Smart Home, LLC",
     url: "https://elitesmarthome.com",
     description: "Smart home automation, audio-video, and lighting control for residential and commercial spaces.",
   },

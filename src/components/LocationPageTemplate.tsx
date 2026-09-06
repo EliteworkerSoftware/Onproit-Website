@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
 import type { LocationData } from "@/lib/locations-data";
 import { SERVICES_DATA } from "@/lib/services-data";
@@ -47,28 +47,35 @@ export default function LocationPageTemplate({ location }: { location: LocationD
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <section className="relative overflow-hidden bg-dark py-20 text-white">
+      <section className="relative overflow-hidden bg-dark text-white">
         {location.heroImage && (
-          <Image
-            src={location.heroImage}
-            alt={location.h1}
-            fill
-            priority
-            className="object-cover opacity-30"
-          />
+          <div className="absolute inset-y-0 right-0 hidden w-[52%] lg:block">
+            <Image src={location.heroImage} alt={location.h1} fill priority className="object-cover" />
+            <div className="absolute inset-y-0 left-0 w-1/3 bg-linear-to-r from-dark to-transparent" />
+          </div>
         )}
-        <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{location.h1}</h1>
-          <p className="mt-6 text-lg text-gray-300">{location.intro}</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <ConsultationButton href={`tel:${PHONE_HREF}`} variant="primary">
-              Call Now: {PHONE_DISPLAY}
-            </ConsultationButton>
-            <ConsultationButton href="/contact" variant="outline-light">
-              Get a Free Quote
-            </ConsultationButton>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 pb-16 pt-14 sm:px-6 lg:px-8 lg:pb-24 lg:pt-20">
+          <div className="max-w-xl">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{location.h1}</h1>
+            <p className="mt-6 text-lg text-gray-300">{location.intro}</p>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <ConsultationButton href={`tel:${PHONE_HREF}`} variant="primary">
+                Call Now: {PHONE_DISPLAY}
+              </ConsultationButton>
+              <ConsultationButton href="/contact" variant="outline-light">
+                Get a Free Quote
+              </ConsultationButton>
+            </div>
           </div>
         </div>
+
+        {location.heroImage && (
+          <div className="relative h-64 w-full sm:h-80 lg:hidden">
+            <Image src={location.heroImage} alt={location.h1} fill priority className="object-cover" />
+            <div className="absolute inset-x-0 top-0 h-16 bg-linear-to-b from-dark to-transparent" />
+          </div>
+        )}
       </section>
 
       <section className="bg-white py-16">
@@ -80,7 +87,7 @@ export default function LocationPageTemplate({ location }: { location: LocationD
                 key={area}
                 className="flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-700"
               >
-                <MapPin className="h-4 w-4 text-brand" />
+                <MapPin className="h-4 w-4 text-accent" />
                 {area}
               </span>
             ))}
@@ -88,31 +95,18 @@ export default function LocationPageTemplate({ location }: { location: LocationD
         </div>
       </section>
 
-      <section className="bg-gray-50 py-16 overflow-hidden">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <div className="animate-fade-up">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Why Local Businesses Call Us Instead of a Typical {serviceLabel} Company
-            </h2>
-            <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {location.whyChoose.map((item) => (
-                <li key={item} className="rounded-lg bg-white p-4 text-sm text-gray-700 shadow-sm">
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-          {location.heroImage && (
-            <div className="animate-fade-up-delay overflow-hidden rounded-2xl shadow-xl">
-              <Image
-                src={location.heroImage}
-                alt={location.h1}
-                width={1000}
-                height={750}
-                className="h-auto w-full object-cover"
-              />
-            </div>
-          )}
+      <section className="bg-gray-50 py-16">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900">
+            Why Local Businesses Call Us Instead of a Typical {serviceLabel} Company
+          </h2>
+          <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {location.whyChoose.map((item) => (
+              <li key={item} className="rounded-lg bg-white p-4 text-sm text-gray-700 shadow-sm">
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -138,31 +132,29 @@ export default function LocationPageTemplate({ location }: { location: LocationD
               <Link
                 key={s.slug}
                 href={`/services/${s.slug}`}
-                className="rounded-lg border border-gray-200 p-4 text-sm font-medium text-gray-800 hover:border-brand hover:text-brand"
+                className="group flex items-center justify-between rounded-lg border border-gray-200 p-4 text-sm font-medium text-gray-800 transition-colors hover:border-accent hover:text-accent"
               >
                 {s.navTitle}
+                <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-linear-to-br from-brand to-brand-dark py-16 text-white">
+      <section className="bg-brand py-16 text-white">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold">Let&apos;s Build It</h2>
           <p className="mt-4 text-white/90">
             Talk to the ONPRO IT team about {serviceLabel.toLowerCase()} for your business.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <ConsultationButton href={`tel:${PHONE_HREF}`} variant="outline-light">
+            <ConsultationButton href={`tel:${PHONE_HREF}`} variant="accent">
               Call {PHONE_DISPLAY}
             </ConsultationButton>
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 font-semibold text-brand hover:bg-gray-100"
-            >
+            <ConsultationButton href="/contact" variant="outline-light">
               Get a Free Quote
-            </Link>
+            </ConsultationButton>
           </div>
         </div>
       </section>
