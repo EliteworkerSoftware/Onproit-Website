@@ -224,6 +224,47 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
 
       {middleSections}
 
+      {service.productShowcase?.map((item, i) => {
+        const imageRight = i % 2 === 0;
+        return (
+          <section
+            key={item.heading}
+            className="relative overflow-hidden bg-white py-20 lg:min-h-140 lg:py-0"
+          >
+            <div
+              className={`absolute inset-y-0 hidden w-[52%] scale-125 lg:block ${
+                imageRight ? "right-0" : "left-0"
+              }`}
+            >
+              <Image
+                src={item.image}
+                alt={item.imageAlt}
+                fill
+                className={`object-contain drop-shadow-2xl ${
+                  imageRight ? "object-right" : "object-left"
+                }`}
+              />
+            </div>
+
+            <div className="relative mx-auto flex h-full max-w-6xl items-center px-4 sm:px-6 lg:px-8">
+              <div className={imageRight ? "lg:max-w-md" : "lg:ml-auto lg:max-w-md"}>
+                <h3 className="text-2xl font-bold text-gray-900">{item.heading}</h3>
+                <p className="mt-4 text-gray-600">{item.body}</p>
+              </div>
+            </div>
+
+            <div className="relative mx-auto mt-10 h-72 w-full max-w-md sm:h-96 lg:hidden">
+              <Image
+                src={item.image}
+                alt={item.imageAlt}
+                fill
+                className="object-contain drop-shadow-2xl"
+              />
+            </div>
+          </section>
+        );
+      })}
+
       <section className="bg-gray-50 py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900">Where We Work</h2>
