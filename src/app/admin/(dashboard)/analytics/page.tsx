@@ -1009,85 +1009,6 @@ export default function AdminAnalyticsPage() {
             </div>
           </div>
 
-          {searchData?.configured && (
-            <details className="group mt-6 rounded-xl border border-gray-200 bg-white p-6">
-              <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
-                <Search className="h-4 w-4 text-gray-500" />
-                <h2 className="text-sm font-semibold text-gray-900">Top Search Queries &amp; Landing Pages</h2>
-                <span className="text-xs text-gray-400">
-                  ({searchData.topQueries.length} queries · {searchData.topQueriesByPage.length} pages)
-                </span>
-                <ChevronDown className="ml-auto h-4 w-4 shrink-0 text-gray-400 transition-transform group-open:rotate-180" />
-              </summary>
-              <p className="mt-1 text-xs text-gray-400">
-                Respects the date range above — useful for &quot;what happened this specific period,&quot;
-                separate from Target Keywords below which always tracks a rolling last-30-days sync.
-              </p>
-
-              <div className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <div className="rounded-xl border border-gray-200 bg-white p-6">
-                <div className="flex items-center gap-2">
-                  <Search className="h-4 w-4 text-gray-500" />
-                  <h2 className="text-sm font-semibold text-gray-900">Top Search Queries</h2>
-                  <InfoTooltip text="Real search terms people typed into Google, from Search Console — separate from and more precise than the search engine names in Traffic Sources. Impressions = your site appeared in the results for that search. Clicks = someone actually clicked through. Avg position = where in the results your site tended to show up (#1 is the top result); a high number means you're showing up on page 2+, which explains impressions with zero clicks. The green/red number compares average position to the immediately preceding period of equal length — green means it moved up (toward #1), red means it dropped. This is aggregate data across everyone who searched — it can't be tied to a specific visitor session." />
-                </div>
-                <p className="mt-1 text-xs text-gray-400">
-                  What people actually typed into Google to find onproit.com, via Search Console.
-                </p>
-                {searchData.topQueries.length === 0 ? (
-                  <p className="mt-4 text-sm text-gray-500">No search query data for this range yet.</p>
-                ) : (
-                  <ul className="mt-4 space-y-3">
-                    {searchData.topQueries.map((q) => (
-                      <li key={q.query} className="text-sm">
-                        <p className="wrap-break-word text-gray-700">{q.query}</p>
-                        <p className="mt-0.5 text-xs text-gray-400">
-                          {q.impressions} shown · {q.clicks} clicked · #{q.position.toFixed(1)} avg{" "}
-                          (<PositionChangeBadge change={q.positionChange} /> vs. prior period)
-                        </p>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              <div className="rounded-xl border border-gray-200 bg-white p-6">
-                <div className="flex items-center gap-2">
-                  <Search className="h-4 w-4 text-gray-500" />
-                  <h2 className="text-sm font-semibold text-gray-900">Top Query by Landing Page</h2>
-                  <InfoTooltip text="For each page, the single search term that drove the most clicks to it (via Search Console). Only pages with at least one real click show up here." />
-                </div>
-                <p className="mt-1 text-xs text-gray-400">
-                  The single top-clicked search term that brought visitors to each page.
-                </p>
-                {searchData.topQueriesByPage.length === 0 ? (
-                  <p className="mt-4 text-sm text-gray-500">No search query data for this range yet.</p>
-                ) : (
-                  <ul className="mt-4 space-y-3">
-                    {searchData.topQueriesByPage.map((p) => (
-                      <li key={p.page} className="text-sm">
-                        <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
-                          <span className="font-medium text-gray-900">
-                            {new URL(p.page).pathname === "/" ? "Home (/)" : new URL(p.page).pathname}
-                          </span>
-                          <span className="shrink-0 text-xs text-gray-400">{p.clicks} clicks</span>
-                        </div>
-                        <p className="mt-0.5 wrap-break-word text-xs text-gray-500">&quot;{p.query}&quot;</p>
-                        <p className="mt-0.5 text-xs text-gray-400">
-                          #{p.position.toFixed(1)} avg (<PositionChangeBadge change={p.positionChange} /> vs. prior
-                          period)
-                        </p>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              </div>
-            </details>
-          )}
-
-          {searchData?.configured && <TargetKeywordsPanel />}
-
           <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
             <div className="flex items-center gap-2">
               <MousePointerClick className="h-4 w-4 text-gray-500" />
@@ -1209,6 +1130,85 @@ export default function AdminAnalyticsPage() {
               </>
             )}
           </div>
+
+          {searchData?.configured && (
+            <details className="group mt-6 rounded-xl border border-gray-200 bg-white p-6">
+              <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
+                <Search className="h-4 w-4 text-gray-500" />
+                <h2 className="text-sm font-semibold text-gray-900">Top Search Queries &amp; Landing Pages</h2>
+                <span className="text-xs text-gray-400">
+                  ({searchData.topQueries.length} queries · {searchData.topQueriesByPage.length} pages)
+                </span>
+                <ChevronDown className="ml-auto h-4 w-4 shrink-0 text-gray-400 transition-transform group-open:rotate-180" />
+              </summary>
+              <p className="mt-1 text-xs text-gray-400">
+                Respects the date range above — useful for &quot;what happened this specific period,&quot;
+                separate from Target Keywords below which always tracks a rolling last-30-days sync.
+              </p>
+
+              <div className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <div className="rounded-xl border border-gray-200 bg-white p-6">
+                <div className="flex items-center gap-2">
+                  <Search className="h-4 w-4 text-gray-500" />
+                  <h2 className="text-sm font-semibold text-gray-900">Top Search Queries</h2>
+                  <InfoTooltip text="Real search terms people typed into Google, from Search Console — separate from and more precise than the search engine names in Traffic Sources. Impressions = your site appeared in the results for that search. Clicks = someone actually clicked through. Avg position = where in the results your site tended to show up (#1 is the top result); a high number means you're showing up on page 2+, which explains impressions with zero clicks. The green/red number compares average position to the immediately preceding period of equal length — green means it moved up (toward #1), red means it dropped. This is aggregate data across everyone who searched — it can't be tied to a specific visitor session." />
+                </div>
+                <p className="mt-1 text-xs text-gray-400">
+                  What people actually typed into Google to find onproit.com, via Search Console.
+                </p>
+                {searchData.topQueries.length === 0 ? (
+                  <p className="mt-4 text-sm text-gray-500">No search query data for this range yet.</p>
+                ) : (
+                  <ul className="mt-4 space-y-3">
+                    {searchData.topQueries.map((q) => (
+                      <li key={q.query} className="text-sm">
+                        <p className="wrap-break-word text-gray-700">{q.query}</p>
+                        <p className="mt-0.5 text-xs text-gray-400">
+                          {q.impressions} shown · {q.clicks} clicked · #{q.position.toFixed(1)} avg{" "}
+                          (<PositionChangeBadge change={q.positionChange} /> vs. prior period)
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="rounded-xl border border-gray-200 bg-white p-6">
+                <div className="flex items-center gap-2">
+                  <Search className="h-4 w-4 text-gray-500" />
+                  <h2 className="text-sm font-semibold text-gray-900">Top Query by Landing Page</h2>
+                  <InfoTooltip text="For each page, the single search term that drove the most clicks to it (via Search Console). Only pages with at least one real click show up here." />
+                </div>
+                <p className="mt-1 text-xs text-gray-400">
+                  The single top-clicked search term that brought visitors to each page.
+                </p>
+                {searchData.topQueriesByPage.length === 0 ? (
+                  <p className="mt-4 text-sm text-gray-500">No search query data for this range yet.</p>
+                ) : (
+                  <ul className="mt-4 space-y-3">
+                    {searchData.topQueriesByPage.map((p) => (
+                      <li key={p.page} className="text-sm">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
+                          <span className="font-medium text-gray-900">
+                            {new URL(p.page).pathname === "/" ? "Home (/)" : new URL(p.page).pathname}
+                          </span>
+                          <span className="shrink-0 text-xs text-gray-400">{p.clicks} clicks</span>
+                        </div>
+                        <p className="mt-0.5 wrap-break-word text-xs text-gray-500">&quot;{p.query}&quot;</p>
+                        <p className="mt-0.5 text-xs text-gray-400">
+                          #{p.position.toFixed(1)} avg (<PositionChangeBadge change={p.positionChange} /> vs. prior
+                          period)
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              </div>
+            </details>
+          )}
+
+          {searchData?.configured && <TargetKeywordsPanel />}
 
           <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-6">
             <div className="flex items-center gap-2">
