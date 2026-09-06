@@ -345,22 +345,31 @@ export default function AdminAnalyticsPage() {
             {data.viewsByDay.length === 0 ? (
               <p className="mt-4 text-sm text-gray-500">No page views recorded yet.</p>
             ) : (
-              <div className="mt-4 flex h-40 items-end gap-1">
-                {data.viewsByDay.map((d) => (
-                  <div key={d.day} className="group relative h-full flex-1">
-                    <div
-                      className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
-                      style={{ height: `${Math.max(4, (d.count / maxDayCount) * 100)}%` }}
-                    />
-                    <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
-                      {d.day}: {d.count}
+              <div className="mt-4 flex gap-2">
+                <div className="flex h-40 w-8 shrink-0 flex-col justify-between text-right text-[10px] leading-none text-gray-400">
+                  <span>{maxDayCount}</span>
+                  <span>{Math.round(maxDayCount * 0.75)}</span>
+                  <span>{Math.round(maxDayCount * 0.5)}</span>
+                  <span>{Math.round(maxDayCount * 0.25)}</span>
+                  <span>0</span>
+                </div>
+                <div className="flex h-40 flex-1 items-end gap-1 border-l border-gray-100 pl-2">
+                  {data.viewsByDay.map((d) => (
+                    <div key={d.day} className="group relative h-full flex-1">
+                      <div
+                        className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
+                        style={{ height: `${Math.max(4, (d.count / maxDayCount) * 100)}%` }}
+                      />
+                      <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
+                        {d.day}: {d.count}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
             {data.viewsByDay.length > 0 && (
-              <div className="mt-2 flex gap-1">
+              <div className="mt-2 flex gap-1 pl-12">
                 {data.viewsByDay.map((d) => {
                   const { weekday, date } = formatDayLabel(d.day);
                   return (
