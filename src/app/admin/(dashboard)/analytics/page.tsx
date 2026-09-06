@@ -123,6 +123,35 @@ function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", second: "2-digit" });
 }
 
+function TimelineList({ timeline }: { timeline: TimelineEvent[] }) {
+  return (
+    <ol className="space-y-2">
+      {timeline.map((event, i) => (
+        <li key={i} className="flex items-start gap-3 text-sm">
+          <span className="mt-0.5 w-20 shrink-0 text-xs text-gray-400">{formatTime(event.timestamp)}</span>
+          {event.type === "page" ? (
+            <span className="text-gray-700">
+              Viewed{" "}
+              <span className="font-medium text-gray-900">{event.path === "/" ? "Home (/)" : event.path}</span>
+              {event.durationSeconds != null && (
+                <span className="text-gray-400"> — {formatDuration(event.durationSeconds)}</span>
+              )}
+            </span>
+          ) : (
+            <span className="text-gray-700">
+              <span className={event.type === "call_click" ? "font-medium text-brand" : "font-medium text-accent"}>
+                {event.type === "call_click" ? "Called" : "Clicked"}
+              </span>{" "}
+              &quot;{event.label ?? "unlabeled"}&quot;
+              <span className="text-gray-400"> on {event.path === "/" ? "Home (/)" : event.path}</span>
+            </span>
+          )}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 function InfoTooltip({ text }: { text: string }) {
   return (
     <span className="group relative inline-flex">
@@ -529,88 +558,108 @@ export default function AdminAnalyticsPage() {
             {data.sessions.length === 0 ? (
               <p className="mt-4 text-sm text-gray-500">No visitor sessions recorded yet.</p>
             ) : (
-              <div className="mt-4 overflow-x-auto">
-                <table className="w-full min-w-180 text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-200 text-xs uppercase tracking-wide text-gray-400">
-                      <th className="pb-2 pr-4 font-medium">First Seen</th>
-                      <th className="pb-2 pr-4 font-medium">Location</th>
-                      <th className="pb-2 pr-4 font-medium">Source</th>
-                      <th className="pb-2 pr-4 font-medium">Device</th>
-                      <th className="pb-2 pr-4 font-medium">Pages</th>
-                      <th className="pb-2 pr-4 font-medium">CTA Clicks</th>
-                      <th className="pb-2 pr-4 font-medium">Time on Site</th>
-                      <th className="pb-2 font-medium" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.sessions.map((s) => {
-                      const isOpen = expanded.has(s.sessionId);
-                      return (
-                        <Fragment key={s.sessionId}>
-                          <tr
-                            onClick={() => toggleExpanded(s.sessionId)}
-                            className="cursor-pointer border-b border-gray-100 hover:bg-gray-50"
-                          >
-                            <td className="py-2 pr-4 text-gray-700">{formatTimestamp(s.firstSeen)}</td>
-                            <td className="py-2 pr-4 text-gray-700">{formatLocation(s)}</td>
-                            <td className="py-2 pr-4 text-gray-700">{s.entrySource}</td>
-                            <td className="py-2 pr-4 text-gray-700">{s.isMobile ? "Mobile" : "Desktop"}</td>
-                            <td className="py-2 pr-4 text-gray-700">{s.pageCount}</td>
-                            <td className="py-2 pr-4 font-medium text-brand">{s.ctaClicks}</td>
-                            <td className="py-2 pr-4 text-gray-700">{formatDuration(s.totalDurationSeconds)}</td>
-                            <td className="py-2">
-                              <ChevronDown
-                                className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
-                              />
-                            </td>
-                          </tr>
-                          {isOpen && (
-                            <tr className="border-b border-gray-100 bg-gray-50">
-                              <td colSpan={8} className="px-4 py-4">
-                                <ol className="space-y-2">
-                                  {s.timeline.map((event, i) => (
-                                    <li key={i} className="flex items-start gap-3 text-sm">
-                                      <span className="mt-0.5 w-20 shrink-0 text-xs text-gray-400">
-                                        {formatTime(event.timestamp)}
-                                      </span>
-                                      {event.type === "page" ? (
-                                        <span className="text-gray-700">
-                                          Viewed{" "}
-                                          <span className="font-medium text-gray-900">
-                                            {event.path === "/" ? "Home (/)" : event.path}
-                                          </span>
-                                          {event.durationSeconds != null && (
-                                            <span className="text-gray-400"> — {formatDuration(event.durationSeconds)}</span>
-                                          )}
-                                        </span>
-                                      ) : (
-                                        <span className="text-gray-700">
-                                          <span
-                                            className={
-                                              event.type === "call_click"
-                                                ? "font-medium text-brand"
-                                                : "font-medium text-accent"
-                                            }
-                                          >
-                                            {event.type === "call_click" ? "Called" : "Clicked"}
-                                          </span>{" "}
-                                          &quot;{event.label ?? "unlabeled"}&quot;
-                                          <span className="text-gray-400"> on {event.path === "/" ? "Home (/)" : event.path}</span>
-                                        </span>
-                                      )}
-                                    </li>
-                                  ))}
-                                </ol>
+              <>
+                {/* Desktop: full table */}
+                <div className="mt-4 hidden overflow-x-auto sm:block">
+                  <table className="w-full min-w-180 text-left text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 text-xs uppercase tracking-wide text-gray-400">
+                        <th className="pb-2 pr-4 font-medium">First Seen</th>
+                        <th className="pb-2 pr-4 font-medium">Location</th>
+                        <th className="pb-2 pr-4 font-medium">Source</th>
+                        <th className="pb-2 pr-4 font-medium">Device</th>
+                        <th className="pb-2 pr-4 font-medium">Pages</th>
+                        <th className="pb-2 pr-4 font-medium">CTA Clicks</th>
+                        <th className="pb-2 pr-4 font-medium">Time on Site</th>
+                        <th className="pb-2 font-medium" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.sessions.map((s) => {
+                        const isOpen = expanded.has(s.sessionId);
+                        return (
+                          <Fragment key={s.sessionId}>
+                            <tr
+                              onClick={() => toggleExpanded(s.sessionId)}
+                              className="cursor-pointer border-b border-gray-100 hover:bg-gray-50"
+                            >
+                              <td className="py-2 pr-4 text-gray-700">{formatTimestamp(s.firstSeen)}</td>
+                              <td className="py-2 pr-4 text-gray-700">{formatLocation(s)}</td>
+                              <td className="py-2 pr-4 text-gray-700">{s.entrySource}</td>
+                              <td className="py-2 pr-4 text-gray-700">{s.isMobile ? "Mobile" : "Desktop"}</td>
+                              <td className="py-2 pr-4 text-gray-700">{s.pageCount}</td>
+                              <td className="py-2 pr-4 font-medium text-brand">{s.ctaClicks}</td>
+                              <td className="py-2 pr-4 text-gray-700">{formatDuration(s.totalDurationSeconds)}</td>
+                              <td className="py-2">
+                                <ChevronDown
+                                  className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                                />
                               </td>
                             </tr>
-                          )}
-                        </Fragment>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+                            {isOpen && (
+                              <tr className="border-b border-gray-100 bg-gray-50">
+                                <td colSpan={8} className="px-4 py-4">
+                                  <TimelineList timeline={s.timeline} />
+                                </td>
+                              </tr>
+                            )}
+                          </Fragment>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile: stacked cards instead of a wide table that requires side-scrolling */}
+                <div className="mt-4 space-y-3 sm:hidden">
+                  {data.sessions.map((s) => {
+                    const isOpen = expanded.has(s.sessionId);
+                    return (
+                      <div key={s.sessionId} className="rounded-lg border border-gray-200">
+                        <button
+                          onClick={() => toggleExpanded(s.sessionId)}
+                          className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+                        >
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{formatTimestamp(s.firstSeen)}</p>
+                            <p className="text-xs text-gray-500">{formatLocation(s)}</p>
+                          </div>
+                          <ChevronDown
+                            className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                          />
+                        </button>
+                        <dl className="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-gray-100 px-4 py-3 text-sm">
+                          <div>
+                            <dt className="text-xs text-gray-400">Source</dt>
+                            <dd className="text-gray-700">{s.entrySource}</dd>
+                          </div>
+                          <div>
+                            <dt className="text-xs text-gray-400">Device</dt>
+                            <dd className="text-gray-700">{s.isMobile ? "Mobile" : "Desktop"}</dd>
+                          </div>
+                          <div>
+                            <dt className="text-xs text-gray-400">Pages</dt>
+                            <dd className="text-gray-700">{s.pageCount}</dd>
+                          </div>
+                          <div>
+                            <dt className="text-xs text-gray-400">CTA Clicks</dt>
+                            <dd className="font-medium text-brand">{s.ctaClicks}</dd>
+                          </div>
+                          <div>
+                            <dt className="text-xs text-gray-400">Time on Site</dt>
+                            <dd className="text-gray-700">{formatDuration(s.totalDurationSeconds)}</dd>
+                          </div>
+                        </dl>
+                        {isOpen && (
+                          <div className="border-t border-gray-100 bg-gray-50 px-4 py-4">
+                            <TimelineList timeline={s.timeline} />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
           </div>
 
