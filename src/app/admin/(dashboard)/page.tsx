@@ -177,7 +177,7 @@ export default async function AdminDashboardPage() {
         </Link>
 
         <Link
-          href="/admin/analytics#target-keywords"
+          href="/admin/analytics#content-effort"
           className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
         >
           <div className="flex items-center justify-between">

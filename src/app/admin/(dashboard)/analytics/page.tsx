@@ -250,6 +250,7 @@ interface TrackedKeyword {
   content_url: string | null;
   queued_at: string | null;
   content_published_at: string | null;
+  created_at: string;
 }
 
 const PRIORITY_BADGE_CLASSES: Record<string, string> = {
@@ -264,8 +265,15 @@ const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   discovered: { label: "Discovered", className: "bg-gray-100 text-gray-500" },
 };
 
+const KEYWORDS_PAGE_SIZE = 20;
+
 function TargetKeywordsPanel() {
   const [keywords, setKeywords] = useState<TrackedKeyword[] | null>(null);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [regionFilter, setRegionFilter] = useState("all");
+  const [page, setPage] = useState(1);
 
   async function load() {
     const res = await fetch("/api/admin/keywords");
@@ -307,6 +315,21 @@ function TargetKeywordsPanel() {
     load();
   }
 
+  // Keywords with deliberate work behind them — queued or done — sorted
+  // most-recently-touched first. This is the "what have we actually done"
+  // view, kept separate and always visible rather than buried behind the
+  // filters used for browsing the much larger discovery list.
+  const inProgress = useMemo(() => {
+    if (!keywords) return [];
+    return keywords
+      .filter((k) => k.status === "queued" || k.status === "done")
+      .sort((a, b) => {
+        const aTime = a.content_published_at || a.queued_at || a.created_at;
+        const bTime = b.content_published_at || b.queued_at || b.created_at;
+        return bTime.localeCompare(aTime);
+      });
+  }, [keywords]);
+
   const regionSummary = useMemo(() => {
     if (!keywords || keywords.length === 0) return null;
     let total = 0;
@@ -325,8 +348,116 @@ function TargetKeywordsPanel() {
     };
   }, [keywords]);
 
+  const counts = useMemo(() => {
+    if (!keywords) return null;
+    return {
+      total: keywords.length,
+      queued: keywords.filter((k) => k.status === "queued").length,
+      done: keywords.filter((k) => k.status === "done").length,
+      high: keywords.filter((k) => k.priority === "high").length,
+      outOfArea: keywords.filter((k) => k.region === "out_of_area").length,
+    };
+  }, [keywords]);
+
+  const filtered = useMemo(() => {
+    if (!keywords) return [];
+    const q = search.trim().toLowerCase();
+    return keywords.filter((k) => {
+      if (q && !k.keyword.toLowerCase().includes(q)) return false;
+      if (statusFilter !== "all" && k.status !== statusFilter) return false;
+      if (priorityFilter !== "all" && k.priority !== priorityFilter) return false;
+      if (regionFilter !== "all" && (k.region ?? "unspecified") !== regionFilter) return false;
+      return true;
+    });
+  }, [keywords, search, statusFilter, priorityFilter, regionFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / KEYWORDS_PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paged = filtered.slice((currentPage - 1) * KEYWORDS_PAGE_SIZE, currentPage * KEYWORDS_PAGE_SIZE);
+
+  function updateFilter(setter: (v: string) => void, value: string) {
+    setter(value);
+    setPage(1);
+  }
+
+  const hasActiveFilters = search !== "" || statusFilter !== "all" || priorityFilter !== "all" || regionFilter !== "all";
+
+  function clearFilters() {
+    setSearch("");
+    setStatusFilter("all");
+    setPriorityFilter("all");
+    setRegionFilter("all");
+    setPage(1);
+  }
+
   return (
-    <div id="target-keywords" className="mt-6 scroll-mt-6 rounded-xl border border-gray-200 bg-white p-6">
+    <>
+      <div id="content-effort" className="mt-6 scroll-mt-6 rounded-xl border border-brand/30 bg-brand/5 p-6">
+        <div className="flex items-center gap-2">
+          <MousePointerClick className="h-4 w-4 text-brand" />
+          <h2 className="text-sm font-semibold text-gray-900">Content Effort</h2>
+          <InfoTooltip text="Every keyword you've queued or finished content for, most recently touched first — the record of actual work, separate from the much bigger list of everything Search Console has discovered. Position shown is as of the last daily sync, so you can watch whether a keyword's ranking actually moved after you published something for it." />
+        </div>
+        <p className="mt-1 text-xs text-gray-400">
+          What you&apos;ve actually put effort into — queued for content or already published.
+        </p>
+
+        {!keywords ? (
+          <p className="mt-4 text-sm text-gray-500">Loading…</p>
+        ) : inProgress.length === 0 ? (
+          <p className="mt-4 text-sm text-gray-500">
+            Nothing queued yet. Find a keyword worth targeting below and click &quot;Queue for content.&quot;
+          </p>
+        ) : (
+          <ul className="mt-4 divide-y divide-brand/10">
+            {inProgress.map((k) => {
+              const status = STATUS_BADGE[k.status] ?? STATUS_BADGE.discovered;
+              return (
+                <li key={k.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-medium text-gray-900">{k.keyword}</span>
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${status.className}`}>
+                        {status.label}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 text-xs text-gray-500">
+                      {k.last_impressions != null
+                        ? `#${Number(k.last_position).toFixed(1)} avg · ${k.last_impressions} shown · ${k.last_clicks} clicked`
+                        : "No Search Console data yet"}
+                      {k.status === "queued" && k.queued_at && ` · queued ${formatTimestamp(k.queued_at)}`}
+                    </p>
+                    {k.status === "done" && (
+                      <p className="mt-0.5 text-xs text-green-600">
+                        {k.content_url ? (
+                          <>
+                            Published{k.content_published_at ? ` ${formatTimestamp(k.content_published_at)}` : ""}:{" "}
+                            <a href={k.content_url} target="_blank" rel="noopener noreferrer" className="underline">
+                              {k.content_url}
+                            </a>
+                          </>
+                        ) : (
+                          "Marked done — no content URL recorded"
+                        )}
+                      </p>
+                    )}
+                  </div>
+                  {k.status === "queued" && (
+                    <button
+                      onClick={() => handleMarkDone(k.id)}
+                      className="shrink-0 text-xs font-medium text-green-600 hover:underline"
+                    >
+                      Mark done
+                    </button>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+
+      <div id="target-keywords" className="mt-6 scroll-mt-6 rounded-xl border border-gray-200 bg-white p-6">
       <div className="flex items-center gap-2">
         <Search className="h-4 w-4 text-gray-500" />
         <h2 className="text-sm font-semibold text-gray-900">Target Keywords</h2>
@@ -355,8 +486,92 @@ function TargetKeywordsPanel() {
           Nothing synced yet — the daily job hasn&apos;t run, or no query has 3+ impressions yet.
         </p>
       ) : (
+        <>
+          {counts && (
+            <div className="mt-4 flex flex-wrap gap-2 text-xs">
+              <button
+                onClick={() => updateFilter(setStatusFilter, "queued")}
+                className="rounded-full bg-brand/10 px-3 py-1 font-medium text-brand hover:bg-brand/20"
+              >
+                {counts.queued} queued
+              </button>
+              <button
+                onClick={() => updateFilter(setPriorityFilter, "high")}
+                className="rounded-full bg-red-50 px-3 py-1 font-medium text-red-600 hover:bg-red-100"
+              >
+                {counts.high} high priority
+              </button>
+              <button
+                onClick={() => updateFilter(setStatusFilter, "done")}
+                className="rounded-full bg-green-50 px-3 py-1 font-medium text-green-600 hover:bg-green-100"
+              >
+                {counts.done} done
+              </button>
+              <button
+                onClick={() => updateFilter(setRegionFilter, "out_of_area")}
+                className="rounded-full bg-orange-50 px-3 py-1 font-medium text-orange-600 hover:bg-orange-100"
+              >
+                {counts.outOfArea} outside area
+              </button>
+              <span className="rounded-full bg-gray-100 px-3 py-1 font-medium text-gray-500">{counts.total} total</span>
+            </div>
+          )}
+
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <input
+              value={search}
+              onChange={(e) => updateFilter(setSearch, e.target.value)}
+              placeholder="Search keywords…"
+              className="min-w-40 flex-1 rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            />
+            <select
+              value={statusFilter}
+              onChange={(e) => updateFilter(setStatusFilter, e.target.value)}
+              className="rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            >
+              <option value="all">All statuses</option>
+              <option value="discovered">Discovered</option>
+              <option value="queued">Queued</option>
+              <option value="done">Done</option>
+            </select>
+            <select
+              value={priorityFilter}
+              onChange={(e) => updateFilter(setPriorityFilter, e.target.value)}
+              className="rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            >
+              <option value="all">All priorities</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+            <select
+              value={regionFilter}
+              onChange={(e) => updateFilter(setRegionFilter, e.target.value)}
+              className="rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            >
+              <option value="all">All regions</option>
+              <option value="in_area">In service area</option>
+              <option value="out_of_area">Outside service area</option>
+              <option value="unspecified">No town mentioned</option>
+            </select>
+            {hasActiveFilters && (
+              <button onClick={clearFilters} className="text-xs font-medium text-gray-500 hover:underline">
+                Clear filters
+              </button>
+            )}
+          </div>
+
+          <p className="mt-3 text-xs text-gray-400">
+            Showing {filtered.length === 0 ? 0 : (currentPage - 1) * KEYWORDS_PAGE_SIZE + 1}–
+            {Math.min(currentPage * KEYWORDS_PAGE_SIZE, filtered.length)} of {filtered.length}
+            {hasActiveFilters ? ` matching (${counts?.total} total)` : ""}
+          </p>
+        </>
+      )}
+
+      {keywords && keywords.length > 0 && paged.length > 0 && (
         <ul className="mt-4 divide-y divide-gray-100">
-          {keywords.map((k) => {
+          {paged.map((k) => {
             const status = STATUS_BADGE[k.status] ?? STATUS_BADGE.discovered;
             return (
               <li key={k.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
@@ -429,7 +644,34 @@ function TargetKeywordsPanel() {
           })}
         </ul>
       )}
-    </div>
+
+      {keywords && keywords.length > 0 && filtered.length === 0 && (
+        <p className="mt-4 text-sm text-gray-500">No keywords match these filters.</p>
+      )}
+
+      {totalPages > 1 && (
+        <div className="mt-4 flex items-center justify-between gap-3 border-t border-gray-100 pt-3">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage <= 1}
+            className="text-xs font-medium text-gray-600 hover:underline disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:no-underline"
+          >
+            ← Previous
+          </button>
+          <span className="text-xs text-gray-400">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage >= totalPages}
+            className="text-xs font-medium text-gray-600 hover:underline disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:no-underline"
+          >
+            Next →
+          </button>
+        </div>
+      )}
+      </div>
+    </>
   );
 }
 
