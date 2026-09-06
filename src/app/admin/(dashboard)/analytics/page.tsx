@@ -153,12 +153,23 @@ function TimelineList({ timeline }: { timeline: TimelineEvent[] }) {
 }
 
 function InfoTooltip({ text }: { text: string }) {
+  const [open, setOpen] = useState(false);
   return (
-    <span className="group relative inline-flex">
-      <Info className="h-3.5 w-3.5 cursor-help text-gray-400" />
-      <span className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 hidden w-64 -translate-x-1/2 rounded-lg bg-gray-900 px-3 py-2 text-xs font-normal normal-case leading-snug text-white shadow-lg group-hover:block">
-        {text}
-      </span>
+    <span className="relative inline-flex">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        onBlur={() => setOpen(false)}
+        aria-label="More info"
+        className="flex items-center justify-center text-gray-400 hover:text-gray-600"
+      >
+        <Info className="h-3.5 w-3.5 cursor-help" />
+      </button>
+      {open && (
+        <span className="absolute left-1/2 top-full z-20 mt-2 w-64 -translate-x-1/2 rounded-lg bg-gray-900 px-3 py-2 text-xs font-normal normal-case leading-snug text-white shadow-lg">
+          {text}
+        </span>
+      )}
     </span>
   );
 }
