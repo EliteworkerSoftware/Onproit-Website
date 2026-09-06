@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
-import { Bot, ChevronDown, Eye, MapPin, MessageSquare, MousePointerClick, Phone, Search, Smartphone } from "lucide-react";
+import { Bot, ChevronDown, Eye, Info, MapPin, MessageSquare, MousePointerClick, Phone, Search, Smartphone } from "lucide-react";
 
 interface TimelineEvent {
   type: "page" | "click" | "call_click";
@@ -121,6 +121,17 @@ function formatTimestamp(iso: string) {
 
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", second: "2-digit" });
+}
+
+function InfoTooltip({ text }: { text: string }) {
+  return (
+    <span className="group relative inline-flex">
+      <Info className="h-3.5 w-3.5 cursor-help text-gray-400" />
+      <span className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 hidden w-64 -translate-x-1/2 rounded-lg bg-gray-900 px-3 py-2 text-xs font-normal normal-case leading-snug text-white shadow-lg group-hover:block">
+        {text}
+      </span>
+    </span>
+  );
 }
 
 const RANGE_PRESETS = [
@@ -247,6 +258,7 @@ export default function AdminAnalyticsPage() {
               <div className="flex items-center gap-2 text-gray-500">
                 <Eye className="h-4 w-4" />
                 <span className="text-sm font-medium">Page Views</span>
+                <InfoTooltip text="Every page load in the selected range, one per view. A visitor who looks at 3 pages counts as 3. Suspected bots are excluded and tracked separately below." />
               </div>
               <p className="mt-2 text-3xl font-bold text-gray-900">{data.totalViews}</p>
               {data.recentViews !== null && (
@@ -257,6 +269,7 @@ export default function AdminAnalyticsPage() {
               <div className="flex items-center gap-2 text-brand">
                 <Phone className="h-4 w-4" />
                 <span className="text-sm font-medium">Call Button Clicks</span>
+                <InfoTooltip text="Every click on a phone number or 'Call Now' link anywhere on the site, tracked automatically wherever a tel: link appears." />
               </div>
               <p className="mt-2 text-3xl font-bold text-gray-900">{data.callClicks}</p>
               {data.recentCallClicks !== null && (
@@ -267,6 +280,7 @@ export default function AdminAnalyticsPage() {
               <div className="flex items-center gap-2 text-brand">
                 <MessageSquare className="h-4 w-4" />
                 <span className="text-sm font-medium">Contact Form Leads</span>
+                <InfoTooltip text="Contact form submissions successfully saved to the database in this range, regardless of whether the optional Message field was filled in." />
               </div>
               <p className="mt-2 text-3xl font-bold text-gray-900">{data.leads}</p>
               {data.recentLeads !== null && (
@@ -277,13 +291,17 @@ export default function AdminAnalyticsPage() {
               <div className="flex items-center gap-2 text-gray-500">
                 <Smartphone className="h-4 w-4" />
                 <span className="text-sm font-medium">Mobile Visitors</span>
+                <InfoTooltip text="Percentage of page views where the visitor's browser identified itself as a phone or mobile device." />
               </div>
               <p className="mt-2 text-3xl font-bold text-gray-900">{data.mobilePct}%</p>
             </div>
           </div>
 
           <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-sm font-semibold text-gray-900">Views Per Day</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-semibold text-gray-900">Views Per Day</h2>
+              <InfoTooltip text="Total page views for each calendar day in the selected range (day boundaries in UTC). Shows the day-to-day trend — spikes, dips, and the effect of anything you changed on a given date." />
+            </div>
             {data.viewsByDay.length === 0 ? (
               <p className="mt-4 text-sm text-gray-500">No page views recorded yet.</p>
             ) : (
@@ -318,7 +336,10 @@ export default function AdminAnalyticsPage() {
 
           <div className={`mt-6 grid grid-cols-1 gap-6 ${showDayOfWeekChart ? "lg:grid-cols-2" : ""}`}>
             <div className="rounded-xl border border-gray-200 bg-white p-6">
-              <h2 className="text-sm font-semibold text-gray-900">Views by Time of Day</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm font-semibold text-gray-900">Views by Time of Day</h2>
+                <InfoTooltip text="Every page view in the range, bucketed by the hour it happened (converted to Eastern time) and summed across all days. Shows what time of day people tend to visit — useful for staffing chat/phone coverage." />
+              </div>
               <p className="mt-1 text-xs text-gray-400">Eastern time, selected range</p>
               <div className="mt-4 flex h-32 items-end gap-0.5">
                 {data.viewsByHour.map((d) => (
@@ -346,7 +367,10 @@ export default function AdminAnalyticsPage() {
 
             {showDayOfWeekChart && (
               <div className="rounded-xl border border-gray-200 bg-white p-6">
-                <h2 className="text-sm font-semibold text-gray-900">Views by Day of Week</h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-sm font-semibold text-gray-900">Views by Day of Week</h2>
+                  <InfoTooltip text="Page views bucketed by weekday (Eastern time) and added together across every occurrence in the range — e.g. every Monday's views summed into one bar. Shows which day of the week performs best on average, not a day-by-day timeline." />
+                </div>
                 <p className="mt-1 text-xs text-gray-400">Eastern time, selected range</p>
                 <div className="mt-4 flex h-32 items-end gap-2">
                   {data.viewsByDayOfWeek.map((d) => (
@@ -374,7 +398,10 @@ export default function AdminAnalyticsPage() {
 
           <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="rounded-xl border border-gray-200 bg-white p-6">
-              <h2 className="text-sm font-semibold text-gray-900">Top Pages</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm font-semibold text-gray-900">Top Pages</h2>
+                <InfoTooltip text="The pages with the most page views in the selected range, most-viewed first." />
+              </div>
               {data.topPages.length === 0 ? (
                 <p className="mt-4 text-sm text-gray-500">No page views recorded yet.</p>
               ) : (
@@ -390,7 +417,10 @@ export default function AdminAnalyticsPage() {
             </div>
 
             <div className="rounded-xl border border-gray-200 bg-white p-6">
-              <h2 className="text-sm font-semibold text-gray-900">Traffic Sources</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm font-semibold text-gray-900">Traffic Sources</h2>
+                <InfoTooltip text="How visitors arrived, based on the referrer their browser sent: Direct (typed the URL, used a bookmark, or the browser sent no referrer at all — e.g. links from texts or some email/privacy apps), Organic Search (Google, Bing, etc.), Social, or Referral from another site." />
+              </div>
               {data.trafficSources.length === 0 ? (
                 <p className="mt-4 text-sm text-gray-500">No page views recorded yet.</p>
               ) : (
@@ -409,6 +439,7 @@ export default function AdminAnalyticsPage() {
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-gray-500" />
                 <h2 className="text-sm font-semibold text-gray-900">Top Locations</h2>
+                <InfoTooltip text="Visitor city/state/country resolved from their IP address, only shown here when all three could be determined. VPNs and some mobile carriers can't be resolved this precisely and are left out of this list (though still counted in Page Views above)." />
               </div>
               <p className="mt-1 text-xs text-gray-400">
                 Only visits we could resolve to a full city, state, and country.
@@ -434,6 +465,7 @@ export default function AdminAnalyticsPage() {
                 <div className="flex items-center gap-2">
                   <Search className="h-4 w-4 text-gray-500" />
                   <h2 className="text-sm font-semibold text-gray-900">Top Search Queries</h2>
+                  <InfoTooltip text="Real search terms people typed into Google, from Search Console — separate from and more precise than Traffic Sources' 'Organic Search'. Impressions = your site appeared in the results for that search. Clicks = someone actually clicked through. Avg position = where in the results your site tended to show up (#1 is the top result); a high number means you're showing up on page 2+, which explains impressions with zero clicks. This is aggregate data across everyone who searched — it can't be tied to a specific visitor session." />
                 </div>
                 <p className="mt-1 text-xs text-gray-400">
                   What people actually typed into Google to find onproit.com, via Search Console.
@@ -446,7 +478,7 @@ export default function AdminAnalyticsPage() {
                       <li key={q.query} className="flex items-center justify-between gap-3 text-sm">
                         <span className="truncate text-gray-700">{q.query}</span>
                         <span className="shrink-0 text-xs text-gray-400">
-                          {q.clicks} clicks · #{q.position.toFixed(1)} avg
+                          {q.impressions} shown · {q.clicks} clicked · #{q.position.toFixed(1)} avg
                         </span>
                       </li>
                     ))}
@@ -458,6 +490,7 @@ export default function AdminAnalyticsPage() {
                 <div className="flex items-center gap-2">
                   <Search className="h-4 w-4 text-gray-500" />
                   <h2 className="text-sm font-semibold text-gray-900">Top Query by Landing Page</h2>
+                  <InfoTooltip text="For each page, the single search term that drove the most clicks to it (via Search Console). Only pages with at least one real click show up here." />
                 </div>
                 <p className="mt-1 text-xs text-gray-400">
                   The single top-clicked search term that brought visitors to each page.
@@ -487,6 +520,7 @@ export default function AdminAnalyticsPage() {
             <div className="flex items-center gap-2">
               <MousePointerClick className="h-4 w-4 text-gray-500" />
               <h2 className="text-sm font-semibold text-gray-900">Recent Visitors</h2>
+              <InfoTooltip text="One row per browser session (a visit lasts until the tab/browser closes). CTA Clicks counts every link and button clicked anywhere on the site during that visit. Time on Site is measured live as they browse, so it only appears once they've navigated away or closed the tab." />
             </div>
             <p className="mt-1 text-xs text-gray-400">
               Click a row for the full page-by-page timeline — time on each page and every link or
@@ -584,6 +618,7 @@ export default function AdminAnalyticsPage() {
             <div className="flex items-center gap-2">
               <Bot className="h-4 w-4 text-amber-600" />
               <h2 className="text-sm font-semibold text-amber-900">Potential Bot Traffic</h2>
+              <InfoTooltip text="Requests whose User-Agent self-identifies or pattern-matches a known crawler, script, or monitoring tool. These are excluded from every number above rather than mixed in — but a sophisticated bot pretending to be a real browser looks identical to a human here and won't be caught." />
             </div>
             <p className="mt-1 text-xs text-amber-700">
               Requests that self-identify or pattern-match as automated (crawlers, scripts,
