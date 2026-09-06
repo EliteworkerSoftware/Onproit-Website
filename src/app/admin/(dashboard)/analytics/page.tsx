@@ -152,6 +152,18 @@ function TimelineList({ timeline }: { timeline: TimelineEvent[] }) {
   );
 }
 
+function ChartYAxis({ max, heightClass }: { max: number; heightClass: string }) {
+  return (
+    <div className={`flex ${heightClass} w-8 shrink-0 flex-col justify-between text-right text-[10px] leading-none text-gray-400`}>
+      <span>{max}</span>
+      <span>{Math.round(max * 0.75)}</span>
+      <span>{Math.round(max * 0.5)}</span>
+      <span>{Math.round(max * 0.25)}</span>
+      <span>0</span>
+    </div>
+  );
+}
+
 function InfoTooltip({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
   return (
@@ -346,13 +358,7 @@ export default function AdminAnalyticsPage() {
               <p className="mt-4 text-sm text-gray-500">No page views recorded yet.</p>
             ) : (
               <div className="mt-4 flex gap-2">
-                <div className="flex h-40 w-8 shrink-0 flex-col justify-between text-right text-[10px] leading-none text-gray-400">
-                  <span>{maxDayCount}</span>
-                  <span>{Math.round(maxDayCount * 0.75)}</span>
-                  <span>{Math.round(maxDayCount * 0.5)}</span>
-                  <span>{Math.round(maxDayCount * 0.25)}</span>
-                  <span>0</span>
-                </div>
+                <ChartYAxis max={maxDayCount} heightClass="h-40" />
                 <div className="flex h-40 flex-1 items-end gap-1 border-l border-gray-100 pl-2">
                   {data.viewsByDay.map((d) => (
                     <div key={d.day} className="group relative h-full flex-1">
@@ -390,20 +396,23 @@ export default function AdminAnalyticsPage() {
                 <InfoTooltip text="Every page view in the range, bucketed by the hour it happened (converted to Eastern time) and summed across all days. Shows what time of day people tend to visit — useful for staffing chat/phone coverage." />
               </div>
               <p className="mt-1 text-xs text-gray-400">Eastern time, selected range</p>
-              <div className="mt-4 flex h-32 items-end gap-0.5">
-                {data.viewsByHour.map((d) => (
-                  <div key={d.hour} className="group relative h-full flex-1">
-                    <div
-                      className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
-                      style={{ height: `${Math.max(3, (d.count / maxHourCount) * 100)}%` }}
-                    />
-                    <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
-                      {formatHour(d.hour)}: {d.count}
+              <div className="mt-4 flex gap-2">
+                <ChartYAxis max={maxHourCount} heightClass="h-32" />
+                <div className="flex h-32 flex-1 items-end gap-0.5 border-l border-gray-100 pl-2">
+                  {data.viewsByHour.map((d) => (
+                    <div key={d.hour} className="group relative h-full flex-1">
+                      <div
+                        className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
+                        style={{ height: `${Math.max(3, (d.count / maxHourCount) * 100)}%` }}
+                      />
+                      <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
+                        {formatHour(d.hour)}: {d.count}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-              <div className="mt-1 flex gap-0.5">
+              <div className="mt-1 flex gap-0.5 pl-12">
                 {data.viewsByHour.map((d) => (
                   <div key={d.hour} className="flex-1 text-center">
                     {d.hour % 3 === 0 && (
@@ -421,20 +430,23 @@ export default function AdminAnalyticsPage() {
                   <InfoTooltip text="Page views bucketed by weekday (Eastern time) and added together across every occurrence in the range — e.g. every Monday's views summed into one bar. Shows which day of the week performs best on average, not a day-by-day timeline." />
                 </div>
                 <p className="mt-1 text-xs text-gray-400">Eastern time, selected range</p>
-                <div className="mt-4 flex h-32 items-end gap-2">
-                  {data.viewsByDayOfWeek.map((d) => (
-                    <div key={d.day} className="group relative h-full flex-1">
-                      <div
-                        className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
-                        style={{ height: `${Math.max(3, (d.count / maxDowCount) * 100)}%` }}
-                      />
-                      <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
-                        {d.count}
+                <div className="mt-4 flex gap-2">
+                  <ChartYAxis max={maxDowCount} heightClass="h-32" />
+                  <div className="flex h-32 flex-1 items-end gap-2 border-l border-gray-100 pl-2">
+                    {data.viewsByDayOfWeek.map((d) => (
+                      <div key={d.day} className="group relative h-full flex-1">
+                        <div
+                          className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
+                          style={{ height: `${Math.max(3, (d.count / maxDowCount) * 100)}%` }}
+                        />
+                        <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
+                          {d.count}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-                <div className="mt-1 flex gap-2">
+                <div className="mt-1 flex gap-2 pl-12">
                   {data.viewsByDayOfWeek.map((d) => (
                     <div key={d.day} className="flex-1 text-center text-[10px] text-gray-400">
                       {d.day}
