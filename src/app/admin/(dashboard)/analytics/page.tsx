@@ -240,17 +240,28 @@ interface TrackedKeyword {
   target_url: string | null;
   priority: string;
   notes: string | null;
-  live: { impressions: number; clicks: number; position: number } | null;
+  source: string;
+  status: string;
+  last_impressions: number | null;
+  last_clicks: number | null;
+  last_position: number | null;
+  last_synced_at: string | null;
 }
+
+const PRIORITY_BADGE_CLASSES: Record<string, string> = {
+  high: "rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-red-600",
+  low: "rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-gray-500",
+  medium: "rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-amber-600",
+};
+
+const STATUS_BADGE: Record<string, { label: string; className: string }> = {
+  queued: { label: "Queued for content", className: "bg-brand/10 text-brand" },
+  done: { label: "Done", className: "bg-green-50 text-green-600" },
+  discovered: { label: "Discovered", className: "bg-gray-100 text-gray-500" },
+};
 
 function TargetKeywordsPanel() {
   const [keywords, setKeywords] = useState<TrackedKeyword[] | null>(null);
-  const [keyword, setKeyword] = useState("");
-  const [targetUrl, setTargetUrl] = useState("");
-  const [priority, setPriority] = useState("medium");
-  const [reason, setReason] = useState("");
-  const [error, setError] = useState("");
-  const [adding, setAdding] = useState(false);
 
   async function load() {
     const res = await fetch("/api/admin/keywords");
@@ -270,25 +281,12 @@ function TargetKeywordsPanel() {
     };
   }, []);
 
-  async function handleAdd(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    setAdding(true);
-    const res = await fetch("/api/admin/keywords", {
-      method: "POST",
+  async function setStatus(id: string, status: string) {
+    await fetch(`/api/admin/keywords/${id}`, {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ keyword, target_url: targetUrl, priority, notes: reason }),
+      body: JSON.stringify({ status }),
     });
-    const data = await res.json();
-    setAdding(false);
-    if (!res.ok) {
-      setError(data.error || "Failed to add keyword");
-      return;
-    }
-    setKeyword("");
-    setTargetUrl("");
-    setPriority("medium");
-    setReason("");
     load();
   }
 
@@ -302,107 +300,70 @@ function TargetKeywordsPanel() {
       <div className="flex items-center gap-2">
         <Search className="h-4 w-4 text-gray-500" />
         <h2 className="text-sm font-semibold text-gray-900">Target Keywords</h2>
-        <InfoTooltip text="Keywords you've deliberately chosen to rank for, tracked over time. Position/impressions/clicks are pulled live from Search Console (last 30 days) whenever available — 'No data yet' means Google hasn't shown your site for that exact term in that window. Priority is a manual editorial call, not a Google score: High = either real proven demand (already showing decent impressions/clicks or a near-page-1 position) or a genuinely uncontested niche with little local competition. Medium = a plausible, real target with no proof yet either way. Low = a long shot or deprioritized. Every keyword requires a written reason so the priority isn't just a guess — read it before trusting the badge." />
+        <InfoTooltip text="This list populates itself — a daily job pulls every real query Search Console sees for your site (at least 3 impressions in the trailing 30 days) with no manual entry. Priority is computed automatically from real numbers, not a guess: High = 50+ impressions and within reach of page 1 (position ≤30). Medium = decent demand (15+ impressions) further out. Low = everything else. Click 'Queue for content' on anything worth writing about — that just flags it. Tell Claude to check the content queue in a chat session and it'll go write the actual blog post or page update for whatever's flagged." />
       </div>
       <p className="mt-1 text-xs text-gray-400">
-        Add a keyword you want to SEO toward and see its live Search Console standing.
+        Auto-synced daily from Search Console — nothing here was typed in by hand. Queue anything
+        worth building content for, then ask Claude to check the queue.
       </p>
-
-      <form onSubmit={handleAdd} className="mt-4 space-y-2">
-        <div className="flex flex-wrap items-end gap-2">
-          <div className="flex-1 min-w-40">
-            <label className="text-xs font-medium text-gray-500">Keyword</label>
-            <input
-              required
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="managed it services camden nj"
-              className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-            />
-          </div>
-          <div className="flex-1 min-w-40">
-            <label className="text-xs font-medium text-gray-500">Target Page (optional)</label>
-            <input
-              value={targetUrl}
-              onChange={(e) => setTargetUrl(e.target.value)}
-              placeholder="/services/managed-it"
-              className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-            />
-          </div>
-          <div>
-            <label className="text-xs font-medium text-gray-500">Priority</label>
-            <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-              className="mt-1 rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-            >
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label className="text-xs font-medium text-gray-500">
-            Why this priority? (required — real data or a specific reason, not a guess)
-          </label>
-          <input
-            required
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder="e.g. already at #14 with 40 impressions/mo in Search Console, or: no local competitor targets this term"
-            className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={adding}
-          className="rounded-md bg-brand px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
-        >
-          {adding ? "Adding…" : "Add"}
-        </button>
-      </form>
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
 
       {!keywords ? (
         <p className="mt-4 text-sm text-gray-500">Loading…</p>
       ) : keywords.length === 0 ? (
-        <p className="mt-4 text-sm text-gray-500">No target keywords yet — add one above.</p>
+        <p className="mt-4 text-sm text-gray-500">
+          Nothing synced yet — the daily job hasn&apos;t run, or no query has 3+ impressions yet.
+        </p>
       ) : (
         <ul className="mt-4 divide-y divide-gray-100">
-          {keywords.map((k) => (
-            <li key={k.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium text-gray-900">{k.keyword}</span>
-                  <span
-                    className={
-                      k.priority === "high"
-                        ? "rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-red-600"
-                        : k.priority === "low"
-                          ? "rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-gray-500"
-                          : "rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-amber-600"
-                    }
-                  >
-                    {k.priority}
-                  </span>
+          {keywords.map((k) => {
+            const status = STATUS_BADGE[k.status] ?? STATUS_BADGE.discovered;
+            return (
+              <li key={k.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-medium text-gray-900">{k.keyword}</span>
+                    <span className={PRIORITY_BADGE_CLASSES[k.priority] ?? PRIORITY_BADGE_CLASSES.medium}>
+                      {k.priority}
+                    </span>
+                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${status.className}`}>
+                      {status.label}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-wide text-gray-400">
+                      {k.source === "search_console" ? "from Search Console" : "manual"}
+                    </span>
+                  </div>
+                  {k.target_url && <p className="text-xs text-gray-400">{k.target_url}</p>}
+                  <p className="mt-0.5 text-xs text-gray-500">
+                    {k.last_impressions != null
+                      ? `#${Number(k.last_position).toFixed(1)} avg · ${k.last_impressions} shown · ${k.last_clicks} clicked (last synced ${k.last_synced_at ? formatTimestamp(k.last_synced_at) : "—"})`
+                      : "No Search Console data recorded yet"}
+                  </p>
+                  {k.notes && <p className="mt-1 text-xs italic text-gray-400">{k.notes}</p>}
                 </div>
-                {k.target_url && <p className="text-xs text-gray-400">{k.target_url}</p>}
-                <p className="mt-0.5 text-xs text-gray-500">
-                  {k.live
-                    ? `#${k.live.position.toFixed(1)} avg · ${k.live.impressions} shown · ${k.live.clicks} clicked (last 30 days)`
-                    : "No data yet — not showing in Google results for this exact term"}
-                </p>
-                {k.notes && <p className="mt-1 text-xs italic text-gray-400">Why: {k.notes}</p>}
-              </div>
-              <button
-                onClick={() => handleRemove(k.id)}
-                className="shrink-0 text-xs font-medium text-red-600 hover:underline"
-              >
-                Remove
-              </button>
-            </li>
-          ))}
+                <div className="flex shrink-0 items-center gap-3">
+                  {k.status !== "queued" && (
+                    <button
+                      onClick={() => setStatus(k.id, "queued")}
+                      className="text-xs font-medium text-brand hover:underline"
+                    >
+                      Queue for content
+                    </button>
+                  )}
+                  {k.status === "queued" && (
+                    <button
+                      onClick={() => setStatus(k.id, "done")}
+                      className="text-xs font-medium text-green-600 hover:underline"
+                    >
+                      Mark done
+                    </button>
+                  )}
+                  <button onClick={() => handleRemove(k.id)} className="text-xs font-medium text-red-600 hover:underline">
+                    Remove
+                  </button>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
