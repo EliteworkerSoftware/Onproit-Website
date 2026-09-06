@@ -1,12 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Bot, Eye, MapPin, MessageSquare, Phone, Smartphone } from "lucide-react";
+import { Fragment, useEffect, useState } from "react";
+import { Bot, ChevronDown, Eye, MapPin, MessageSquare, MousePointerClick, Phone, Smartphone } from "lucide-react";
+
+interface TimelineEvent {
+  type: "page" | "click" | "call_click";
+  path: string;
+  label: string | null;
+  href: string | null;
+  durationSeconds: number | null;
+  timestamp: string;
+}
+
+interface VisitorSession {
+  sessionId: string;
+  firstSeen: string;
+  lastSeen: string;
+  pageCount: number;
+  ctaClicks: number;
+  totalDurationSeconds: number;
+  isMobile: boolean;
+  city: string | null;
+  region: string | null;
+  country: string | null;
+  entryReferrer: string | null;
+  entrySource: string;
+  timeline: TimelineEvent[];
+}
 
 interface AnalyticsData {
   totalViews30d: number;
   totalViews7d: number;
   viewsByDay: { day: string; count: number }[];
+  viewsByHour: { hour: number; count: number }[];
+  viewsByDayOfWeek: { day: string; count: number }[];
   topPages: { path: string; count: number }[];
   trafficSources: { source: string; count: number }[];
   topLocations: { location: string; count: number }[];
@@ -18,6 +45,7 @@ interface AnalyticsData {
   botViews30d: number;
   botViews7d: number;
   topBotAgents: { agent: string; count: number }[];
+  sessions: VisitorSession[];
 }
 
 function formatShortDate(isoDay: string) {
@@ -25,9 +53,42 @@ function formatShortDate(isoDay: string) {
   return `${Number(month)}/${Number(day)}`;
 }
 
+function formatHour(hour: number) {
+  if (hour === 0) return "12am";
+  if (hour === 12) return "12pm";
+  return hour < 12 ? `${hour}am` : `${hour - 12}pm`;
+}
+
+function formatDuration(seconds: number) {
+  if (!seconds || seconds < 1) return "—";
+  if (seconds < 60) return `${Math.round(seconds)}s`;
+  const minutes = Math.floor(seconds / 60);
+  const remaining = Math.round(seconds % 60);
+  return `${minutes}m ${remaining}s`;
+}
+
+function formatLocation(s: { city: string | null; region: string | null; country: string | null }) {
+  const parts = [s.city, s.region, s.country].filter(Boolean);
+  return parts.length > 0 ? parts.join(", ") : "Unknown location";
+}
+
+function formatTimestamp(iso: string) {
+  return new Date(iso).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
+function formatTime(iso: string) {
+  return new Date(iso).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", second: "2-digit" });
+}
+
 export default function AdminAnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [error, setError] = useState("");
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     let cancelled = false;
@@ -46,7 +107,18 @@ export default function AdminAnalyticsPage() {
     };
   }, []);
 
+  function toggleExpanded(sessionId: string) {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(sessionId)) next.delete(sessionId);
+      else next.add(sessionId);
+      return next;
+    });
+  }
+
   const maxDayCount = data ? Math.max(1, ...data.viewsByDay.map((d) => d.count)) : 1;
+  const maxHourCount = data ? Math.max(1, ...data.viewsByHour.map((d) => d.count)) : 1;
+  const maxDowCount = data ? Math.max(1, ...data.viewsByDayOfWeek.map((d) => d.count)) : 1;
 
   return (
     <div>
@@ -128,6 +200,60 @@ export default function AdminAnalyticsPage() {
             )}
           </div>
 
+          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div className="rounded-xl border border-gray-200 bg-white p-6">
+              <h2 className="text-sm font-semibold text-gray-900">Views by Time of Day</h2>
+              <p className="mt-1 text-xs text-gray-400">Eastern time, last 30 days</p>
+              <div className="mt-4 flex h-32 items-end gap-0.5">
+                {data.viewsByHour.map((d) => (
+                  <div key={d.hour} className="group relative h-full flex-1">
+                    <div
+                      className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
+                      style={{ height: `${Math.max(3, (d.count / maxHourCount) * 100)}%` }}
+                    />
+                    <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
+                      {formatHour(d.hour)}: {d.count}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-1 flex gap-0.5">
+                {data.viewsByHour.map((d) => (
+                  <div key={d.hour} className="flex-1 text-center">
+                    {d.hour % 3 === 0 && (
+                      <span className="text-[9px] text-gray-400">{formatHour(d.hour)}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-gray-200 bg-white p-6">
+              <h2 className="text-sm font-semibold text-gray-900">Views by Day of Week</h2>
+              <p className="mt-1 text-xs text-gray-400">Eastern time, last 30 days</p>
+              <div className="mt-4 flex h-32 items-end gap-2">
+                {data.viewsByDayOfWeek.map((d) => (
+                  <div key={d.day} className="group relative h-full flex-1">
+                    <div
+                      className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
+                      style={{ height: `${Math.max(3, (d.count / maxDowCount) * 100)}%` }}
+                    />
+                    <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
+                      {d.count}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-1 flex gap-2">
+                {data.viewsByDayOfWeek.map((d) => (
+                  <div key={d.day} className="flex-1 text-center text-[10px] text-gray-400">
+                    {d.day}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
           <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="rounded-xl border border-gray-200 bg-white p-6">
               <h2 className="text-sm font-semibold text-gray-900">Top Pages</h2>
@@ -179,6 +305,103 @@ export default function AdminAnalyticsPage() {
                 </ul>
               )}
             </div>
+          </div>
+
+          <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
+            <div className="flex items-center gap-2">
+              <MousePointerClick className="h-4 w-4 text-gray-500" />
+              <h2 className="text-sm font-semibold text-gray-900">Recent Visitors</h2>
+            </div>
+            <p className="mt-1 text-xs text-gray-400">
+              Click a row for the full page-by-page timeline — time on each page and every link or
+              button clicked, in order.
+            </p>
+            {data.sessions.length === 0 ? (
+              <p className="mt-4 text-sm text-gray-500">No visitor sessions recorded yet.</p>
+            ) : (
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full min-w-180 text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-200 text-xs uppercase tracking-wide text-gray-400">
+                      <th className="pb-2 pr-4 font-medium">First Seen</th>
+                      <th className="pb-2 pr-4 font-medium">Location</th>
+                      <th className="pb-2 pr-4 font-medium">Source</th>
+                      <th className="pb-2 pr-4 font-medium">Device</th>
+                      <th className="pb-2 pr-4 font-medium">Pages</th>
+                      <th className="pb-2 pr-4 font-medium">CTA Clicks</th>
+                      <th className="pb-2 pr-4 font-medium">Time on Site</th>
+                      <th className="pb-2 font-medium" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.sessions.map((s) => {
+                      const isOpen = expanded.has(s.sessionId);
+                      return (
+                        <Fragment key={s.sessionId}>
+                          <tr
+                            onClick={() => toggleExpanded(s.sessionId)}
+                            className="cursor-pointer border-b border-gray-100 hover:bg-gray-50"
+                          >
+                            <td className="py-2 pr-4 text-gray-700">{formatTimestamp(s.firstSeen)}</td>
+                            <td className="py-2 pr-4 text-gray-700">{formatLocation(s)}</td>
+                            <td className="py-2 pr-4 text-gray-700">{s.entrySource}</td>
+                            <td className="py-2 pr-4 text-gray-700">{s.isMobile ? "Mobile" : "Desktop"}</td>
+                            <td className="py-2 pr-4 text-gray-700">{s.pageCount}</td>
+                            <td className="py-2 pr-4 font-medium text-brand">{s.ctaClicks}</td>
+                            <td className="py-2 pr-4 text-gray-700">{formatDuration(s.totalDurationSeconds)}</td>
+                            <td className="py-2">
+                              <ChevronDown
+                                className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                              />
+                            </td>
+                          </tr>
+                          {isOpen && (
+                            <tr className="border-b border-gray-100 bg-gray-50">
+                              <td colSpan={8} className="px-4 py-4">
+                                <ol className="space-y-2">
+                                  {s.timeline.map((event, i) => (
+                                    <li key={i} className="flex items-start gap-3 text-sm">
+                                      <span className="mt-0.5 w-20 shrink-0 text-xs text-gray-400">
+                                        {formatTime(event.timestamp)}
+                                      </span>
+                                      {event.type === "page" ? (
+                                        <span className="text-gray-700">
+                                          Viewed{" "}
+                                          <span className="font-medium text-gray-900">
+                                            {event.path === "/" ? "Home (/)" : event.path}
+                                          </span>
+                                          {event.durationSeconds != null && (
+                                            <span className="text-gray-400"> — {formatDuration(event.durationSeconds)}</span>
+                                          )}
+                                        </span>
+                                      ) : (
+                                        <span className="text-gray-700">
+                                          <span
+                                            className={
+                                              event.type === "call_click"
+                                                ? "font-medium text-brand"
+                                                : "font-medium text-accent"
+                                            }
+                                          >
+                                            {event.type === "call_click" ? "Called" : "Clicked"}
+                                          </span>{" "}
+                                          &quot;{event.label ?? "unlabeled"}&quot;
+                                          <span className="text-gray-400"> on {event.path === "/" ? "Home (/)" : event.path}</span>
+                                        </span>
+                                      )}
+                                    </li>
+                                  ))}
+                                </ol>
+                              </td>
+                            </tr>
+                          )}
+                        </Fragment>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
 
           <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-6">

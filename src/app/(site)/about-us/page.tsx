@@ -145,7 +145,8 @@ export default function AboutUsPage() {
           <p className="mt-4 text-gray-600">
             ONPRO IT is headquartered in Berlin Township, NJ, and provides on-site and remote support
             to businesses throughout Southern New Jersey, Philadelphia, and Delaware — including
-            Cherry Hill, Voorhees, Marlton, Mount Laurel, Moorestown, and Medford.
+            Camden, Burlington, Gloucester, Ocean, Atlantic, Cumberland, Cape May, and Salem
+            counties, from Cherry Hill and Mount Laurel to Toms River, Atlantic City, and Vineland.
           </p>
         </div>
       </section>

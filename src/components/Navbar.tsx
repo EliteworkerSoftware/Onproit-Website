@@ -3,19 +3,9 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, Phone, X } from "lucide-react";
 import clsx from "clsx";
 import { PHONE_DISPLAY, PHONE_HREF } from "@/lib/constants";
-
-function trackCallClick(pathname: string) {
-  fetch("/api/track", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ path: pathname, event: "call_click" }),
-    keepalive: true,
-  }).catch(() => {});
-}
 
 const SERVICE_LINKS = [
   { title: "Managed IT Services", href: "/services/managed-it" },
@@ -44,7 +34,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -117,7 +106,6 @@ export default function Navbar() {
 
         <a
           href={`tel:${PHONE_HREF}`}
-          onClick={() => trackCallClick(pathname)}
           className="hidden items-center gap-2 rounded-md bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark lg:flex"
         >
           <Phone className="h-4 w-4" />
@@ -175,7 +163,6 @@ export default function Navbar() {
           ))}
           <a
             href={`tel:${PHONE_HREF}`}
-          onClick={() => trackCallClick(pathname)}
             className="mt-3 block rounded-md bg-brand px-5 py-2.5 text-center text-sm font-semibold text-white"
           >
             Call {PHONE_DISPLAY}

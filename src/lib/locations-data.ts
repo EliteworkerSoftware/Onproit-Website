@@ -26,7 +26,7 @@ export const LOCATIONS_DATA: LocationData[] = [
     h1: "Managed IT Services in New Jersey | ONPRO IT",
     metaTitle: "Managed IT Services in New Jersey | ONPRO IT",
     metaDescription:
-      "ONPRO IT provides managed IT services across New Jersey — proactive support, cybersecurity, and cabling for businesses in Camden, Burlington, Gloucester, and beyond.",
+      "ONPRO IT provides managed IT services across New Jersey — proactive support, cybersecurity, and cabling for businesses in Camden, Burlington, Gloucester, Ocean, Atlantic, Cumberland, Cape May, Salem, and Mercer counties.",
     keywords: "managed IT services NJ, IT support New Jersey, MSP NJ",
     intro:
       "Stop dealing with technology headaches. ONPRO IT provides comprehensive, proactive IT support and cybersecurity solutions tailored for New Jersey businesses — plus structured cabling, network installation, VoIP, AV, and security camera systems, all from the same team. We keep your systems running so you can focus on growing your company.",
@@ -36,6 +36,10 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Moorestown, NJ",
       "Voorhees, NJ",
       "Marlton, NJ",
+      "Toms River, NJ",
+      "Brick, NJ",
+      "Atlantic City, NJ",
+      "Vineland, NJ",
       "Philadelphia, PA",
       "King of Prussia, PA",
       "Wilmington, DE",
@@ -417,6 +421,11 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Camden County",
       "Burlington County",
       "Gloucester County",
+      "Ocean County",
+      "Atlantic County",
+      "Cumberland County",
+      "Cape May County",
+      "Salem County",
       "Princeton",
       "Trenton",
       "Atlantic City",
@@ -431,7 +440,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       {
         question: "What areas of New Jersey does ONPRO IT provide cabling services in?",
         answer:
-          "We provide structured cabling installation throughout Southern and Central New Jersey, including Cherry Hill, Voorhees, Mount Laurel, Marlton, Moorestown, Camden, Burlington, and Gloucester counties, as well as Princeton, Trenton, and the Atlantic City area.",
+          "We provide structured cabling installation throughout Southern and Central New Jersey, including Camden, Burlington, Gloucester, Ocean, Atlantic, Cumberland, Cape May, and Salem counties — from Cherry Hill and Mount Laurel to Toms River and Atlantic City — as well as Princeton and Trenton.",
       },
       {
         question: "Do you provide cabling for new office construction?",

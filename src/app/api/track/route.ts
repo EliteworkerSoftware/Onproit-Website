@@ -12,14 +12,17 @@ import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admi
 const BOT_PATTERN =
   /bot|crawl|spider|slurp|facebookexternalhit|preview|headless|curl|wget|python-requests|python-urllib|go-http-client|java\/|libwww|okhttp|axios|node-fetch|postmanruntime|insomnia|http_?client|scrapy|phantomjs|selenium|puppeteer|playwright|lighthouse|pingdom|uptimerobot|monitor/i;
 
+const VALID_EVENTS = new Set(["call_click", "click"]);
+
 export async function POST(req: NextRequest) {
   if (!isSupabaseAdminConfigured()) return NextResponse.json({ ok: true });
 
-  const { path, referrer, event } = await req.json().catch(() => ({ path: null, referrer: null, event: null }));
-  if (typeof path !== "string" || !path) {
+  const body = await req.json().catch(() => null);
+  if (!body || typeof body.path !== "string" || !body.path) {
     return NextResponse.json({ error: "path is required" }, { status: 400 });
   }
-  const eventType = event === "call_click" ? "call_click" : null;
+  const { path, referrer, event, sessionId, clickLabel, clickHref } = body;
+  const eventType = VALID_EVENTS.has(event) ? event : null;
 
   const userAgent = req.headers.get("user-agent") ?? "";
   const isLikelyBot = !userAgent || BOT_PATTERN.test(userAgent);
@@ -31,20 +34,29 @@ export async function POST(req: NextRequest) {
 
   try {
     const supabase = getSupabaseAdmin();
-    await supabase.from("page_views").insert({
-      path,
-      referrer: typeof referrer === "string" ? referrer.slice(0, 500) : null,
-      country,
-      region,
-      city,
-      is_mobile: isMobile,
-      event_type: eventType,
-      is_likely_bot: isLikelyBot,
-      user_agent: userAgent ? userAgent.slice(0, 300) : null,
-    });
+    const { data, error } = await supabase
+      .from("page_views")
+      .insert({
+        path,
+        referrer: typeof referrer === "string" ? referrer.slice(0, 500) : null,
+        country,
+        region,
+        city,
+        is_mobile: isMobile,
+        event_type: eventType,
+        is_likely_bot: isLikelyBot,
+        user_agent: userAgent ? userAgent.slice(0, 300) : null,
+        session_id: typeof sessionId === "string" ? sessionId.slice(0, 64) : null,
+        click_label: typeof clickLabel === "string" ? clickLabel.slice(0, 200) : null,
+        click_href: typeof clickHref === "string" ? clickHref.slice(0, 500) : null,
+      })
+      .select("id")
+      .single();
+
+    if (error) throw error;
+    return NextResponse.json({ ok: true, id: data.id });
   } catch (err) {
     console.error("Page view tracking error:", err);
+    return NextResponse.json({ ok: true });
   }
-
-  return NextResponse.json({ ok: true });
 }
