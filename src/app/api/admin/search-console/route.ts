@@ -8,6 +8,12 @@ function isoDateNDaysAgo(n: number) {
   return d.toISOString().slice(0, 10);
 }
 
+function addDays(iso: string, days: number) {
+  const d = new Date(`${iso}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
 export async function GET(req: NextRequest) {
   const admin = await getCurrentAdmin();
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -23,19 +29,39 @@ export async function GET(req: NextRequest) {
   const startDate = searchParams.get("from") ?? isoDateNDaysAgo(30);
   const endDate = searchParams.get("to") ?? isoDateNDaysAgo(3);
 
+  // Previous period of equal length immediately before this one, used to
+  // compute how much each query's/page's average position moved.
+  const rangeDays = Math.round((new Date(`${endDate}T00:00:00Z`).getTime() - new Date(`${startDate}T00:00:00Z`).getTime()) / 86400000) + 1;
+  const prevEndDate = addDays(startDate, -1);
+  const prevStartDate = addDays(prevEndDate, -(rangeDays - 1));
+
   try {
-    const [queryRows, pageQueryRows] = await Promise.all([
+    const [queryRows, pageQueryRows, prevQueryRows, prevPageQueryRows] = await Promise.all([
       querySearchAnalytics({ startDate, endDate, dimensions: ["query"], rowLimit: 20 }),
       querySearchAnalytics({ startDate, endDate, dimensions: ["page", "query"], rowLimit: 1000 }),
+      querySearchAnalytics({ startDate: prevStartDate, endDate: prevEndDate, dimensions: ["query"], rowLimit: 1000 }),
+      querySearchAnalytics({ startDate: prevStartDate, endDate: prevEndDate, dimensions: ["page", "query"], rowLimit: 1000 }),
     ]);
 
-    const topQueries = queryRows.map((r) => ({
-      query: r.keys[0],
-      clicks: r.clicks,
-      impressions: r.impressions,
-      ctr: r.ctr,
-      position: r.position,
-    }));
+    const prevQueryPosition = new Map<string, number>();
+    for (const r of prevQueryRows) prevQueryPosition.set(r.keys[0], r.position);
+
+    const prevPageQueryPosition = new Map<string, number>();
+    for (const r of prevPageQueryRows) prevPageQueryPosition.set(r.keys.join("::"), r.position);
+
+    const topQueries = queryRows.map((r) => {
+      const query = r.keys[0];
+      const prevPosition = prevQueryPosition.get(query);
+      return {
+        query,
+        clicks: r.clicks,
+        impressions: r.impressions,
+        ctr: r.ctr,
+        position: r.position,
+        // Positive = moved up (toward #1, a lower position number). null = no data for this query last period.
+        positionChange: prevPosition !== undefined ? prevPosition - r.position : null,
+      };
+    });
 
     // Keep only the single top query (by clicks) for each landing page.
     const bestPerPage = new Map<string, SearchAnalyticsPageRow>();
@@ -46,7 +72,13 @@ export async function GET(req: NextRequest) {
         bestPerPage.set(page, { page, query, clicks: r.clicks, impressions: r.impressions, position: r.position });
       }
     }
-    const topQueriesByPage = Array.from(bestPerPage.values()).sort((a, b) => b.clicks - a.clicks).slice(0, 20);
+    const topQueriesByPage = Array.from(bestPerPage.values())
+      .sort((a, b) => b.clicks - a.clicks)
+      .slice(0, 20)
+      .map((r) => {
+        const prevPosition = prevPageQueryPosition.get(`${r.page}::${r.query}`);
+        return { ...r, positionChange: prevPosition !== undefined ? prevPosition - r.position : null };
+      });
 
     return NextResponse.json({ configured: true, startDate, endDate, topQueries, topQueriesByPage });
   } catch (err) {

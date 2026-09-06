@@ -72,6 +72,7 @@ interface SearchQuery {
   impressions: number;
   ctr: number;
   position: number;
+  positionChange: number | null;
 }
 
 interface SearchQueryByPage {
@@ -80,6 +81,7 @@ interface SearchQueryByPage {
   clicks: number;
   impressions: number;
   position: number;
+  positionChange: number | null;
 }
 
 interface SearchConsoleData {
@@ -182,6 +184,18 @@ function DeviceBadge({ os, formFactor }: { os: VisitorSession["os"]; formFactor:
       )}
       <FormIcon className="h-3.5 w-3.5 shrink-0 text-gray-500" />
       <span>{formFactor}</span>
+    </span>
+  );
+}
+
+function PositionChangeBadge({ change }: { change: number | null }) {
+  if (change === null) return <span className="text-gray-400">new</span>;
+  if (Math.abs(change) < 0.05) return <span className="text-gray-400">±0</span>;
+  const improved = change > 0;
+  return (
+    <span className={improved ? "font-medium text-green-600" : "font-medium text-red-600"}>
+      {improved ? "+" : "-"}
+      {Math.abs(change).toFixed(1)}
     </span>
   );
 }
@@ -560,7 +574,7 @@ export default function AdminAnalyticsPage() {
                 <div className="flex items-center gap-2">
                   <Search className="h-4 w-4 text-gray-500" />
                   <h2 className="text-sm font-semibold text-gray-900">Top Search Queries</h2>
-                  <InfoTooltip text="Real search terms people typed into Google, from Search Console — separate from and more precise than the search engine names in Traffic Sources. Impressions = your site appeared in the results for that search. Clicks = someone actually clicked through. Avg position = where in the results your site tended to show up (#1 is the top result); a high number means you're showing up on page 2+, which explains impressions with zero clicks. This is aggregate data across everyone who searched — it can't be tied to a specific visitor session." />
+                  <InfoTooltip text="Real search terms people typed into Google, from Search Console — separate from and more precise than the search engine names in Traffic Sources. Impressions = your site appeared in the results for that search. Clicks = someone actually clicked through. Avg position = where in the results your site tended to show up (#1 is the top result); a high number means you're showing up on page 2+, which explains impressions with zero clicks. The green/red number compares average position to the immediately preceding period of equal length — green means it moved up (toward #1), red means it dropped. This is aggregate data across everyone who searched — it can't be tied to a specific visitor session." />
                 </div>
                 <p className="mt-1 text-xs text-gray-400">
                   What people actually typed into Google to find onproit.com, via Search Console.
@@ -573,7 +587,8 @@ export default function AdminAnalyticsPage() {
                       <li key={q.query} className="text-sm">
                         <p className="wrap-break-word text-gray-700">{q.query}</p>
                         <p className="mt-0.5 text-xs text-gray-400">
-                          {q.impressions} shown · {q.clicks} clicked · #{q.position.toFixed(1)} avg
+                          {q.impressions} shown · {q.clicks} clicked · #{q.position.toFixed(1)} avg{" "}
+                          (<PositionChangeBadge change={q.positionChange} /> vs. prior period)
                         </p>
                       </li>
                     ))}
@@ -603,6 +618,10 @@ export default function AdminAnalyticsPage() {
                           <span className="shrink-0 text-xs text-gray-400">{p.clicks} clicks</span>
                         </div>
                         <p className="mt-0.5 wrap-break-word text-xs text-gray-500">&quot;{p.query}&quot;</p>
+                        <p className="mt-0.5 text-xs text-gray-400">
+                          #{p.position.toFixed(1)} avg (<PositionChangeBadge change={p.positionChange} /> vs. prior
+                          period)
+                        </p>
                       </li>
                     ))}
                   </ul>
