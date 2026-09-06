@@ -8,6 +8,7 @@ export interface AdminUser {
   email: string;
   full_name: string | null;
   role: string | null;
+  avatar_url: string | null;
 }
 
 // cache() dedupes this within a single request's render tree (e.g. the admin
@@ -28,7 +29,7 @@ export const getCurrentAdmin = cache(async (): Promise<AdminUser | null> => {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, full_name, email, role")
+    .select("id, full_name, email, role, avatar_url")
     .eq("id", user.id)
     .single();
 

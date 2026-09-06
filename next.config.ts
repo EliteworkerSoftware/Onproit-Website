@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "horizons-cdn.hostinger.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "kvzduxklwnmevzzjswhv.supabase.co" },
     ],
   },
   async redirects() {
