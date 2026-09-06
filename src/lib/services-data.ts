@@ -774,41 +774,40 @@ export const SERVICES_DATA: ServiceData[] = [
     h1: "AI Integration & Workflow Automation Services",
     metaTitle: "AI Integration & Workflow Automation NJ | ONPRO IT",
     metaDescription:
-      "ONPRO IT helps businesses in Southern NJ, Philadelphia, and Delaware roll out Microsoft Copilot and automate repetitive workflows — set up, secured, and supported by a team that uses AI in its own operations.",
-    keywords: "AI integration NJ, Microsoft Copilot setup, AI workflow automation, business AI consulting New Jersey",
+      "ONPRO IT helps businesses in Southern NJ, Philadelphia, and Delaware integrate AI tools — Microsoft Copilot, Claude, ChatGPT, and workflow automation — into daily operations, set up and supported by a team that uses AI to run its own business.",
+    keywords: "AI integration NJ, Microsoft Copilot setup, AI workflow automation, business AI consulting New Jersey, ChatGPT and Claude for business",
     Icon: Sparkles,
     heroImage: "/images/hero-managed-it.png",
     secondaryImage: "/images/about-team.png",
     intro:
-      "We don't just talk about AI — we use it to run our own business. We help you do the same: rolling out Microsoft Copilot, automating repetitive workflows, and connecting AI tools into the systems your team already uses.",
+      "We don't just talk about AI — we use it to run our own business. We help you do the same: rolling out Microsoft Copilot, connecting tools like Claude and ChatGPT into your workflow, and automating the repetitive work that eats up your team's day.",
     whatIsIt: [
-      "AI integration means connecting practical AI tools — Microsoft Copilot, workflow automation, and AI-assisted monitoring — into the software your team already uses, instead of bolting on a disconnected app nobody adopts.",
-      "We approach this the same way we approach networking and cabling: design it first, configure it correctly, then support it. That means secure Copilot licensing and rollout inside Microsoft 365, automated workflows that cut down repetitive manual work, and AI-powered monitoring built into the security camera systems we already install and manage.",
+      "AI integration means connecting practical AI tools into the software your team already uses, instead of bolting on a disconnected app nobody adopts. That includes Microsoft Copilot, other AI platforms like Claude and ChatGPT, and the automation that ties them into your actual workflow.",
+      "We're not tied to one AI vendor. Different tools are better at different jobs, so we build the workflow around what actually fits your business — sometimes that's Copilot inside Microsoft 365, sometimes it's a different AI platform, sometimes it's a combination.",
       "Because we use these same tools internally to run ONPRO IT day to day, we're not learning on your dime — we're applying what already works for us.",
     ],
     whoItsFor: [
       "Teams that already use Microsoft 365 and want Copilot rolled out correctly and securely",
       "Businesses losing hours every week to repetitive manual tasks that could be automated",
-      "Companies that want AI-powered monitoring as part of their security camera system",
+      "Companies exploring tools like Claude or ChatGPT but unsure how to roll them out safely",
       "Leadership teams that want an honest, no-hype assessment of where AI actually helps",
     ],
     risks: [
       "Employees adopting consumer AI tools on their own, outside of any security policy",
-      "Paying for Copilot licenses that are never configured or rolled out to staff",
+      "Paying for AI licenses that are never configured or rolled out to staff",
       "Hours lost every week to manual work that automation could handle",
       "Falling behind competitors who are already using AI to move faster",
     ],
     howWeDeliver: [
-      "Assess your current Microsoft 365 environment and workflows to find where AI actually adds value",
-      "License, configure, and roll out Microsoft Copilot securely across your team",
+      "Assess your current workflows and tools to find where AI actually adds value",
+      "License, configure, and roll out the right AI platform for your team — Copilot, Claude, ChatGPT, or a combination",
       "Build automated workflows that connect the tools you already use",
-      "Layer AI-powered monitoring into the security systems we install and manage",
       "Train your team so the tools actually get used, not ignored",
     ],
     benefits: [
-      "Microsoft Copilot set up and secured, not just licensed",
+      "The right AI platform for your business, not a one-size-fits-all pitch",
       "Fewer repetitive manual tasks eating up your team's day",
-      "AI-powered monitoring built into your security camera system",
+      "AI tools configured securely within your existing systems and permissions",
       "A technology partner that uses these tools internally, not just sells them",
     ],
     areasServed: SERVICE_AREA_LIST,
@@ -816,12 +815,12 @@ export const SERVICES_DATA: ServiceData[] = [
       {
         question: "Is this just Microsoft Copilot, or something bigger?",
         answer:
-          "Copilot is usually the starting point since most of our clients already have Microsoft 365, but AI integration also includes workflow automation between the tools you use and the AI-powered monitoring already built into our security camera systems.",
+          "Copilot is often the starting point since most of our clients already have Microsoft 365, but we're not tied to one platform — we also work with tools like Claude and ChatGPT, and build automated workflows between whatever tools actually fit your business.",
       },
       {
         question: "Do you actually use AI in your own business, or is this just a sales pitch?",
         answer:
-          "We use these same tools — including Copilot and workflow automation — to run ONPRO IT's own day-to-day operations. We're not asking you to be the test case.",
+          "We use AI tools — including Copilot and others — to run ONPRO IT's own day-to-day operations. We're not asking you to be the test case.",
       },
       {
         question: "Will this replace our employees?",
@@ -831,7 +830,7 @@ export const SERVICES_DATA: ServiceData[] = [
       {
         question: "Is our data safe if we roll out AI tools?",
         answer:
-          "Yes — we configure Copilot and any connected workflows within your existing Microsoft 365 security and permission settings, so AI tools only ever see what a given employee is already allowed to see.",
+          "Yes — we configure whichever AI tools you use within your existing security and permission settings, so they only ever see what a given employee is already allowed to see.",
       },
     ],
   },

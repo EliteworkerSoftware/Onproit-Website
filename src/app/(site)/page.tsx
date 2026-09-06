@@ -107,7 +107,7 @@ const SERVICE_CARDS = [
   { title: "IT Help Desk", description: "Round-the-clock remote support for email, software, passwords, and every device your team relies on.", href: "/services/it-support", Icon: Headphones },
   { title: "Cyber Security", description: "Comprehensive cybersecurity and security camera wiring to protect your organization.", href: "/services/cybersecurity", Icon: ShieldCheck },
   { title: "Cloud Solutions", description: "Seamless cloud migration and management for Microsoft 365 and Google Workspace.", href: "/services/cloud", Icon: Cloud },
-  { title: "AI Integration & Automation", description: "Microsoft Copilot rollout and workflow automation, deployed by a team that uses AI in its own operations.", href: "/services/ai-integration", Icon: Sparkles },
+  { title: "AI Integration & Automation", description: "Copilot, Claude, ChatGPT, and workflow automation — the right AI tools for your business, deployed by a team that uses them internally.", href: "/services/ai-integration", Icon: Sparkles },
   { title: "VoIP Phone Systems", description: "Modern business telephony solutions to keep your team connected anywhere.", href: "/services/voip", Icon: PhoneCall },
   { title: "Network Solutions", description: "Complete network design, WiFi setup, and infrastructure management for growing businesses.", href: "/services/network-wifi", Icon: Network },
   { title: "AV & Conference Rooms", description: "Video conferencing, displays, and digital signage installed and integrated with your network.", href: "/services/av-integration", Icon: Presentation },

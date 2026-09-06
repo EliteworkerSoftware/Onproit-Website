@@ -29,8 +29,10 @@ interface VisitorSession {
 }
 
 interface AnalyticsData {
-  totalViews30d: number;
-  totalViews7d: number;
+  rangeFrom: string;
+  rangeTo: string;
+  totalViews: number;
+  recentViews: number | null;
   viewsByDay: { day: string; count: number }[];
   viewsByHour: { hour: number; count: number }[];
   viewsByDayOfWeek: { day: string; count: number }[];
@@ -38,19 +40,33 @@ interface AnalyticsData {
   trafficSources: { source: string; count: number }[];
   topLocations: { location: string; count: number }[];
   mobilePct: number;
-  callClicks30d: number;
-  callClicks7d: number;
-  leads30d: number;
-  leads7d: number;
-  botViews30d: number;
-  botViews7d: number;
+  callClicks: number;
+  recentCallClicks: number | null;
+  leads: number;
+  recentLeads: number | null;
+  botViews: number;
+  recentBotViews: number | null;
   topBotAgents: { agent: string; count: number }[];
   sessions: VisitorSession[];
 }
 
-function formatShortDate(isoDay: string) {
-  const [, month, day] = isoDay.split("-");
-  return `${Number(month)}/${Number(day)}`;
+const WEEKDAY_ABBR = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function isoDateNDaysAgo(n: number) {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  return d.toISOString().slice(0, 10);
+}
+
+function todayIso() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function formatDayLabel(isoDay: string) {
+  const [year, month, day] = isoDay.split("-").map(Number);
+  // Constructed as UTC to match the UTC-day bucketing used server-side.
+  const weekday = WEEKDAY_ABBR[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
+  return { weekday, date: `${month}/${day}` };
 }
 
 function formatHour(hour: number) {
@@ -68,8 +84,8 @@ function formatDuration(seconds: number) {
 }
 
 function formatLocation(s: { city: string | null; region: string | null; country: string | null }) {
-  const parts = [s.city, s.region, s.country].filter(Boolean);
-  return parts.length > 0 ? parts.join(", ") : "Unknown location";
+  if (!s.city || !s.region || !s.country) return "Unknown location";
+  return [s.city, s.region, s.country].join(", ");
 }
 
 function formatTimestamp(iso: string) {
@@ -85,16 +101,25 @@ function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", second: "2-digit" });
 }
 
+const RANGE_PRESETS = [
+  { label: "Today", from: () => todayIso(), to: () => todayIso() },
+  { label: "Last 7 Days", from: () => isoDateNDaysAgo(6), to: () => todayIso() },
+  { label: "Last 30 Days", from: () => isoDateNDaysAgo(29), to: () => todayIso() },
+  { label: "Last 90 Days", from: () => isoDateNDaysAgo(89), to: () => todayIso() },
+];
+
 export default function AdminAnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [error, setError] = useState("");
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [from, setFrom] = useState(isoDateNDaysAgo(29));
+  const [to, setTo] = useState(todayIso());
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/admin/analytics");
+        const res = await fetch(`/api/admin/analytics?from=${from}&to=${to}`);
         const json = await res.json();
         if (!res.ok) throw new Error(json.error || "Failed to load analytics");
         if (!cancelled) setData(json);
@@ -105,7 +130,7 @@ export default function AdminAnalyticsPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [from, to]);
 
   function toggleExpanded(sessionId: string) {
     setExpanded((prev) => {
@@ -124,9 +149,47 @@ export default function AdminAnalyticsPage() {
     <div>
       <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
       <p className="mt-1 text-sm text-gray-500">
-        Real human visits, calls, and leads for onproit.com — last 30 days. Suspected bot traffic
-        is tracked separately below, not mixed into these numbers.
+        Real human visits, calls, and leads for onproit.com. Suspected bot traffic is tracked
+        separately below, not mixed into these numbers.
       </p>
+
+      <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-gray-200 bg-white p-4">
+        <div className="flex items-center gap-2">
+          <label className="text-xs font-medium text-gray-500">From</label>
+          <input
+            type="date"
+            value={from}
+            max={to}
+            onChange={(e) => setFrom(e.target.value)}
+            className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <label className="text-xs font-medium text-gray-500">To</label>
+          <input
+            type="date"
+            value={to}
+            min={from}
+            max={todayIso()}
+            onChange={(e) => setTo(e.target.value)}
+            className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+          />
+        </div>
+        <div className="ml-auto flex flex-wrap gap-2">
+          {RANGE_PRESETS.map((preset) => (
+            <button
+              key={preset.label}
+              onClick={() => {
+                setFrom(preset.from());
+                setTo(preset.to());
+              }}
+              className="rounded-md border border-gray-200 px-3 py-1 text-xs font-medium text-gray-600 hover:border-brand hover:text-brand"
+            >
+              {preset.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
 
@@ -140,24 +203,30 @@ export default function AdminAnalyticsPage() {
                 <Eye className="h-4 w-4" />
                 <span className="text-sm font-medium">Page Views</span>
               </div>
-              <p className="mt-2 text-3xl font-bold text-gray-900">{data.totalViews30d}</p>
-              <p className="mt-1 text-xs text-gray-400">{data.totalViews7d} in the last 7 days</p>
+              <p className="mt-2 text-3xl font-bold text-gray-900">{data.totalViews}</p>
+              {data.recentViews !== null && (
+                <p className="mt-1 text-xs text-gray-400">{data.recentViews} in the last 7 days</p>
+              )}
             </div>
             <div className="rounded-xl border border-brand/30 bg-brand/5 p-5">
               <div className="flex items-center gap-2 text-brand">
                 <Phone className="h-4 w-4" />
                 <span className="text-sm font-medium">Call Button Clicks</span>
               </div>
-              <p className="mt-2 text-3xl font-bold text-gray-900">{data.callClicks30d}</p>
-              <p className="mt-1 text-xs text-gray-400">{data.callClicks7d} in the last 7 days</p>
+              <p className="mt-2 text-3xl font-bold text-gray-900">{data.callClicks}</p>
+              {data.recentCallClicks !== null && (
+                <p className="mt-1 text-xs text-gray-400">{data.recentCallClicks} in the last 7 days</p>
+              )}
             </div>
             <div className="rounded-xl border border-brand/30 bg-brand/5 p-5">
               <div className="flex items-center gap-2 text-brand">
                 <MessageSquare className="h-4 w-4" />
                 <span className="text-sm font-medium">Contact Form Leads</span>
               </div>
-              <p className="mt-2 text-3xl font-bold text-gray-900">{data.leads30d}</p>
-              <p className="mt-1 text-xs text-gray-400">{data.leads7d} in the last 7 days</p>
+              <p className="mt-2 text-3xl font-bold text-gray-900">{data.leads}</p>
+              {data.recentLeads !== null && (
+                <p className="mt-1 text-xs text-gray-400">{data.recentLeads} in the last 7 days</p>
+              )}
             </div>
             <div className="rounded-xl border border-gray-200 bg-white p-5">
               <div className="flex items-center gap-2 text-gray-500">
@@ -188,14 +257,16 @@ export default function AdminAnalyticsPage() {
               </div>
             )}
             {data.viewsByDay.length > 0 && (
-              <div className="mt-1 flex gap-1">
-                {data.viewsByDay.map((d) => (
-                  <div key={d.day} className="flex-1 text-center">
-                    <span className="inline-block origin-top-left -rotate-45 whitespace-nowrap text-[10px] text-gray-400">
-                      {formatShortDate(d.day)}
-                    </span>
-                  </div>
-                ))}
+              <div className="mt-2 flex gap-1">
+                {data.viewsByDay.map((d) => {
+                  const { weekday, date } = formatDayLabel(d.day);
+                  return (
+                    <div key={d.day} className="flex flex-1 flex-col items-center leading-tight">
+                      <span className="text-[9px] font-medium text-gray-500">{weekday}</span>
+                      <span className="text-[9px] text-gray-400">{date}</span>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -203,7 +274,7 @@ export default function AdminAnalyticsPage() {
           <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div className="rounded-xl border border-gray-200 bg-white p-6">
               <h2 className="text-sm font-semibold text-gray-900">Views by Time of Day</h2>
-              <p className="mt-1 text-xs text-gray-400">Eastern time, last 30 days</p>
+              <p className="mt-1 text-xs text-gray-400">Eastern time, selected range</p>
               <div className="mt-4 flex h-32 items-end gap-0.5">
                 {data.viewsByHour.map((d) => (
                   <div key={d.hour} className="group relative h-full flex-1">
@@ -230,7 +301,7 @@ export default function AdminAnalyticsPage() {
 
             <div className="rounded-xl border border-gray-200 bg-white p-6">
               <h2 className="text-sm font-semibold text-gray-900">Views by Day of Week</h2>
-              <p className="mt-1 text-xs text-gray-400">Eastern time, last 30 days</p>
+              <p className="mt-1 text-xs text-gray-400">Eastern time, selected range</p>
               <div className="mt-4 flex h-32 items-end gap-2">
                 {data.viewsByDayOfWeek.map((d) => (
                   <div key={d.day} className="group relative h-full flex-1">
@@ -292,6 +363,9 @@ export default function AdminAnalyticsPage() {
                 <MapPin className="h-4 w-4 text-gray-500" />
                 <h2 className="text-sm font-semibold text-gray-900">Top Locations</h2>
               </div>
+              <p className="mt-1 text-xs text-gray-400">
+                Only visits we could resolve to a full city, state, and country.
+              </p>
               {data.topLocations.length === 0 ? (
                 <p className="mt-4 text-sm text-gray-500">No location data recorded yet.</p>
               ) : (
@@ -416,10 +490,12 @@ export default function AdminAnalyticsPage() {
             </p>
             <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <p className="text-3xl font-bold text-amber-900">{data.botViews30d}</p>
-                <p className="mt-1 text-xs text-amber-700">
-                  bot-flagged views in 30 days ({data.botViews7d} in the last 7)
-                </p>
+                <p className="text-3xl font-bold text-amber-900">{data.botViews}</p>
+                {data.recentBotViews !== null && (
+                  <p className="mt-1 text-xs text-amber-700">
+                    bot-flagged views ({data.recentBotViews} in the last 7 days)
+                  </p>
+                )}
               </div>
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">

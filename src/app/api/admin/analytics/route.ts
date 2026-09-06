@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/current-admin";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
 
@@ -17,7 +17,7 @@ function categorizeReferrer(referrer: string | null): string {
   }
   if (host === "onproit.com") return "Direct";
   if (SEARCH_ENGINES.some((s) => host.includes(s))) return "Organic Search";
-  if (SOCIAL_SITES.some((s) => host.includes(s))) return "Social";
+  if (SOCIAL_SITES.some((s) => host.includes(s))) return "Referral";
   return `Referral: ${host}`;
 }
 
@@ -39,13 +39,28 @@ interface PageViewRow {
   click_href: string | null;
 }
 
-export async function GET() {
+// Dates come in as plain "YYYY-MM-DD" from a date-picker input. Treat them as
+// UTC-day boundaries so they line up exactly with how viewsByDay buckets
+// created_at (a plain slice(0, 10) of the UTC ISO string) — otherwise a
+// timezone mismatch would make a selected day's chart bar and its filtered
+// total disagree.
+function parseRangeParam(value: string | null, fallbackDaysAgo: number, endOfDay: boolean): string {
+  if (value && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return `${value}T${endOfDay ? "23:59:59.999" : "00:00:00.000"}Z`;
+  }
+  const d = new Date(Date.now() - fallbackDaysAgo * 24 * 60 * 60 * 1000);
+  return endOfDay ? d.toISOString() : d.toISOString();
+}
+
+export async function GET(req: NextRequest) {
   const admin = await getCurrentAdmin();
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const empty = {
-    totalViews30d: 0,
-    totalViews7d: 0,
+    rangeFrom: "",
+    rangeTo: "",
+    totalViews: 0,
+    recentViews: null,
     viewsByDay: [],
     viewsByHour: [],
     viewsByDayOfWeek: [],
@@ -53,21 +68,30 @@ export async function GET() {
     trafficSources: [],
     topLocations: [],
     mobilePct: 0,
-    callClicks30d: 0,
-    callClicks7d: 0,
-    leads30d: 0,
-    leads7d: 0,
-    botViews30d: 0,
-    botViews7d: 0,
+    callClicks: 0,
+    recentCallClicks: null,
+    leads: 0,
+    recentLeads: null,
+    botViews: 0,
+    recentBotViews: null,
     topBotAgents: [],
     sessions: [],
   };
 
   if (!isSupabaseAdminConfigured()) return NextResponse.json(empty);
 
+  const { searchParams } = new URL(req.url);
+  const rangeStart = parseRangeParam(searchParams.get("from"), 30, false);
+  const rangeEnd = parseRangeParam(searchParams.get("to"), 0, true);
+
+  // Secondary "recent" comparison is the last 7 days of the selected range,
+  // clamped so it never extends before the range start. Hidden client-side
+  // when the range itself is 7 days or shorter (recentStart === rangeStart).
+  const sevenDaysBeforeEnd = new Date(new Date(rangeEnd).getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const recentStart = sevenDaysBeforeEnd > rangeStart ? sevenDaysBeforeEnd : rangeStart;
+  const showRecent = recentStart > rangeStart;
+
   const supabase = getSupabaseAdmin();
-  const since30d = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-  const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
   const [viewsResult, leadsResult] = await Promise.all([
     supabase
@@ -75,10 +99,11 @@ export async function GET() {
       .select(
         "id, path, referrer, is_mobile, event_type, created_at, city, region, country, is_likely_bot, user_agent, session_id, duration_seconds, click_label, click_href"
       )
-      .gte("created_at", since30d)
+      .gte("created_at", rangeStart)
+      .lte("created_at", rangeEnd)
       .order("created_at", { ascending: false })
       .limit(10000),
-    supabase.from("contact_messages").select("created_at").gte("created_at", since30d),
+    supabase.from("contact_messages").select("created_at").gte("created_at", rangeStart).lte("created_at", rangeEnd),
   ]);
 
   if (viewsResult.error || !viewsResult.data) {
@@ -94,14 +119,14 @@ export async function GET() {
   const botPageviewRows = botRows.filter((r) => !r.event_type);
   const leads = leadsResult.data ?? [];
 
-  const totalViews30d = pageviewRows.length;
-  const totalViews7d = pageviewRows.filter((r) => r.created_at >= since7d).length;
-  const callClicks30d = callClickRows.length;
-  const callClicks7d = callClickRows.filter((r) => r.created_at >= since7d).length;
-  const leads30d = leads.length;
-  const leads7d = leads.filter((r) => r.created_at >= since7d).length;
-  const botViews30d = botPageviewRows.length;
-  const botViews7d = botPageviewRows.filter((r) => r.created_at >= since7d).length;
+  const totalViews = pageviewRows.length;
+  const recentViews = showRecent ? pageviewRows.filter((r) => r.created_at >= recentStart).length : null;
+  const callClicks = callClickRows.length;
+  const recentCallClicks = showRecent ? callClickRows.filter((r) => r.created_at >= recentStart).length : null;
+  const leadsTotal = leads.length;
+  const recentLeads = showRecent ? leads.filter((r) => r.created_at >= recentStart).length : null;
+  const botViews = botPageviewRows.length;
+  const recentBotViews = showRecent ? botPageviewRows.filter((r) => r.created_at >= recentStart).length : null;
 
   const dayCounts = new Map<string, number>();
   const hourCounts = new Map<number, number>();
@@ -151,12 +176,16 @@ export async function GET() {
     .slice(0, 8);
 
   const mobileCount = pageviewRows.filter((r) => r.is_mobile).length;
-  const mobilePct = totalViews30d > 0 ? Math.round((mobileCount / totalViews30d) * 100) : 0;
+  const mobilePct = totalViews > 0 ? Math.round((mobileCount / totalViews) * 100) : 0;
 
+  // Only surface rows with full city + state + country — a bare "US" with no
+  // city/state (common for VPNs and some mobile carriers, which IP-geolocation
+  // can't resolve further) isn't useful in a location breakdown, so it's left
+  // out here rather than shown as an unhelpfully generic entry.
   const locationCounts = new Map<string, number>();
   for (const row of pageviewRows) {
-    if (!row.city && !row.region && !row.country) continue;
-    const label = [row.city, row.region, row.country].filter(Boolean).join(", ");
+    if (!row.city || !row.region || !row.country) continue;
+    const label = [row.city, row.region, row.country].join(", ");
     locationCounts.set(label, (locationCounts.get(label) ?? 0) + 1);
   }
   const topLocations = Array.from(locationCounts.entries())
@@ -221,8 +250,10 @@ export async function GET() {
     .slice(0, 100);
 
   return NextResponse.json({
-    totalViews30d,
-    totalViews7d,
+    rangeFrom: rangeStart.slice(0, 10),
+    rangeTo: rangeEnd.slice(0, 10),
+    totalViews,
+    recentViews,
     viewsByDay,
     viewsByHour,
     viewsByDayOfWeek,
@@ -230,12 +261,12 @@ export async function GET() {
     trafficSources,
     topLocations,
     mobilePct,
-    callClicks30d,
-    callClicks7d,
-    leads30d,
-    leads7d,
-    botViews30d,
-    botViews7d,
+    callClicks,
+    recentCallClicks,
+    leads: leadsTotal,
+    recentLeads,
+    botViews,
+    recentBotViews,
     topBotAgents,
     sessions,
   });
