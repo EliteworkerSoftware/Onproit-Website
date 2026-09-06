@@ -29,6 +29,7 @@ export async function GET() {
     viewsByDay: [],
     topPages: [],
     trafficSources: [],
+    topLocations: [],
     mobilePct: 0,
     callClicks30d: 0,
     callClicks7d: 0,
@@ -45,7 +46,7 @@ export async function GET() {
   const [viewsResult, leadsResult] = await Promise.all([
     supabase
       .from("page_views")
-      .select("path, referrer, is_mobile, event_type, created_at")
+      .select("path, referrer, is_mobile, event_type, created_at, city, region, country")
       .gte("created_at", since30d)
       .order("created_at", { ascending: false })
       .limit(10000),
@@ -99,12 +100,24 @@ export async function GET() {
   const mobileCount = pageviewRows.filter((r) => r.is_mobile).length;
   const mobilePct = totalViews30d > 0 ? Math.round((mobileCount / totalViews30d) * 100) : 0;
 
+  const locationCounts = new Map<string, number>();
+  for (const row of pageviewRows) {
+    if (!row.city && !row.region && !row.country) continue;
+    const label = [row.city, row.region, row.country].filter(Boolean).join(", ");
+    locationCounts.set(label, (locationCounts.get(label) ?? 0) + 1);
+  }
+  const topLocations = Array.from(locationCounts.entries())
+    .map(([location, count]) => ({ location, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
+
   return NextResponse.json({
     totalViews30d,
     totalViews7d,
     viewsByDay,
     topPages,
     trafficSources,
+    topLocations,
     mobilePct,
     callClicks30d,
     callClicks7d,

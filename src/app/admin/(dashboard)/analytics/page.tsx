@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Eye, MessageSquare, Phone, Smartphone } from "lucide-react";
+import { Eye, MapPin, MessageSquare, Phone, Smartphone } from "lucide-react";
 
 interface AnalyticsData {
   totalViews30d: number;
@@ -9,6 +9,7 @@ interface AnalyticsData {
   viewsByDay: { day: string; count: number }[];
   topPages: { path: string; count: number }[];
   trafficSources: { source: string; count: number }[];
+  topLocations: { location: string; count: number }[];
   mobilePct: number;
   callClicks30d: number;
   callClicks7d: number;
@@ -107,7 +108,7 @@ export default function AdminAnalyticsPage() {
             )}
           </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="rounded-xl border border-gray-200 bg-white p-6">
               <h2 className="text-sm font-semibold text-gray-900">Top Pages</h2>
               {data.topPages.length === 0 ? (
@@ -134,6 +135,25 @@ export default function AdminAnalyticsPage() {
                     <li key={s.source} className="flex items-center justify-between text-sm">
                       <span className="truncate text-gray-700">{s.source}</span>
                       <span className="ml-3 shrink-0 font-medium text-gray-900">{s.count}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <div className="rounded-xl border border-gray-200 bg-white p-6">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-gray-500" />
+                <h2 className="text-sm font-semibold text-gray-900">Top Locations</h2>
+              </div>
+              {data.topLocations.length === 0 ? (
+                <p className="mt-4 text-sm text-gray-500">No location data recorded yet.</p>
+              ) : (
+                <ul className="mt-4 space-y-2">
+                  {data.topLocations.map((l) => (
+                    <li key={l.location} className="flex items-center justify-between text-sm">
+                      <span className="truncate text-gray-700">{l.location}</span>
+                      <span className="ml-3 shrink-0 font-medium text-gray-900">{l.count}</span>
                     </li>
                   ))}
                 </ul>

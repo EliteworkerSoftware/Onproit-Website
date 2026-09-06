@@ -16,6 +16,9 @@ export async function POST(req: NextRequest) {
   const eventType = event === "call_click" ? "call_click" : null;
 
   const country = req.headers.get("x-vercel-ip-country");
+  const region = req.headers.get("x-vercel-ip-country-region");
+  const cityHeader = req.headers.get("x-vercel-ip-city");
+  const city = cityHeader ? decodeURIComponent(cityHeader) : null;
   const isMobile = /Mobile|Android|iPhone/i.test(userAgent);
 
   try {
@@ -24,6 +27,8 @@ export async function POST(req: NextRequest) {
       path,
       referrer: typeof referrer === "string" ? referrer.slice(0, 500) : null,
       country,
+      region,
+      city,
       is_mobile: isMobile,
       event_type: eventType,
     });
