@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   description:
     "ONPRO IT designs, installs, and manages complete business technology environments — managed IT, structured cabling, VoIP, AV, and cybersecurity — for businesses in Southern NJ, Philadelphia, and Delaware.",
   keywords:
-    "managed IT services NJ, IT support Southern NJ, structured cabling NJ, cybersecurity NJ, managed IT Philadelphia, MSP New Jersey",
+    "managed IT services NJ, IT support Southern NJ, structured cabling NJ, cybersecurity NJ, managed IT Philadelphia, MSP New Jersey, one-stop IT and cabling company",
   openGraph: {
     title: "Managed IT Services Southern NJ & Philadelphia | ONPRO IT",
     description:
@@ -197,8 +197,9 @@ export default function HomePage() {
               A typical IT company manages your email, software, passwords, and devices. We do
               all of that too — and we&apos;re also the technology integrator who designs and
               installs the physical systems those services run on: cabling, networking, AV,
-              cameras, and access control. Every piece of technology your business touches,
-              connected into one managed system and supported by one team, beginning to end.
+              cameras, and access control. That makes ONPRO IT a genuinely one-stop IT and
+              cabling company — every piece of technology your business touches, connected into
+              one managed system and supported by one team, beginning to end.
             </p>
           </div>
 

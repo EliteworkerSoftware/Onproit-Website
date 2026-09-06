@@ -368,6 +368,16 @@ export const SERVICES_DATA: ServiceData[] = [
         answer:
           "Yes. Microsoft's built-in retention is not a full backup solution — we back up Microsoft 365 email and OneDrive data separately, since Microsoft does not protect it for you.",
       },
+      {
+        question: "Are you an Azure partner in Pennsylvania, or just New Jersey?",
+        answer:
+          "We work as an Azure and Microsoft 365 partner for businesses throughout New Jersey, Pennsylvania, and Delaware. Whether you're already on Azure or migrating off an on-premise server, our Pennsylvania and South Jersey clients get the same hands-on migration and ongoing support.",
+      },
+      {
+        question: "Do you offer Microsoft 365 consulting near me, even outside South Jersey?",
+        answer:
+          "Yes. Our Microsoft 365 consulting covers South Jersey, the Greater Philadelphia area, and Delaware — wherever you're searching from in that region, we're a local team, not a call center.",
+      },
     ],
   },
   {
@@ -712,6 +722,16 @@ export const SERVICES_DATA: ServiceData[] = [
         answer:
           "Yes, consulting engagements can run independently as an unbiased second opinion, or be combined with ONPRO IT's managed services for a fully integrated approach.",
       },
+      {
+        question: "Do you provide strategic IT consulting for the Greater Philadelphia area, or just South Jersey?",
+        answer:
+          "Both. While ONPRO IT is based in South Jersey, our strategic IT consulting and vCIO services extend across the Greater Philadelphia area. As a Philadelphia tech strategy consultant, we build the same long-term technology roadmap for businesses on either side of the bridge.",
+      },
+      {
+        question: "How is ONPRO IT different from other IT consulting firms in Philadelphia?",
+        answer:
+          "Most IT consulting firms in Philadelphia only offer advice — you still have to hire someone else to execute it. ONPRO IT builds the strategy and then implements it ourselves, since we're also your managed IT provider, so nothing gets lost between the plan and the people building it.",
+      },
     ],
   },
   {
@@ -765,6 +785,11 @@ export const SERVICES_DATA: ServiceData[] = [
         question: "Can employees use VoIP phones when working remotely?",
         answer:
           "Yes — our mobile app and desktop softphone let remote employees make and receive calls on their business number from anywhere with internet access, while keeping their personal number private.",
+      },
+      {
+        question: "Do you install VoIP phone systems throughout New Jersey and Philadelphia?",
+        answer:
+          "Yes — we design and install VoIP phone systems for businesses throughout New Jersey, and our business phone systems Philadelphia clients get the same local installation and ongoing support as our South Jersey customers.",
       },
     ],
   },
