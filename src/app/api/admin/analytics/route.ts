@@ -35,6 +35,9 @@ export async function GET() {
     callClicks7d: 0,
     leads30d: 0,
     leads7d: 0,
+    botViews30d: 0,
+    botViews7d: 0,
+    topBotAgents: [],
   };
 
   if (!isSupabaseAdminConfigured()) return NextResponse.json(empty);
@@ -46,7 +49,7 @@ export async function GET() {
   const [viewsResult, leadsResult] = await Promise.all([
     supabase
       .from("page_views")
-      .select("path, referrer, is_mobile, event_type, created_at, city, region, country")
+      .select("path, referrer, is_mobile, event_type, created_at, city, region, country, is_likely_bot, user_agent")
       .gte("created_at", since30d)
       .order("created_at", { ascending: false })
       .limit(10000),
@@ -58,8 +61,12 @@ export async function GET() {
   }
 
   const allRows = viewsResult.data;
-  const pageviewRows = allRows.filter((r) => !r.event_type);
-  const callClickRows = allRows.filter((r) => r.event_type === "call_click");
+  const humanRows = allRows.filter((r) => !r.is_likely_bot);
+  const botRows = allRows.filter((r) => r.is_likely_bot);
+
+  const pageviewRows = humanRows.filter((r) => !r.event_type);
+  const callClickRows = humanRows.filter((r) => r.event_type === "call_click");
+  const botPageviewRows = botRows.filter((r) => !r.event_type);
   const leads = leadsResult.data ?? [];
 
   const totalViews30d = pageviewRows.length;
@@ -68,6 +75,8 @@ export async function GET() {
   const callClicks7d = callClickRows.filter((r) => r.created_at >= since7d).length;
   const leads30d = leads.length;
   const leads7d = leads.filter((r) => r.created_at >= since7d).length;
+  const botViews30d = botPageviewRows.length;
+  const botViews7d = botPageviewRows.filter((r) => r.created_at >= since7d).length;
 
   const dayCounts = new Map<string, number>();
   for (const row of pageviewRows) {
@@ -111,6 +120,16 @@ export async function GET() {
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
 
+  const botAgentCounts = new Map<string, number>();
+  for (const row of botPageviewRows) {
+    const agent = row.user_agent || "(no User-Agent)";
+    botAgentCounts.set(agent, (botAgentCounts.get(agent) ?? 0) + 1);
+  }
+  const topBotAgents = Array.from(botAgentCounts.entries())
+    .map(([agent, count]) => ({ agent, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 8);
+
   return NextResponse.json({
     totalViews30d,
     totalViews7d,
@@ -123,5 +142,8 @@ export async function GET() {
     callClicks7d,
     leads30d,
     leads7d,
+    botViews30d,
+    botViews7d,
+    topBotAgents,
   });
 }

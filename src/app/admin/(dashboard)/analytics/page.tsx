@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Eye, MapPin, MessageSquare, Phone, Smartphone } from "lucide-react";
+import { Bot, Eye, MapPin, MessageSquare, Phone, Smartphone } from "lucide-react";
 
 interface AnalyticsData {
   totalViews30d: number;
@@ -15,6 +15,14 @@ interface AnalyticsData {
   callClicks7d: number;
   leads30d: number;
   leads7d: number;
+  botViews30d: number;
+  botViews7d: number;
+  topBotAgents: { agent: string; count: number }[];
+}
+
+function formatShortDate(isoDay: string) {
+  const [, month, day] = isoDay.split("-");
+  return `${Number(month)}/${Number(day)}`;
 }
 
 export default function AdminAnalyticsPage() {
@@ -44,7 +52,8 @@ export default function AdminAnalyticsPage() {
     <div>
       <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
       <p className="mt-1 text-sm text-gray-500">
-        Real visits, calls, and leads for onproit.com — last 30 days.
+        Real human visits, calls, and leads for onproit.com — last 30 days. Suspected bot traffic
+        is tracked separately below, not mixed into these numbers.
       </p>
 
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
@@ -106,6 +115,17 @@ export default function AdminAnalyticsPage() {
                 ))}
               </div>
             )}
+            {data.viewsByDay.length > 0 && (
+              <div className="mt-1 flex gap-1">
+                {data.viewsByDay.map((d) => (
+                  <div key={d.day} className="flex-1 text-center">
+                    <span className="inline-block origin-top-left -rotate-45 whitespace-nowrap text-[10px] text-gray-400">
+                      {formatShortDate(d.day)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -158,6 +178,43 @@ export default function AdminAnalyticsPage() {
                   ))}
                 </ul>
               )}
+            </div>
+          </div>
+
+          <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-6">
+            <div className="flex items-center gap-2">
+              <Bot className="h-4 w-4 text-amber-600" />
+              <h2 className="text-sm font-semibold text-amber-900">Potential Bot Traffic</h2>
+            </div>
+            <p className="mt-1 text-xs text-amber-700">
+              Requests that self-identify or pattern-match as automated (crawlers, scripts,
+              monitoring tools). Kept separate from the human numbers above rather than hidden —
+              a sophisticated bot disguised as a real browser wouldn&apos;t be caught by this.
+            </p>
+            <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <p className="text-3xl font-bold text-amber-900">{data.botViews30d}</p>
+                <p className="mt-1 text-xs text-amber-700">
+                  bot-flagged views in 30 days ({data.botViews7d} in the last 7)
+                </p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                  Top Bot User Agents
+                </p>
+                {data.topBotAgents.length === 0 ? (
+                  <p className="mt-2 text-sm text-amber-700">None recorded.</p>
+                ) : (
+                  <ul className="mt-2 space-y-1.5">
+                    {data.topBotAgents.map((b) => (
+                      <li key={b.agent} className="flex items-center justify-between gap-3 text-sm">
+                        <span className="truncate text-amber-900">{b.agent}</span>
+                        <span className="shrink-0 font-medium text-amber-900">{b.count}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
         </>
