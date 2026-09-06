@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
-import { Bot, ChevronDown, Eye, MapPin, MessageSquare, MousePointerClick, Phone, Smartphone } from "lucide-react";
+import { Bot, ChevronDown, Eye, MapPin, MessageSquare, MousePointerClick, Phone, Search, Smartphone } from "lucide-react";
 
 interface TimelineEvent {
   type: "page" | "click" | "call_click";
@@ -48,6 +48,28 @@ interface AnalyticsData {
   recentBotViews: number | null;
   topBotAgents: { agent: string; count: number }[];
   sessions: VisitorSession[];
+}
+
+interface SearchQuery {
+  query: string;
+  clicks: number;
+  impressions: number;
+  ctr: number;
+  position: number;
+}
+
+interface SearchQueryByPage {
+  page: string;
+  query: string;
+  clicks: number;
+  impressions: number;
+  position: number;
+}
+
+interface SearchConsoleData {
+  configured: boolean;
+  topQueries: SearchQuery[];
+  topQueriesByPage: SearchQueryByPage[];
 }
 
 const WEEKDAY_ABBR = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -114,6 +136,7 @@ export default function AdminAnalyticsPage() {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [from, setFrom] = useState(isoDateNDaysAgo(29));
   const [to, setTo] = useState(todayIso());
+  const [searchData, setSearchData] = useState<SearchConsoleData | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -125,6 +148,23 @@ export default function AdminAnalyticsPage() {
         if (!cancelled) setData(json);
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load analytics");
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [from, to]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/admin/search-console?from=${from}&to=${to}`);
+        const json = await res.json();
+        if (!cancelled && res.ok) setSearchData(json);
+      } catch {
+        // Search Console is a bonus panel — fail silently rather than
+        // blocking the rest of the analytics page.
       }
     })();
     return () => {
@@ -380,6 +420,61 @@ export default function AdminAnalyticsPage() {
               )}
             </div>
           </div>
+
+          {searchData?.configured && (
+            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <div className="rounded-xl border border-gray-200 bg-white p-6">
+                <div className="flex items-center gap-2">
+                  <Search className="h-4 w-4 text-gray-500" />
+                  <h2 className="text-sm font-semibold text-gray-900">Top Search Queries</h2>
+                </div>
+                <p className="mt-1 text-xs text-gray-400">
+                  What people actually typed into Google to find onproit.com, via Search Console.
+                </p>
+                {searchData.topQueries.length === 0 ? (
+                  <p className="mt-4 text-sm text-gray-500">No search query data for this range yet.</p>
+                ) : (
+                  <ul className="mt-4 space-y-2">
+                    {searchData.topQueries.map((q) => (
+                      <li key={q.query} className="flex items-center justify-between gap-3 text-sm">
+                        <span className="truncate text-gray-700">{q.query}</span>
+                        <span className="shrink-0 text-xs text-gray-400">
+                          {q.clicks} clicks · #{q.position.toFixed(1)} avg
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="rounded-xl border border-gray-200 bg-white p-6">
+                <div className="flex items-center gap-2">
+                  <Search className="h-4 w-4 text-gray-500" />
+                  <h2 className="text-sm font-semibold text-gray-900">Top Query by Landing Page</h2>
+                </div>
+                <p className="mt-1 text-xs text-gray-400">
+                  The single top-clicked search term that brought visitors to each page.
+                </p>
+                {searchData.topQueriesByPage.length === 0 ? (
+                  <p className="mt-4 text-sm text-gray-500">No search query data for this range yet.</p>
+                ) : (
+                  <ul className="mt-4 space-y-2">
+                    {searchData.topQueriesByPage.map((p) => (
+                      <li key={p.page} className="text-sm">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="truncate font-medium text-gray-900">
+                            {new URL(p.page).pathname === "/" ? "Home (/)" : new URL(p.page).pathname}
+                          </span>
+                          <span className="shrink-0 text-xs text-gray-400">{p.clicks} clicks</span>
+                        </div>
+                        <p className="truncate text-xs text-gray-500">&quot;{p.query}&quot;</p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
             <div className="flex items-center gap-2">
