@@ -106,7 +106,7 @@ export default function HomePage() {
             <p className="mt-6 text-lg text-gray-300">
               ONPRO IT is a full-scale technology partner for growing businesses — part managed IT
               provider, part technology integrator. We design your infrastructure, complete the
-              installation ourselves, and then manage and support it for the life of your
+              installation, and then manage and support it for the life of your
               business. Serving New Jersey, Pennsylvania, and Delaware.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
@@ -155,7 +155,7 @@ export default function HomePage() {
               </div>
               <h3 className="mb-2 text-lg font-semibold text-gray-900">Install</h3>
               <p className="text-sm text-gray-600">
-                We complete the entire installation ourselves — structured cabling, network
+                We complete the entire installation — structured cabling, network
                 hardware, VoIP phones, and conference room AV — with our own technicians, not a
                 subcontractor.
               </p>
