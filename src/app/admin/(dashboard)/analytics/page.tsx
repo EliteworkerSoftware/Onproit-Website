@@ -298,7 +298,7 @@ function TargetKeywordsPanel() {
   }
 
   return (
-    <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
+    <div id="target-keywords" className="mt-6 scroll-mt-6 rounded-xl border border-gray-200 bg-white p-6">
       <div className="flex items-center gap-2">
         <Search className="h-4 w-4 text-gray-500" />
         <h2 className="text-sm font-semibold text-gray-900">Target Keywords</h2>
