@@ -459,7 +459,7 @@ export default function AdminAnalyticsPage() {
             <div className="rounded-xl border border-gray-200 bg-white p-6">
               <div className="flex items-center gap-2">
                 <h2 className="text-sm font-semibold text-gray-900">Traffic Sources</h2>
-                <InfoTooltip text="How visitors arrived, based on the referrer their browser sent: Direct (typed the URL, used a bookmark, or the browser sent no referrer at all — e.g. links from texts or some email/privacy apps), Organic Search (Google, Bing, etc.), Social, or Referral from another site." />
+                <InfoTooltip text="How visitors arrived, based on the referrer their browser sent: Direct (typed the URL, used a bookmark, or the browser sent no referrer at all — e.g. links from texts or some email/privacy apps), a named search engine (Google, Bing, Yahoo, DuckDuckGo, etc.), Social, or Referral from another site." />
               </div>
               {data.trafficSources.length === 0 ? (
                 <p className="mt-4 text-sm text-gray-500">No page views recorded yet.</p>
@@ -505,7 +505,7 @@ export default function AdminAnalyticsPage() {
                 <div className="flex items-center gap-2">
                   <Search className="h-4 w-4 text-gray-500" />
                   <h2 className="text-sm font-semibold text-gray-900">Top Search Queries</h2>
-                  <InfoTooltip text="Real search terms people typed into Google, from Search Console — separate from and more precise than Traffic Sources' 'Organic Search'. Impressions = your site appeared in the results for that search. Clicks = someone actually clicked through. Avg position = where in the results your site tended to show up (#1 is the top result); a high number means you're showing up on page 2+, which explains impressions with zero clicks. This is aggregate data across everyone who searched — it can't be tied to a specific visitor session." />
+                  <InfoTooltip text="Real search terms people typed into Google, from Search Console — separate from and more precise than the search engine names in Traffic Sources. Impressions = your site appeared in the results for that search. Clicks = someone actually clicked through. Avg position = where in the results your site tended to show up (#1 is the top result); a high number means you're showing up on page 2+, which explains impressions with zero clicks. This is aggregate data across everyone who searched — it can't be tied to a specific visitor session." />
                 </div>
                 <p className="mt-1 text-xs text-gray-400">
                   What people actually typed into Google to find onproit.com, via Search Console.

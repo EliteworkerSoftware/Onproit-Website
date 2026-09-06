@@ -2,7 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/current-admin";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
 
-const SEARCH_ENGINES = ["google.", "bing.", "yahoo.", "duckduckgo."];
+// Named individually (rather than lumped into one "Organic Search" bucket)
+// so the admin can see which specific search engine sent the visit.
+const SEARCH_ENGINES: { match: string; name: string }[] = [
+  { match: "google.", name: "Google" },
+  { match: "bing.", name: "Bing" },
+  { match: "yahoo.", name: "Yahoo" },
+  { match: "duckduckgo.", name: "DuckDuckGo" },
+  { match: "baidu.", name: "Baidu" },
+  { match: "yandex.", name: "Yandex" },
+  { match: "ecosia.", name: "Ecosia" },
+];
 const SOCIAL_SITES = ["facebook.", "instagram.", "linkedin.", "twitter.", "x.com", "tiktok."];
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const DISPLAY_TIMEZONE = "America/New_York";
@@ -16,7 +26,8 @@ function categorizeReferrer(referrer: string | null): string {
     return "Direct";
   }
   if (host === "onproit.com") return "Direct";
-  if (SEARCH_ENGINES.some((s) => host.includes(s))) return "Organic Search";
+  const searchEngine = SEARCH_ENGINES.find((s) => host.includes(s.match));
+  if (searchEngine) return searchEngine.name;
   if (SOCIAL_SITES.some((s) => host.includes(s))) return "Referral";
   return `Referral: ${host}`;
 }

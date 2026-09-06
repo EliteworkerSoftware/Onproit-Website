@@ -67,35 +67,35 @@ export default function AdminNav({ admin }: { admin: AdminUser }) {
   return (
     <header className="bg-dark">
       <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-6">
-          {/* Desktop: logo stays on the left, inline with the nav */}
-          <Link href="/admin" className="hidden items-center gap-2 lg:flex">
-            <Image src="/images/logo.svg" alt="ONPRO IT" width={140} height={31} className="h-8 w-auto" />
-            <span className="text-sm font-semibold uppercase tracking-widest text-white/50">Admin</span>
-          </Link>
-          <nav className="hidden items-center gap-1 lg:flex">
-            {NAV_LINKS.map((link) => {
-              const active = pathname.startsWith(link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={clsx(
-                    "flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                    active ? "bg-white/10 text-white" : "text-white/60 hover:text-white"
-                  )}
-                >
-                  {link.title}
-                  {link.title === "Inquiries" && unreadCount > 0 && (
-                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-bold text-white">
-                      {unreadCount}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
+        {/* Desktop: logo on the far left */}
+        <Link href="/admin" className="hidden items-center gap-2 lg:flex">
+          <Image src="/images/logo.svg" alt="ONPRO IT" width={140} height={31} className="h-8 w-auto" />
+          <span className="text-sm font-semibold uppercase tracking-widest text-white/50">Administrator</span>
+        </Link>
+
+        {/* Desktop: nav tabs pushed away from the logo, toward the middle/right */}
+        <nav className="hidden items-center gap-1 lg:flex">
+          {NAV_LINKS.map((link) => {
+            const active = pathname.startsWith(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={clsx(
+                  "flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  active ? "bg-white/10 text-white" : "text-white/60 hover:text-white"
+                )}
+              >
+                {link.title}
+                {link.title === "Inquiries" && unreadCount > 0 && (
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-bold text-white">
+                    {unreadCount}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
 
         {/* Mobile: logo centered with an "Administrator" label beneath it */}
         <Link
@@ -108,7 +108,7 @@ export default function AdminNav({ admin }: { admin: AdminUser }) {
           </span>
         </Link>
 
-        <div className="relative ml-auto flex items-center justify-end gap-3" ref={menuRef}>
+        <div className="relative ml-auto flex items-center justify-end gap-3 lg:ml-0" ref={menuRef}>
           <a
             href="/"
             target="_blank"
