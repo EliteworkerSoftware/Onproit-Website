@@ -23,6 +23,7 @@ const SERVICE_LINKS = [
   { title: "Cybersecurity", href: "/services/cybersecurity" },
   { title: "Network & WiFi", href: "/services/network-wifi" },
   { title: "Cloud Solutions", href: "/services/cloud" },
+  { title: "AI Integration & Automation", href: "/services/ai-integration" },
   { title: "Data Backup & Recovery", href: "/services/backup-recovery" },
   { title: "Structured Cabling", href: "/services/cabling" },
   { title: "AV & Conference Rooms", href: "/services/av-integration" },

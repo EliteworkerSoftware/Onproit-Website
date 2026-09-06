@@ -12,6 +12,7 @@ import {
   Presentation,
   Server,
   ShieldCheck,
+  Sparkles,
 } from "lucide-react";
 
 export interface ServiceFaq {
@@ -37,6 +38,7 @@ export interface ServiceData {
   benefits: string[];
   areasServed: string[];
   faqs: ServiceFaq[];
+  brandsWeUse?: string[];
 }
 
 // The three ecosystems we set up and support day to day — shown once on the
@@ -46,6 +48,29 @@ export const PLATFORM_ECOSYSTEMS = [
   { name: "Google", logo: "/images/brands/google.svg" },
   { name: "Apple", logo: "/images/brands/apple.svg" },
 ];
+
+// Logo lookup for the "brandsWeUse" lists below. UniFi/UniFi Access reuse the
+// Ubiquiti mark since UniFi is Ubiquiti's own product line, not a separate company.
+export const BRAND_LOGOS: Record<string, string> = {
+  Ubiquiti: "/images/brands/ubiquiti.svg",
+  UniFi: "/images/brands/ubiquiti.svg",
+  "UniFi Access": "/images/brands/ubiquiti.svg",
+  Ruckus: "/images/brands/ruckus.png",
+  Fortinet: "/images/brands/fortinet.svg",
+  Yealink: "/images/brands/yealink.png",
+  Cisco: "/images/brands/cisco.svg",
+  Uniview: "/images/brands/uniview.svg",
+  PDK: "/images/brands/pdk.png",
+  "Keri Systems": "/images/brands/kerisystems.webp",
+  Synology: "/images/brands/synology.svg",
+  AWS: "/images/brands/amazonaws.svg",
+  Control4: "/images/brands/control4.webp",
+  Yamaha: "/images/brands/yamaha.svg",
+  Shure: "/images/brands/shure.svg",
+  "Microsoft 365": "/images/brands/windows.svg",
+  "Google Workspace": "/images/brands/google.svg",
+  Dropbox: "/images/brands/dropbox.svg",
+};
 
 // Single canonical list reused by every service page so "areas we serve" is
 // consistent site-wide instead of each service inventing its own list/format.
@@ -240,6 +265,7 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Network,
     heroImage: "/images/hero-network-wifi.png",
     secondaryImage: "/images/hero-cabling.png",
+    brandsWeUse: ["Ubiquiti", "Ruckus", "Fortinet"],
     intro:
       "Build a foundation for success with robust, high-speed network infrastructure. We eliminate dead zones and ensure secure, seamless connectivity for your team.",
     whatIsIt: [
@@ -295,6 +321,7 @@ export const SERVICES_DATA: ServiceData[] = [
     heroImage:
       "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
     secondaryImage: "/images/about-team.png",
+    brandsWeUse: ["Microsoft 365", "Google Workspace", "AWS", "Dropbox"],
     intro:
       "Modernize your business with secure, scalable cloud solutions. We simplify your transition to the cloud so you can work securely from anywhere.",
     whatIsIt: [
@@ -349,6 +376,7 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: HardDrive,
     heroImage: "/images/hero-backup-recovery.png",
     secondaryImage: "/images/about-team.png",
+    brandsWeUse: ["Synology", "AWS"],
     intro:
       "Protect your business data from ransomware, hardware failure, and human error. We ensure you can recover fast and keep working no matter what happens.",
     whatIsIt: [
@@ -457,6 +485,7 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Presentation,
     heroImage: "/images/about-conference-room.jpg",
     secondaryImage: "/images/about-team.png",
+    brandsWeUse: ["Control4", "Yealink", "Yamaha", "Shure"],
     intro:
       "Meetings shouldn't start with ten minutes of someone fumbling with an HDMI cable. We design and install the audio-visual systems that make your conference rooms, huddle spaces, and lobbies actually work — and because we're already your network and IT provider, everything talks to everything else on day one.",
     whatIsIt: [
@@ -516,6 +545,7 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Camera,
     heroImage: "/images/hero-cybersecurity.png",
     secondaryImage: "/images/about-team.png",
+    brandsWeUse: ["UniFi", "Uniview"],
     intro:
       "See what's happening at your business from anywhere, without hiring a separate security vendor. We design, install, and manage AI-powered network security cameras as part of the same network we already build and support.",
     whatIsIt: [
@@ -575,6 +605,7 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: KeyRound,
     heroImage: "/images/about-conference-room.jpg",
     secondaryImage: "/images/about-team.png",
+    brandsWeUse: ["PDK", "UniFi Access", "Keri Systems"],
     intro:
       "Control who can get into your building and when, without a drawer full of spare keys or a locksmith bill every time someone leaves. We design, install, and manage entry access control as part of the same network we already build and support.",
     whatIsIt: [
@@ -689,6 +720,7 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: PhoneCall,
     heroImage: "/images/hero-voip.jpg",
     secondaryImage: "/images/voip-team.png",
+    brandsWeUse: ["Yealink", "Cisco"],
     intro:
       "Replace your outdated phone lines with a flexible, cloud-based communication platform that travels with you everywhere.",
     whatIsIt: [
@@ -728,6 +760,73 @@ export const SERVICES_DATA: ServiceData[] = [
         question: "Can employees use VoIP phones when working remotely?",
         answer:
           "Yes — our mobile app and desktop softphone let remote employees make and receive calls on their business number from anywhere with internet access, while keeping their personal number private.",
+      },
+    ],
+  },
+  {
+    slug: "ai-integration",
+    navTitle: "AI Integration & Automation",
+    h1: "AI Integration & Workflow Automation Services",
+    metaTitle: "AI Integration & Workflow Automation NJ | ONPRO IT",
+    metaDescription:
+      "ONPRO IT helps businesses in Southern NJ, Philadelphia, and Delaware roll out Microsoft Copilot and automate repetitive workflows — set up, secured, and supported by a team that uses AI in its own operations.",
+    keywords: "AI integration NJ, Microsoft Copilot setup, AI workflow automation, business AI consulting New Jersey",
+    Icon: Sparkles,
+    heroImage: "/images/hero-managed-it.png",
+    secondaryImage: "/images/about-team.png",
+    intro:
+      "We don't just talk about AI — we use it to run our own business. We help you do the same: rolling out Microsoft Copilot, automating repetitive workflows, and connecting AI tools into the systems your team already uses.",
+    whatIsIt: [
+      "AI integration means connecting practical AI tools — Microsoft Copilot, workflow automation, and AI-assisted monitoring — into the software your team already uses, instead of bolting on a disconnected app nobody adopts.",
+      "We approach this the same way we approach networking and cabling: design it first, configure it correctly, then support it. That means secure Copilot licensing and rollout inside Microsoft 365, automated workflows that cut down repetitive manual work, and AI-powered monitoring built into the security camera systems we already install and manage.",
+      "Because we use these same tools internally to run ONPRO IT day to day, we're not learning on your dime — we're applying what already works for us.",
+    ],
+    whoItsFor: [
+      "Teams that already use Microsoft 365 and want Copilot rolled out correctly and securely",
+      "Businesses losing hours every week to repetitive manual tasks that could be automated",
+      "Companies that want AI-powered monitoring as part of their security camera system",
+      "Leadership teams that want an honest, no-hype assessment of where AI actually helps",
+    ],
+    risks: [
+      "Employees adopting consumer AI tools on their own, outside of any security policy",
+      "Paying for Copilot licenses that are never configured or rolled out to staff",
+      "Hours lost every week to manual work that automation could handle",
+      "Falling behind competitors who are already using AI to move faster",
+    ],
+    howWeDeliver: [
+      "Assess your current Microsoft 365 environment and workflows to find where AI actually adds value",
+      "License, configure, and roll out Microsoft Copilot securely across your team",
+      "Build automated workflows that connect the tools you already use",
+      "Layer AI-powered monitoring into the security systems we install and manage",
+      "Train your team so the tools actually get used, not ignored",
+    ],
+    benefits: [
+      "Microsoft Copilot set up and secured, not just licensed",
+      "Fewer repetitive manual tasks eating up your team's day",
+      "AI-powered monitoring built into your security camera system",
+      "A technology partner that uses these tools internally, not just sells them",
+    ],
+    areasServed: SERVICE_AREA_LIST,
+    faqs: [
+      {
+        question: "Is this just Microsoft Copilot, or something bigger?",
+        answer:
+          "Copilot is usually the starting point since most of our clients already have Microsoft 365, but AI integration also includes workflow automation between the tools you use and the AI-powered monitoring already built into our security camera systems.",
+      },
+      {
+        question: "Do you actually use AI in your own business, or is this just a sales pitch?",
+        answer:
+          "We use these same tools — including Copilot and workflow automation — to run ONPRO IT's own day-to-day operations. We're not asking you to be the test case.",
+      },
+      {
+        question: "Will this replace our employees?",
+        answer:
+          "No. The goal is removing repetitive manual work so your team can focus on higher-value work, not replacing people.",
+      },
+      {
+        question: "Is our data safe if we roll out AI tools?",
+        answer:
+          "Yes — we configure Copilot and any connected workflows within your existing Microsoft 365 security and permission settings, so AI tools only ever see what a given employee is already allowed to see.",
       },
     ],
   },

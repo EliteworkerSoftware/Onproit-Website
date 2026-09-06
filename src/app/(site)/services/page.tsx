@@ -54,7 +54,7 @@ export default function ServicesOverviewPage() {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <ConsultationButton href={`tel:${PHONE_HREF}`} variant="primary">
-              Call Now: {PHONE_DISPLAY}
+              Call {PHONE_DISPLAY}
             </ConsultationButton>
             <ConsultationButton href="/contact" variant="outline-light">
               Get a Free Quote

@@ -61,7 +61,7 @@ export default function LocationPageTemplate({ location }: { location: LocationD
             <p className="mt-6 text-lg text-gray-300">{location.intro}</p>
             <div className="mt-8 flex flex-wrap gap-4">
               <ConsultationButton href={`tel:${PHONE_HREF}`} variant="primary">
-                Call Now: {PHONE_DISPLAY}
+                Call {PHONE_DISPLAY}
               </ConsultationButton>
               <ConsultationButton href="/contact" variant="outline-light">
                 Get a Free Quote

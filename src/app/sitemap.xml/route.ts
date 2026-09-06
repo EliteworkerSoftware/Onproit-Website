@@ -13,6 +13,7 @@ const pages = [
   { url: "/services/cybersecurity", priority: "0.8", changefreq: "monthly" },
   { url: "/services/network-wifi", priority: "0.8", changefreq: "monthly" },
   { url: "/services/cloud", priority: "0.8", changefreq: "monthly" },
+  { url: "/services/ai-integration", priority: "0.8", changefreq: "monthly" },
   { url: "/services/backup-recovery", priority: "0.8", changefreq: "monthly" },
   { url: "/services/cabling", priority: "0.9", changefreq: "monthly" },
   { url: "/services/av-integration", priority: "0.7", changefreq: "monthly" },
