@@ -17,6 +17,16 @@ const SOCIAL_SITES = ["facebook.", "instagram.", "linkedin.", "twitter.", "x.com
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const DISPLAY_TIMEZONE = "America/New_York";
 
+function detectDevice(userAgent: string | null): { os: "Apple" | "Android" | "Windows" | "Other"; formFactor: "Phone" | "Tablet" | "Desktop" } {
+  const ua = userAgent || "";
+  if (/iPhone/i.test(ua)) return { os: "Apple", formFactor: "Phone" };
+  if (/iPad/i.test(ua)) return { os: "Apple", formFactor: "Tablet" };
+  if (/Android/i.test(ua)) return { os: "Android", formFactor: /Mobile/i.test(ua) ? "Phone" : "Tablet" };
+  if (/Macintosh/i.test(ua)) return { os: "Apple", formFactor: "Desktop" };
+  if (/Windows/i.test(ua)) return { os: "Windows", formFactor: "Desktop" };
+  return { os: "Other", formFactor: "Desktop" };
+}
+
 function categorizeReferrer(referrer: string | null): string {
   if (!referrer) return "Direct";
   let host: string;
@@ -233,6 +243,7 @@ export async function GET(req: NextRequest) {
       const first = sorted[0];
       const last = sorted[sorted.length - 1];
       const totalDurationSeconds = sorted.reduce((sum, r) => sum + (r.duration_seconds ?? 0), 0);
+      const device = detectDevice(first.user_agent);
 
       return {
         sessionId,
@@ -242,6 +253,8 @@ export async function GET(req: NextRequest) {
         ctaClicks: clickRows.length,
         totalDurationSeconds,
         isMobile: first.is_mobile ?? false,
+        os: device.os,
+        formFactor: device.formFactor,
         city: first.city,
         region: first.region,
         country: first.country,

@@ -1,7 +1,21 @@
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
-import { Bot, ChevronDown, Eye, Info, MapPin, MessageSquare, MousePointerClick, Phone, Search, Smartphone } from "lucide-react";
+import Image from "next/image";
+import {
+  Bot,
+  ChevronDown,
+  Eye,
+  Info,
+  MapPin,
+  MessageSquare,
+  Monitor,
+  MousePointerClick,
+  Phone,
+  Search,
+  Smartphone,
+  Tablet,
+} from "lucide-react";
 
 interface TimelineEvent {
   type: "page" | "click" | "call_click";
@@ -20,6 +34,8 @@ interface VisitorSession {
   ctaClicks: number;
   totalDurationSeconds: number;
   isMobile: boolean;
+  os: "Apple" | "Android" | "Windows" | "Other";
+  formFactor: "Phone" | "Tablet" | "Desktop";
   city: string | null;
   region: string | null;
   country: string | null;
@@ -149,6 +165,24 @@ function TimelineList({ timeline }: { timeline: TimelineEvent[] }) {
         </li>
       ))}
     </ol>
+  );
+}
+
+const FORM_FACTOR_ICON = { Phone: Smartphone, Tablet: Tablet, Desktop: Monitor };
+
+function DeviceBadge({ os, formFactor }: { os: VisitorSession["os"]; formFactor: VisitorSession["formFactor"] }) {
+  const FormIcon = FORM_FACTOR_ICON[formFactor];
+  return (
+    <span className="inline-flex items-center gap-1.5 text-gray-700">
+      {os === "Apple" && (
+        <Image src="/images/brands/apple.svg" alt="Apple" width={14} height={14} className="h-3.5 w-3.5 shrink-0" />
+      )}
+      {os === "Android" && (
+        <Image src="/images/brands/android.svg" alt="Android" width={14} height={14} className="h-3.5 w-3.5 shrink-0" />
+      )}
+      <FormIcon className="h-3.5 w-3.5 shrink-0 text-gray-500" />
+      <span>{formFactor}</span>
+    </span>
   );
 }
 
@@ -581,7 +615,7 @@ export default function AdminAnalyticsPage() {
             <div className="flex items-center gap-2">
               <MousePointerClick className="h-4 w-4 text-gray-500" />
               <h2 className="text-sm font-semibold text-gray-900">Recent Visitors</h2>
-              <InfoTooltip text="One row per browser session (a visit lasts until the tab/browser closes). CTA Clicks counts every link and button clicked anywhere on the site during that visit. Time on Site is measured live as they browse, so it only appears once they've navigated away or closed the tab." />
+              <InfoTooltip text="One row per browser session (a visit lasts until the tab/browser closes). Device is parsed from the visitor's browser (Apple/Android logo plus phone, tablet, or desktop) — Windows and other platforms show just the form-factor icon. CTA Clicks counts every link and button clicked anywhere on the site during that visit. Time on Site is measured live as they browse, so it only appears once they've navigated away or closed the tab." />
             </div>
             <p className="mt-1 text-xs text-gray-400">
               Click a row for the full page-by-page timeline — time on each page and every link or
@@ -618,7 +652,9 @@ export default function AdminAnalyticsPage() {
                               <td className="py-2 pr-4 text-gray-700">{formatTimestamp(s.firstSeen)}</td>
                               <td className="py-2 pr-4 text-gray-700">{formatLocation(s)}</td>
                               <td className="py-2 pr-4 text-gray-700">{s.entrySource}</td>
-                              <td className="py-2 pr-4 text-gray-700">{s.isMobile ? "Mobile" : "Desktop"}</td>
+                              <td className="py-2 pr-4">
+                                <DeviceBadge os={s.os} formFactor={s.formFactor} />
+                              </td>
                               <td className="py-2 pr-4 text-gray-700">{s.pageCount}</td>
                               <td className="py-2 pr-4 font-medium text-brand">{s.ctaClicks}</td>
                               <td className="py-2 pr-4 text-gray-700">{formatDuration(s.totalDurationSeconds)}</td>
@@ -667,7 +703,9 @@ export default function AdminAnalyticsPage() {
                           </div>
                           <div>
                             <dt className="text-xs text-gray-400">Device</dt>
-                            <dd className="text-gray-700">{s.isMobile ? "Mobile" : "Desktop"}</dd>
+                            <dd>
+                              <DeviceBadge os={s.os} formFactor={s.formFactor} />
+                            </dd>
                           </div>
                           <div>
                             <dt className="text-xs text-gray-400">Pages</dt>
