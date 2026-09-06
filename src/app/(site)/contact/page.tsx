@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Clock, MapPin, Phone } from "lucide-react";
 import ContactForm from "@/components/ContactForm";
 import { SITE_URL } from "@/lib/constants";
@@ -78,7 +79,9 @@ export default async function ContactPage() {
                 Fill out the form below and our team will get back to you within 24 hours.
               </p>
               <div className="mt-6">
-                <ContactForm />
+                <Suspense fallback={null}>
+                  <ContactForm />
+                </Suspense>
               </div>
             </div>
             <div>

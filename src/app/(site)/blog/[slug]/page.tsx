@@ -13,14 +13,14 @@ interface CategoryCta {
   heading: string;
   body: string;
   ctaLabel: string;
-  ctaHref: string;
+  /** Must match one of SERVICE_OPTIONS in ContactForm.tsx so the dropdown pre-selects. */
+  service?: string;
 }
 
 const DEFAULT_CTA: CategoryCta = {
   heading: "Ready to Stop Juggling Vendors?",
   body: "Tell us what you're building — or what's broken — and we'll design, install, and manage the fix. Free consultation, no obligation.",
   ctaLabel: "Get a Free Quote",
-  ctaHref: "/contact",
 };
 
 const CATEGORY_CTAS: Record<string, CategoryCta> = {
@@ -28,49 +28,49 @@ const CATEGORY_CTAS: Record<string, CategoryCta> = {
     heading: "Tired of Guessing What Your IT Actually Costs?",
     body: "Get a flat, predictable quote for managed IT support — no surprise invoices, no vague line items.",
     ctaLabel: "Get a Free Quote",
-    ctaHref: "/contact",
+    service: "Managed IT Services",
   },
   "Managed IT": {
     heading: "One Team for Your Network, Cabling, and Support",
     body: "Stop juggling vendors. We design, install, and manage your IT as a single connected system.",
     ctaLabel: "Get a Free Quote",
-    ctaHref: "/contact",
+    service: "Managed IT Services",
   },
   Infrastructure: {
     heading: "Is Your IT Infrastructure Ready for What's Next?",
     body: "From network hardware to backup power, we'll assess your setup and show you exactly what needs attention.",
     ctaLabel: "Get a Free Assessment",
-    ctaHref: "/contact",
+    service: "Managed IT Services",
   },
   Security: {
     heading: "Don't Wait for a Breach to Take Security Seriously",
     body: "MFA, next-gen firewalls, EDR, employee training — we'll build the right defense for your business.",
     ctaLabel: "Get a Security Review",
-    ctaHref: "/services/cybersecurity",
+    service: "Cybersecurity",
   },
   Network: {
     heading: "Is Outdated Network Hardware Slowing You Down?",
     body: "We'll evaluate your switches, access points, and cabling, and tell you what actually needs replacing.",
     ctaLabel: "Get a Network Assessment",
-    ctaHref: "/services/network-wifi",
+    service: "Network & WiFi",
   },
   Cloud: {
     heading: "Ready to Move to the Cloud the Right Way?",
     body: "We'll help you plan a migration that doesn't disrupt your business — or your budget.",
     ctaLabel: "Get a Cloud Consultation",
-    ctaHref: "/services/cloud",
+    service: "Cloud Solutions",
   },
   VoIP: {
     heading: "Still Paying for a Phone System You Don't Love?",
     body: "See what a modern VoIP setup — installed and supported by the same team managing your network — actually costs.",
     ctaLabel: "Get a VoIP Quote",
-    ctaHref: "/services/voip",
+    service: "VoIP Phone Systems",
   },
   Backup: {
     heading: "Could Your Business Survive a Total Data Loss?",
     body: "We'll check your backups against the 3-2-1 rule and close any gaps before disaster strikes.",
     ctaLabel: "Get a Backup Review",
-    ctaHref: "/services/backup-recovery",
+    service: "Data Backup & Recovery",
   },
 };
 
@@ -148,6 +148,7 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   const cta = getCategoryCta(post.category);
+  const ctaHref = cta.service ? `/contact?service=${encodeURIComponent(cta.service)}` : "/contact";
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -197,7 +198,7 @@ export default async function BlogPostPage({
               <ConsultationButton href={`tel:${PHONE_HREF}`} variant="accent">
                 Call {PHONE_DISPLAY}
               </ConsultationButton>
-              <ConsultationButton href={cta.ctaHref} variant="outline-light">
+              <ConsultationButton href={ctaHref} variant="outline-light">
                 {cta.ctaLabel}
               </ConsultationButton>
             </div>

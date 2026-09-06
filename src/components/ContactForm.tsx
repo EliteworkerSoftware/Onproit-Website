@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useSearchParams } from "next/navigation";
 import Turnstile from "@/components/Turnstile";
 
 const SERVICE_OPTIONS = [
@@ -21,6 +22,10 @@ type Status = "idle" | "submitting" | "success" | "error";
 export default function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const searchParams = useSearchParams();
+  const requestedService = searchParams.get("service");
+  const preselectedService =
+    requestedService && SERVICE_OPTIONS.includes(requestedService) ? requestedService : "";
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -133,6 +138,7 @@ export default function ContactForm() {
         <select
           id="service"
           name="service"
+          defaultValue={preselectedService}
           className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
         >
           <option value="">Select a service</option>
