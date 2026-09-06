@@ -66,7 +66,7 @@ export default function AdminNav({ admin }: { admin: AdminUser }) {
 
   return (
     <header className="bg-dark">
-      <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
+      <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <nav className="hidden items-center gap-1 lg:flex">
           {NAV_LINKS.map((link) => {
             const active = pathname.startsWith(link.href);
@@ -90,14 +90,17 @@ export default function AdminNav({ admin }: { admin: AdminUser }) {
           })}
         </nav>
 
-        <Link href="/admin" className="flex flex-col items-center justify-self-center">
+        <Link
+          href="/admin"
+          className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center"
+        >
           <Image src="/images/logo.svg" alt="ONPRO IT" width={140} height={31} className="h-8 w-auto" />
           <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-widest text-white/50">
             Administrator
           </span>
         </Link>
 
-        <div className="relative flex items-center justify-end gap-3" ref={menuRef}>
+        <div className="relative ml-auto flex items-center justify-end gap-3" ref={menuRef}>
           <a
             href="/"
             target="_blank"
