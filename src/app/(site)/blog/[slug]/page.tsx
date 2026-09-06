@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { BLOG_POSTS_FALLBACK } from "@/lib/blog-posts-fallback";
 import BlogThumbnail from "@/components/BlogThumbnail";
+import ConsultationButton from "@/components/ConsultationButton";
 import type { BlogPost } from "@/types";
-import { SITE_URL } from "@/lib/constants";
+import { PHONE_DISPLAY, PHONE_HREF, SITE_URL } from "@/lib/constants";
 
 export const revalidate = 3600;
 
@@ -116,6 +117,22 @@ export default async function BlogPostPage({
             className="mt-8 max-w-none space-y-4 leading-relaxed text-gray-700 [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-gray-900 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-gray-900 [&_ul]:list-disc [&_ul]:pl-6"
             dangerouslySetInnerHTML={{ __html: post.content ?? "" }}
           />
+
+          <div className="mt-10 rounded-2xl bg-brand p-8 text-center text-white">
+            <h2 className="text-xl font-bold">Ready to Stop Juggling Vendors?</h2>
+            <p className="mt-2 text-sm text-white/90">
+              Tell us what you&apos;re building — or what&apos;s broken — and we&apos;ll design,
+              install, and manage the fix. Free consultation, no obligation.
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <ConsultationButton href={`tel:${PHONE_HREF}`} variant="accent">
+                Call {PHONE_DISPLAY}
+              </ConsultationButton>
+              <ConsultationButton href="/contact" variant="outline-light">
+                Get a Free Quote
+              </ConsultationButton>
+            </div>
+          </div>
         </div>
       </article>
     </>
