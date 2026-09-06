@@ -248,6 +248,7 @@ function TargetKeywordsPanel() {
   const [keyword, setKeyword] = useState("");
   const [targetUrl, setTargetUrl] = useState("");
   const [priority, setPriority] = useState("medium");
+  const [reason, setReason] = useState("");
   const [error, setError] = useState("");
   const [adding, setAdding] = useState(false);
 
@@ -276,7 +277,7 @@ function TargetKeywordsPanel() {
     const res = await fetch("/api/admin/keywords", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ keyword, target_url: targetUrl, priority }),
+      body: JSON.stringify({ keyword, target_url: targetUrl, priority, notes: reason }),
     });
     const data = await res.json();
     setAdding(false);
@@ -287,6 +288,7 @@ function TargetKeywordsPanel() {
     setKeyword("");
     setTargetUrl("");
     setPriority("medium");
+    setReason("");
     load();
   }
 
@@ -300,43 +302,57 @@ function TargetKeywordsPanel() {
       <div className="flex items-center gap-2">
         <Search className="h-4 w-4 text-gray-500" />
         <h2 className="text-sm font-semibold text-gray-900">Target Keywords</h2>
-        <InfoTooltip text="Keywords you've deliberately chosen to rank for, tracked over time. Position/impressions/clicks are pulled live from Search Console (last 30 days) whenever available — 'No data yet' means Google hasn't shown your site for that exact term in that window." />
+        <InfoTooltip text="Keywords you've deliberately chosen to rank for, tracked over time. Position/impressions/clicks are pulled live from Search Console (last 30 days) whenever available — 'No data yet' means Google hasn't shown your site for that exact term in that window. Priority is a manual editorial call, not a Google score: High = either real proven demand (already showing decent impressions/clicks or a near-page-1 position) or a genuinely uncontested niche with little local competition. Medium = a plausible, real target with no proof yet either way. Low = a long shot or deprioritized. Every keyword requires a written reason so the priority isn't just a guess — read it before trusting the badge." />
       </div>
       <p className="mt-1 text-xs text-gray-400">
         Add a keyword you want to SEO toward and see its live Search Console standing.
       </p>
 
-      <form onSubmit={handleAdd} className="mt-4 flex flex-wrap items-end gap-2">
-        <div className="flex-1 min-w-40">
-          <label className="text-xs font-medium text-gray-500">Keyword</label>
-          <input
-            required
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            placeholder="managed it services camden nj"
-            className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-          />
-        </div>
-        <div className="flex-1 min-w-40">
-          <label className="text-xs font-medium text-gray-500">Target Page (optional)</label>
-          <input
-            value={targetUrl}
-            onChange={(e) => setTargetUrl(e.target.value)}
-            placeholder="/services/managed-it"
-            className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-          />
+      <form onSubmit={handleAdd} className="mt-4 space-y-2">
+        <div className="flex flex-wrap items-end gap-2">
+          <div className="flex-1 min-w-40">
+            <label className="text-xs font-medium text-gray-500">Keyword</label>
+            <input
+              required
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="managed it services camden nj"
+              className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            />
+          </div>
+          <div className="flex-1 min-w-40">
+            <label className="text-xs font-medium text-gray-500">Target Page (optional)</label>
+            <input
+              value={targetUrl}
+              onChange={(e) => setTargetUrl(e.target.value)}
+              placeholder="/services/managed-it"
+              className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-medium text-gray-500">Priority</label>
+            <select
+              value={priority}
+              onChange={(e) => setPriority(e.target.value)}
+              className="mt-1 rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            >
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
         </div>
         <div>
-          <label className="text-xs font-medium text-gray-500">Priority</label>
-          <select
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
-            className="mt-1 rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-          >
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-          </select>
+          <label className="text-xs font-medium text-gray-500">
+            Why this priority? (required — real data or a specific reason, not a guess)
+          </label>
+          <input
+            required
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="e.g. already at #14 with 40 impressions/mo in Search Console, or: no local competitor targets this term"
+            className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+          />
         </div>
         <button
           type="submit"
@@ -377,6 +393,7 @@ function TargetKeywordsPanel() {
                     ? `#${k.live.position.toFixed(1)} avg · ${k.live.impressions} shown · ${k.live.clicks} clicked (last 30 days)`
                     : "No data yet — not showing in Google results for this exact term"}
                 </p>
+                {k.notes && <p className="mt-1 text-xs italic text-gray-400">Why: {k.notes}</p>}
               </div>
               <button
                 onClick={() => handleRemove(k.id)}
