@@ -13,7 +13,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from("target_keywords")
     .select(
-      "id, keyword, target_url, priority, notes, source, status, last_impressions, last_clicks, last_position, last_synced_at, content_url, queued_at, content_published_at, created_at"
+      "id, keyword, target_url, priority, notes, source, status, region, last_impressions, last_clicks, last_position, last_synced_at, content_url, queued_at, content_published_at, created_at"
     );
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

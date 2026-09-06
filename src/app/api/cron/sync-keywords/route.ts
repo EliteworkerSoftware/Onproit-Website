@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
 import { isSearchConsoleConfigured, querySearchAnalytics } from "@/lib/search-console";
+import { classifyKeywordRegion } from "@/lib/keyword-region";
 
 // Minimum impressions in the trailing 30 days for a query to be worth
 // tracking at all — filters out one-off noise (a single odd search) rather
@@ -56,17 +57,29 @@ export async function GET(req: NextRequest) {
 
   for (const r of qualifying) {
     const keyword = r.keys[0];
-    const priority = computePriority(r.impressions, r.position);
-    const notes = `Auto: ${r.impressions} impressions, position #${r.position.toFixed(1)}, ${r.clicks} clicks (Search Console, last 30 days)`;
+    const region = classifyKeywordRegion(keyword);
+    // Out-of-area terms (North/Central Jersey towns) are never worth
+    // pursuing regardless of real demand — force Low so they never surface
+    // as a recommendation, but keep the row so the demand is still visible.
+    const priority = region === "out_of_area" ? "low" : computePriority(r.impressions, r.position);
+    const notes =
+      region === "out_of_area"
+        ? `Auto: ${r.impressions} impressions, position #${r.position.toFixed(1)}, ${r.clicks} clicks — outside the real service area, not a target regardless of demand.`
+        : `Auto: ${r.impressions} impressions, position #${r.position.toFixed(1)}, ${r.clicks} clicks (Search Console, last 30 days)`;
     const stats = {
       last_impressions: r.impressions,
       last_clicks: r.clicks,
       last_position: r.position,
       last_synced_at: new Date().toISOString(),
+      region,
     };
 
     if (existingByKeyword.has(keyword)) {
-      await supabase.from("target_keywords").update({ ...stats, notes }).eq("keyword", keyword);
+      const update: Record<string, unknown> = { ...stats, notes };
+      // Out-of-area is a hard override even on a keyword a human already
+      // touched; anything else respects whatever priority is already set.
+      if (region === "out_of_area") update.priority = "low";
+      await supabase.from("target_keywords").update(update).eq("keyword", keyword);
       updated++;
     } else {
       await supabase.from("target_keywords").insert({

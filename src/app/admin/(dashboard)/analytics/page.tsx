@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import {
   Bot,
@@ -242,6 +242,7 @@ interface TrackedKeyword {
   notes: string | null;
   source: string;
   status: string;
+  region: "in_area" | "out_of_area" | "unspecified" | null;
   last_impressions: number | null;
   last_clicks: number | null;
   last_position: number | null;
@@ -306,17 +307,46 @@ function TargetKeywordsPanel() {
     load();
   }
 
+  const regionSummary = useMemo(() => {
+    if (!keywords || keywords.length === 0) return null;
+    let total = 0;
+    let inArea = 0;
+    let outOfArea = 0;
+    for (const k of keywords) {
+      const impressions = k.last_impressions ?? 0;
+      total += impressions;
+      if (k.region === "in_area") inArea += impressions;
+      if (k.region === "out_of_area") outOfArea += impressions;
+    }
+    if (total === 0) return null;
+    return {
+      inAreaPct: Math.round((inArea / total) * 100),
+      outOfAreaPct: Math.round((outOfArea / total) * 100),
+    };
+  }, [keywords]);
+
   return (
     <div id="target-keywords" className="mt-6 scroll-mt-6 rounded-xl border border-gray-200 bg-white p-6">
       <div className="flex items-center gap-2">
         <Search className="h-4 w-4 text-gray-500" />
         <h2 className="text-sm font-semibold text-gray-900">Target Keywords</h2>
-        <InfoTooltip text="This list populates itself — a daily job pulls every real query Search Console sees for your site (at least 3 impressions in the trailing 30 days) with no manual entry. Priority is computed automatically from real numbers, not a guess: High = 50+ impressions and within reach of page 1 (position ≤30). Medium = decent demand (15+ impressions) further out. Low = everything else. Click 'Queue for content' on anything worth writing about — that just flags it. Tell Claude to check the content queue in a chat session and it'll go write the actual blog post or page update for whatever's flagged, then mark it done with a link to what was actually published, so there's a real record instead of just a checkbox." />
+        <InfoTooltip text="This list populates itself — a daily job pulls every real query Search Console sees for your site (at least 3 impressions in the trailing 30 days) with no manual entry. Priority is computed automatically from real numbers, not a guess: High = 50+ impressions and within reach of page 1 (position ≤30). Medium = decent demand (15+ impressions) further out. Low = everything else. Search Console only reports the searcher's country, never city/state, so 'Outside service area' is detected by parsing the town name in the query text itself against your real coverage area — any North/Central Jersey town gets forced to Low priority automatically regardless of demand, since you don't want to pursue that. Click 'Queue for content' on anything worth writing about — that just flags it. Tell Claude to check the content queue in a chat session and it'll go write the actual blog post or page update for whatever's flagged, then mark it done with a link to what was actually published, so there's a real record instead of just a checkbox." />
       </div>
       <p className="mt-1 text-xs text-gray-400">
         Auto-synced daily from Search Console — nothing here was typed in by hand. Queue anything
         worth building content for, then ask Claude to check the queue.
       </p>
+
+      {regionSummary && (
+        <p
+          className={`mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
+            regionSummary.inAreaPct >= 50 ? "bg-green-50 text-green-700" : "bg-amber-50 text-amber-700"
+          }`}
+        >
+          {regionSummary.inAreaPct}% of search demand is inside your real service area
+          {regionSummary.outOfAreaPct > 0 && ` · ${regionSummary.outOfAreaPct}% is out-of-area (North/Central Jersey, deprioritized automatically)`}
+        </p>
+      )}
 
       {!keywords ? (
         <p className="mt-4 text-sm text-gray-500">Loading…</p>
@@ -342,6 +372,11 @@ function TargetKeywordsPanel() {
                     <span className="text-[10px] uppercase tracking-wide text-gray-400">
                       {k.source === "search_console" ? "from Search Console" : "manual"}
                     </span>
+                    {k.region === "out_of_area" && (
+                      <span className="rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-orange-600">
+                        Outside service area
+                      </span>
+                    )}
                   </div>
                   {k.target_url && <p className="text-xs text-gray-400">{k.target_url}</p>}
                   <p className="mt-0.5 text-xs text-gray-500">
