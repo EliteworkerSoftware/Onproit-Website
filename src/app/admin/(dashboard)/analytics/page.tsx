@@ -246,6 +246,9 @@ interface TrackedKeyword {
   last_clicks: number | null;
   last_position: number | null;
   last_synced_at: string | null;
+  content_url: string | null;
+  queued_at: string | null;
+  content_published_at: string | null;
 }
 
 const PRIORITY_BADGE_CLASSES: Record<string, string> = {
@@ -281,13 +284,21 @@ function TargetKeywordsPanel() {
     };
   }, []);
 
-  async function setStatus(id: string, status: string) {
+  async function setStatus(id: string, status: string, content_url?: string) {
     await fetch(`/api/admin/keywords/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
+      body: JSON.stringify({ status, ...(content_url !== undefined ? { content_url } : {}) }),
     });
     load();
+  }
+
+  function handleMarkDone(id: string) {
+    const url = window.prompt(
+      "URL of the content published for this keyword (leave blank if marking done without content)"
+    );
+    if (url === null) return; // cancelled
+    setStatus(id, "done", url.trim() || undefined);
   }
 
   async function handleRemove(id: string) {
@@ -300,7 +311,7 @@ function TargetKeywordsPanel() {
       <div className="flex items-center gap-2">
         <Search className="h-4 w-4 text-gray-500" />
         <h2 className="text-sm font-semibold text-gray-900">Target Keywords</h2>
-        <InfoTooltip text="This list populates itself — a daily job pulls every real query Search Console sees for your site (at least 3 impressions in the trailing 30 days) with no manual entry. Priority is computed automatically from real numbers, not a guess: High = 50+ impressions and within reach of page 1 (position ≤30). Medium = decent demand (15+ impressions) further out. Low = everything else. Click 'Queue for content' on anything worth writing about — that just flags it. Tell Claude to check the content queue in a chat session and it'll go write the actual blog post or page update for whatever's flagged." />
+        <InfoTooltip text="This list populates itself — a daily job pulls every real query Search Console sees for your site (at least 3 impressions in the trailing 30 days) with no manual entry. Priority is computed automatically from real numbers, not a guess: High = 50+ impressions and within reach of page 1 (position ≤30). Medium = decent demand (15+ impressions) further out. Low = everything else. Click 'Queue for content' on anything worth writing about — that just flags it. Tell Claude to check the content queue in a chat session and it'll go write the actual blog post or page update for whatever's flagged, then mark it done with a link to what was actually published, so there's a real record instead of just a checkbox." />
       </div>
       <p className="mt-1 text-xs text-gray-400">
         Auto-synced daily from Search Console — nothing here was typed in by hand. Queue anything
@@ -339,6 +350,23 @@ function TargetKeywordsPanel() {
                       : "No Search Console data recorded yet"}
                   </p>
                   {k.notes && <p className="mt-1 text-xs italic text-gray-400">{k.notes}</p>}
+                  {k.status === "queued" && k.queued_at && (
+                    <p className="mt-1 text-xs text-brand">Queued {formatTimestamp(k.queued_at)}</p>
+                  )}
+                  {k.status === "done" && (
+                    <p className="mt-1 text-xs text-green-600">
+                      {k.content_url ? (
+                        <>
+                          Content published{k.content_published_at ? ` ${formatTimestamp(k.content_published_at)}` : ""}:{" "}
+                          <a href={k.content_url} target="_blank" rel="noopener noreferrer" className="underline">
+                            {k.content_url}
+                          </a>
+                        </>
+                      ) : (
+                        "Marked done — no content URL recorded"
+                      )}
+                    </p>
+                  )}
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
                   {k.status !== "queued" && (
@@ -351,7 +379,7 @@ function TargetKeywordsPanel() {
                   )}
                   {k.status === "queued" && (
                     <button
-                      onClick={() => setStatus(k.id, "done")}
+                      onClick={() => handleMarkDone(k.id)}
                       className="text-xs font-medium text-green-600 hover:underline"
                     >
                       Mark done
