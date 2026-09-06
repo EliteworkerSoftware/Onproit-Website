@@ -1010,7 +1010,21 @@ export default function AdminAnalyticsPage() {
           </div>
 
           {searchData?.configured && (
-            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <details className="group mt-6 rounded-xl border border-gray-200 bg-white p-6">
+              <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
+                <Search className="h-4 w-4 text-gray-500" />
+                <h2 className="text-sm font-semibold text-gray-900">Top Search Queries &amp; Landing Pages</h2>
+                <span className="text-xs text-gray-400">
+                  ({searchData.topQueries.length} queries · {searchData.topQueriesByPage.length} pages)
+                </span>
+                <ChevronDown className="ml-auto h-4 w-4 shrink-0 text-gray-400 transition-transform group-open:rotate-180" />
+              </summary>
+              <p className="mt-1 text-xs text-gray-400">
+                Respects the date range above — useful for &quot;what happened this specific period,&quot;
+                separate from Target Keywords below which always tracks a rolling last-30-days sync.
+              </p>
+
+              <div className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-2">
               <div className="rounded-xl border border-gray-200 bg-white p-6">
                 <div className="flex items-center gap-2">
                   <Search className="h-4 w-4 text-gray-500" />
@@ -1068,7 +1082,8 @@ export default function AdminAnalyticsPage() {
                   </ul>
                 )}
               </div>
-            </div>
+              </div>
+            </details>
           )}
 
           {searchData?.configured && <TargetKeywordsPanel />}
