@@ -752,7 +752,6 @@ export const SERVICES_DATA: ServiceData[] = [
     keywords: "VoIP NJ, business phone systems Southern NJ, VoIP installation New Jersey",
     Icon: PhoneCall,
     heroImage: "/images/hero-voip.jpg",
-    secondaryImage: "/images/hero-voip.jpg",
     brandsWeUse: ["Yealink", "Cisco", "Ubiquiti"],
     intro:
       "Replace your outdated phone lines with a flexible, cloud-based communication platform that travels with you everywhere.",

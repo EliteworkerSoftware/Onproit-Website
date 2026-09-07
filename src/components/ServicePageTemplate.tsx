@@ -80,28 +80,40 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
 
   const risksSection = (
     <section key="risks" className="relative overflow-hidden bg-white py-16">
-      <div
-        className={`absolute inset-y-0 hidden w-[42%] lg:block ${risksImageLeft ? "left-0" : "right-0"}`}
-      >
-        <Image
-          src={service.secondaryImage ?? "/images/about-team.png"}
-          alt={`ONPRO IT team delivering ${service.navTitle.toLowerCase()}`}
-          fill
-          className="object-cover"
-        />
-      </div>
-      <div className="relative h-72 w-full sm:h-96 lg:hidden">
-        <Image
-          src={service.secondaryImage ?? "/images/about-team.png"}
-          alt={`ONPRO IT team delivering ${service.navTitle.toLowerCase()}`}
-          fill
-          className="object-cover"
-        />
-      </div>
+      {service.secondaryImage && (
+        <>
+          <div
+            className={`absolute inset-y-0 hidden w-[42%] lg:block ${risksImageLeft ? "left-0" : "right-0"}`}
+          >
+            <Image
+              src={service.secondaryImage}
+              alt={`ONPRO IT team delivering ${service.navTitle.toLowerCase()}`}
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="relative h-72 w-full sm:h-96 lg:hidden">
+            <Image
+              src={service.secondaryImage}
+              alt={`ONPRO IT team delivering ${service.navTitle.toLowerCase()}`}
+              fill
+              className="object-cover"
+            />
+          </div>
+        </>
+      )}
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className={risksImageLeft ? "mt-10 lg:mt-0 lg:ml-auto lg:max-w-xl" : "mt-10 lg:mt-0 lg:max-w-xl"}>
+        <div
+          className={
+            !service.secondaryImage
+              ? "mx-auto mt-10 max-w-2xl text-center lg:mt-0"
+              : risksImageLeft
+                ? "mt-10 lg:mt-0 lg:ml-auto lg:max-w-xl"
+                : "mt-10 lg:mt-0 lg:max-w-xl"
+          }
+        >
           <h2 className="text-3xl font-bold text-gray-900">What It Costs You to Go Without It</h2>
-          <ul className="mt-6 space-y-3">
+          <ul className={`mt-6 space-y-3 ${!service.secondaryImage ? "text-left" : ""}`}>
             {service.risks.map((item) => (
               <li key={item} className="flex items-start gap-3 text-gray-600">
                 <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" />
