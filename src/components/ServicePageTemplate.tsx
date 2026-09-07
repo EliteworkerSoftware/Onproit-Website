@@ -302,55 +302,6 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
 
       {middleSections}
 
-      <section className="bg-gray-50 py-16">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">Where We Work</h2>
-          <div className="mt-6 flex flex-wrap gap-3">
-            {service.areasServed.map((area) => (
-              <span
-                key={area}
-                className="flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-700"
-              >
-                <MapPin className="h-4 w-4 text-accent" />
-                {area}
-              </span>
-            ))}
-          </div>
-
-          {service.brandsWeUse && service.brandsWeUse.length > 0 && (
-            <div className="mt-10 border-t border-gray-200 pt-6">
-              <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
-                Brands we work with
-              </p>
-              <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
-                {service.brandsWeUse.map((brand) => (
-                  <div key={brand} className="flex items-center gap-2 opacity-70">
-                    {BRAND_LOGOS[brand] && (
-                      <span
-                        className={
-                          brand === "Uniview"
-                            ? "flex h-6 w-6 shrink-0 items-center justify-center rounded bg-gray-700 p-1"
-                            : "flex h-6 w-6 shrink-0 items-center justify-center"
-                        }
-                      >
-                        <Image
-                          src={BRAND_LOGOS[brand]}
-                          alt={brand}
-                          width={20}
-                          height={20}
-                          className="h-full w-full object-contain"
-                        />
-                      </span>
-                    )}
-                    <span className="text-sm text-gray-500">{brand}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-
       <section className="bg-white py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900">Frequently Asked Questions</h2>
@@ -380,6 +331,55 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
               </Link>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-10">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Where We Work</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {service.areasServed.map((area) => (
+              <span
+                key={area}
+                className="flex items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-xs text-gray-600"
+              >
+                <MapPin className="h-3.5 w-3.5 text-accent" />
+                {area}
+              </span>
+            ))}
+          </div>
+
+          {service.brandsWeUse && service.brandsWeUse.length > 0 && (
+            <div className="mt-6 border-t border-gray-200 pt-6">
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
+                Brands we work with
+              </p>
+              <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
+                {service.brandsWeUse.map((brand) => (
+                  <div key={brand} className="flex items-center gap-2 opacity-70">
+                    {BRAND_LOGOS[brand] && (
+                      <span
+                        className={
+                          brand === "Uniview"
+                            ? "flex h-6 w-6 shrink-0 items-center justify-center rounded bg-gray-700 p-1"
+                            : "flex h-6 w-6 shrink-0 items-center justify-center"
+                        }
+                      >
+                        <Image
+                          src={BRAND_LOGOS[brand]}
+                          alt={brand}
+                          width={20}
+                          height={20}
+                          className="h-full w-full object-contain"
+                        />
+                      </span>
+                    )}
+                    <span className="text-sm text-gray-500">{brand}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

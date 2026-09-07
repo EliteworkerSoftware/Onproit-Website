@@ -166,7 +166,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Server,
     color: "blue",
     heroImage: "/images/hero-managed-it.png",
-    secondaryImage: "/images/about-team.png",
     intro:
       "Stop worrying about technology and focus on your business. We provide proactive, flat-rate IT management for companies in South Jersey, Delaware, and the Philadelphia Metro area.",
     whatIsIt: [
@@ -229,7 +228,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Headphones,
     color: "cyan",
     heroImage: "/images/hero-it-support.png",
-    secondaryImage: "/images/about-team.png",
     intro:
       "Fast, reliable, and local tech support for your business. From rapid remote fixes to hands-on onsite troubleshooting, we keep your team productive.",
     whatIsIt: [
@@ -284,7 +282,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: ShieldCheck,
     color: "red",
     heroImage: "/images/hero-cybersecurity.png",
-    secondaryImage: "/images/about-team.png",
     intro:
       "Defend your organization against evolving digital threats. We provide enterprise-level security tailored for small and mid-sized businesses in the Tri-State area.",
     whatIsIt: [
@@ -396,7 +393,6 @@ export const SERVICES_DATA: ServiceData[] = [
     color: "indigo",
     heroImage:
       "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
-    secondaryImage: "/images/about-team.png",
     brandsWeUse: ["Microsoft 365", "Google Workspace", "AWS", "Dropbox"],
     intro:
       "Modernize your business with secure, scalable cloud solutions. We simplify your transition to the cloud so you can work securely from anywhere.",
@@ -462,7 +458,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: HardDrive,
     color: "emerald",
     heroImage: "/images/hero-backup-recovery.png",
-    secondaryImage: "/images/about-team.png",
     brandsWeUse: ["Synology", "AWS"],
     intro:
       "Protect your business data from ransomware, hardware failure, and human error. We ensure you can recover fast and keep working no matter what happens.",
@@ -573,7 +568,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Presentation,
     color: "purple",
     heroImage: "/images/about-conference-room.jpg",
-    secondaryImage: "/images/about-team.png",
     brandsWeUse: ["Control4", "Yealink", "Yamaha", "Shure"],
     intro:
       "Meetings shouldn't start with ten minutes of someone fumbling with an HDMI cable. We design and install the audio-visual systems that make your conference rooms, huddle spaces, and lobbies actually work — and because we're already your network and IT provider, everything talks to everything else on day one.",
@@ -634,7 +628,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Camera,
     color: "rose",
     heroImage: "/images/hero-cybersecurity.png",
-    secondaryImage: "/images/about-team.png",
     brandsWeUse: ["UniFi", "Uniview"],
     intro:
       "See what's happening at your business from anywhere, without hiring a separate security vendor. We design, install, and manage AI-powered network security cameras as part of the same network we already build and support.",
@@ -695,7 +688,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: KeyRound,
     color: "amber",
     heroImage: "/images/about-conference-room.jpg",
-    secondaryImage: "/images/about-team.png",
     brandsWeUse: ["PDK", "UniFi Access", "Keri Systems"],
     intro:
       "Control who can get into your building and when, without a drawer full of spare keys or a locksmith bill every time someone leaves. We design, install, and manage entry access control as part of the same network we already build and support.",
@@ -757,7 +749,6 @@ export const SERVICES_DATA: ServiceData[] = [
     color: "violet",
     heroImage:
       "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
-    secondaryImage: "/images/about-team.png",
     intro:
       "Technology leadership without the C-suite salary. Strategic planning to help you make informed decisions, control costs, and align your IT roadmap with your business goals.",
     whatIsIt: [
@@ -917,7 +908,6 @@ export const SERVICES_DATA: ServiceData[] = [
     Icon: Sparkles,
     color: "fuchsia",
     heroImage: "/images/hero-managed-it.png",
-    secondaryImage: "/images/about-team.png",
     intro:
       "We don't just talk about AI — we use it to run our own business. We help you do the same: rolling out Microsoft Copilot, connecting tools like Claude and ChatGPT into your workflow, and automating the repetitive work that eats up your team's day.",
     whatIsIt: [

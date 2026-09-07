@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { ShieldCheck, Users } from "lucide-react";
+import { MapPin } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
-import { PHONE_DISPLAY, PHONE_HREF, SISTER_COMPANIES, SITE_URL } from "@/lib/constants";
+import { PHONE_DISPLAY, PHONE_HREF, SITE_URL } from "@/lib/constants";
+import { SERVICE_AREA_LIST } from "@/lib/services-data";
 
 export const metadata: Metadata = {
   title: "About ONPRO IT | Managed IT & Technology Services NJ",
@@ -25,149 +26,90 @@ export const metadata: Metadata = {
 export default function AboutUsPage() {
   return (
     <>
-      <section className="bg-dark py-20 text-white">
-        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            About ONPRO IT — Southern NJ&apos;s Technology Partner
-          </h1>
-          <p className="mt-6 text-lg text-gray-300">
-            Delivering enterprise-grade IT solutions and structured cabling to businesses across
-            the region.
+      <section className="relative overflow-hidden bg-dark text-white">
+        <div className="absolute inset-y-0 right-0 hidden w-[52%] lg:block">
+          <Image
+            src="/images/voip-team.png"
+            alt="ONPRO IT technician working in a server room"
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-y-0 left-0 w-1/3 bg-linear-to-r from-dark to-transparent" />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 pb-16 pt-14 sm:px-6 lg:px-8 lg:pb-24 lg:pt-20">
+          <div className="max-w-xl">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Why ONPRO IT Exists</h1>
+            <p className="mt-6 text-lg text-gray-300">
+              We didn&apos;t start out as an IT company. We started by trying to solve the same
+              problem our clients come to us with.
+            </p>
+          </div>
+        </div>
+
+        <div className="relative h-64 w-full sm:h-80 lg:hidden">
+          <Image
+            src="/images/voip-team.png"
+            alt="ONPRO IT technician working in a server room"
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-x-0 top-0 h-16 bg-linear-to-b from-dark to-transparent" />
+        </div>
+      </section>
+
+      <section className="bg-white py-20">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
+          <div className="space-y-5 text-gray-600">
+            <p>
+              Before ONPRO IT, we ran Elite Smart Home and Elite Smart Security — smart home
+              automation, AV, and access control and surveillance systems. All of it depends on a
+              solid network underneath, so we were already deep in networking long before we ever
+              called ourselves an IT company.
+            </p>
+            <p>
+              When it came time to find someone to handle our own company&apos;s IT, we ran into
+              the same wall every small business runs into: the IT companies that actually knew
+              what they were doing only wanted large corporate accounts with big budgets. Everyone
+              else was left to figure it out on their own.
+            </p>
+            <p>
+              So that&apos;s what most small businesses do — a router from a big-box store, a
+              laptop from wherever, a cousin&apos;s guy on speed dial for when it breaks. It works
+              until it doesn&apos;t, and then nobody can tell you why, because no one ever actually
+              understood the whole system. It&apos;s not a strategy, it&apos;s a Frankenstein built
+              from mismatched parts.
+            </p>
+            <p>
+              We started ONPRO IT to be what we couldn&apos;t find: enterprise-grade IT built for
+              small and medium-sized businesses. It was a natural move for us — integration and
+              security already relied on the same networking fundamentals — so we carried the same
+              standards that made those companies work into IT: show up, do it right the first
+              time, and take responsibility for the whole system instead of just one piece of it.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-gray-50 py-10">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Where We Work</p>
+          <p className="mt-2 text-sm text-gray-600">
+            Headquartered in Berlin Township, NJ, with on-site and remote support across:
           </p>
-        </div>
-      </section>
-
-      <section className="relative overflow-hidden bg-white py-16">
-        <div className="absolute inset-y-0 right-0 hidden w-[42%] lg:block">
-          <Image
-            src="/images/about-team.png"
-            alt="Diverse team collaborating at wooden desk with laptops and plants in a modern office"
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="lg:max-w-xl">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Built for Small Businesses. Designed to Scale.
-            </h2>
-            <p className="mt-4 text-gray-600">
-              ONPRO IT was founded on a simple premise: small and medium-sized businesses deserve
-              the same level of enterprise-grade technology support as large corporations. We
-              understand that your technology is the backbone of your operations.
-            </p>
-            <p className="mt-4 text-gray-600">
-              Whether you are a startup needing your first network installed or a growing firm
-              requiring managed security and helpdesk support, our solutions are tailored to fit
-              your specific needs and budget. We grow with you, ensuring your infrastructure is
-              always one step ahead of your business goals.
-            </p>
-          </div>
-        </div>
-        <div className="relative mt-10 h-72 w-full sm:h-96 lg:hidden">
-          <Image
-            src="/images/about-team.png"
-            alt="Diverse team collaborating at wooden desk with laptops and plants in a modern office"
-            fill
-            className="object-cover"
-          />
-        </div>
-      </section>
-
-      <section className="relative overflow-hidden bg-gray-50 py-16">
-        <div className="absolute inset-y-0 left-0 hidden w-[42%] lg:block">
-          <Image
-            src="/images/about-conference-room.jpg"
-            alt="Modern conference room with long white table, gray chairs, display screen, and contemporary ceiling design"
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div className="relative h-72 w-full sm:h-96 lg:hidden">
-          <Image
-            src="/images/about-conference-room.jpg"
-            alt="Modern conference room with long white table, gray chairs, display screen, and contemporary ceiling design"
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="mt-10 lg:mt-0 lg:ml-auto lg:max-w-xl">
-            <h2 className="text-3xl font-bold text-gray-900">
-              One Call for Every System in the Building
-            </h2>
-            <p className="mt-4 text-gray-600">
-              Outfitting a new office, restaurant, or retail space usually means coordinating a
-              network installer, an AV company, a security integrator, and a smart-automation
-              vendor separately — and hoping they all show up on schedule and agree on how the
-              pieces fit together.
-            </p>
-            <p className="mt-4 text-gray-600">
-              Between ONPRO IT and our sister companies, Elite Smart Home and Elite Smart
-              Security, one group can handle all of it: networking, IT, AV, lighting and
-              automation, and security and access control — designed as one system instead of
-              four separate vendors pointing fingers at each other.
-            </p>
-          </div>
-          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
-            <div className="rounded-xl bg-white p-6 shadow-sm">
-              <ShieldCheck className="h-8 w-8 text-brand" />
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">ONPRO IT</h3>
-              <p className="mt-2 text-sm text-gray-600">
-                Managed IT, networking, structured cabling, VoIP, AV, and cybersecurity for
-                businesses.
-              </p>
-            </div>
-            {SISTER_COMPANIES.map((c) => (
-              <div key={c.name} className="rounded-xl bg-white p-6 shadow-sm">
-                <Users className="h-8 w-8 text-brand" />
-                <h3 className="mt-4 text-lg font-semibold text-gray-900">{c.name}</h3>
-                <p className="mt-2 text-sm text-gray-600">{c.description}</p>
-                {c.url && (
-                  <a
-                    href={c.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 inline-block text-sm font-medium text-brand hover:underline"
-                  >
-                    Visit {c.name} →
-                  </a>
-                )}
-              </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {SERVICE_AREA_LIST.map((area) => (
+              <span
+                key={area}
+                className="flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-600"
+              >
+                <MapPin className="h-3.5 w-3.5 text-brand" />
+                {area}
+              </span>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="bg-white py-16">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">Where We Work</h2>
-          <p className="mt-4 text-gray-600">
-            ONPRO IT is headquartered in Berlin Township, NJ, and provides on-site and remote support
-            to businesses throughout Southern New Jersey, Philadelphia, and Delaware — including
-            Camden, Burlington, Gloucester, Ocean, Atlantic, Cumberland, Cape May, and Salem
-            counties, from Cherry Hill and Mount Laurel to Toms River, Atlantic City, and Vineland.
-          </p>
-        </div>
-      </section>
-
-      <section className="bg-gray-50 py-16">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900">Our Values</h2>
-          <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <li className="rounded-lg bg-white p-4 text-sm text-gray-700 shadow-sm">
-              Responsiveness — we answer the phone and show up when you need us.
-            </li>
-            <li className="rounded-lg bg-white p-4 text-sm text-gray-700 shadow-sm">
-              Transparency — clear pricing and honest recommendations, always.
-            </li>
-            <li className="rounded-lg bg-white p-4 text-sm text-gray-700 shadow-sm">
-              Accountability — one partner responsible for your whole technology stack.
-            </li>
-            <li className="rounded-lg bg-white p-4 text-sm text-gray-700 shadow-sm">
-              Long-term partnership — we plan for where your business is going, not just today.
-            </li>
-          </ul>
         </div>
       </section>
 
