@@ -27,6 +27,63 @@ export interface ProductShowcaseItem {
   imageAlt: string;
 }
 
+// A distinct accent color per service so the /services grid doesn't read as
+// thirteen identical orange cards — picked from Tailwind's standard palette,
+// one hue per service, matched loosely to what each service evokes.
+export type ServiceColor =
+  | "blue"
+  | "cyan"
+  | "red"
+  | "teal"
+  | "indigo"
+  | "emerald"
+  | "orange"
+  | "purple"
+  | "rose"
+  | "amber"
+  | "violet"
+  | "green"
+  | "fuchsia";
+
+// Full literal classes (not interpolated) so Tailwind's scanner picks every
+// one of these up at build time — a template string like `bg-${color}-500`
+// would never generate the actual CSS. Shared by ServiceCard (the /services
+// grid) and ServicePageTemplate (each service's own hero icon) so the two
+// stay in sync.
+export const SERVICE_COLOR_BADGE: Record<ServiceColor, string> = {
+  blue: "bg-blue-500/10 text-blue-600 group-hover:bg-blue-500",
+  cyan: "bg-cyan-500/10 text-cyan-600 group-hover:bg-cyan-500",
+  red: "bg-red-500/10 text-red-600 group-hover:bg-red-500",
+  teal: "bg-teal-500/10 text-teal-600 group-hover:bg-teal-500",
+  indigo: "bg-indigo-500/10 text-indigo-600 group-hover:bg-indigo-500",
+  emerald: "bg-emerald-500/10 text-emerald-600 group-hover:bg-emerald-500",
+  orange: "bg-orange-500/10 text-orange-600 group-hover:bg-orange-500",
+  purple: "bg-purple-500/10 text-purple-600 group-hover:bg-purple-500",
+  rose: "bg-rose-500/10 text-rose-600 group-hover:bg-rose-500",
+  amber: "bg-amber-500/10 text-amber-600 group-hover:bg-amber-500",
+  violet: "bg-violet-500/10 text-violet-600 group-hover:bg-violet-500",
+  green: "bg-green-500/10 text-green-600 group-hover:bg-green-500",
+  fuchsia: "bg-fuchsia-500/10 text-fuchsia-600 group-hover:bg-fuchsia-500",
+};
+
+// Lighter (-400) text shade than the card badge above — this one sits in the
+// dark hero section, where a -600 shade would look muddy instead of popping.
+export const SERVICE_COLOR_HERO_ICON: Record<ServiceColor, string> = {
+  blue: "bg-blue-500/15 text-blue-400",
+  cyan: "bg-cyan-500/15 text-cyan-400",
+  red: "bg-red-500/15 text-red-400",
+  teal: "bg-teal-500/15 text-teal-400",
+  indigo: "bg-indigo-500/15 text-indigo-400",
+  emerald: "bg-emerald-500/15 text-emerald-400",
+  orange: "bg-orange-500/15 text-orange-400",
+  purple: "bg-purple-500/15 text-purple-400",
+  rose: "bg-rose-500/15 text-rose-400",
+  amber: "bg-amber-500/15 text-amber-400",
+  violet: "bg-violet-500/15 text-violet-400",
+  green: "bg-green-500/15 text-green-400",
+  fuchsia: "bg-fuchsia-500/15 text-fuchsia-400",
+};
+
 export interface ServiceData {
   slug: string;
   navTitle: string;
@@ -35,6 +92,7 @@ export interface ServiceData {
   metaDescription: string;
   keywords: string;
   Icon: LucideIcon;
+  color: ServiceColor;
   heroImage: string;
   secondaryImage?: string;
   intro: string;
@@ -106,6 +164,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "ONPRO IT delivers fully managed IT services for businesses in Southern NJ, Philadelphia, and Delaware — proactive monitoring, help desk support, and strategic IT planning for one flat monthly rate.",
     keywords: "managed IT services NJ, MSP Southern NJ, managed service provider New Jersey",
     Icon: Server,
+    color: "blue",
     heroImage: "/images/hero-managed-it.png",
     secondaryImage: "/images/about-team.png",
     intro:
@@ -168,6 +227,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Fast, local IT help desk support for Southern NJ, Philadelphia, and Delaware businesses. Remote and on-site technicians who actually answer the phone.",
     keywords: "IT help desk NJ, IT support Southern NJ, computer support New Jersey",
     Icon: Headphones,
+    color: "cyan",
     heroImage: "/images/hero-it-support.png",
     secondaryImage: "/images/about-team.png",
     intro:
@@ -222,6 +282,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Protect your business from ransomware, phishing, and data breaches with layered cybersecurity from ONPRO IT — serving Southern NJ, Philadelphia, and Delaware.",
     keywords: "cybersecurity NJ, cyber security Southern NJ, ransomware protection New Jersey",
     Icon: ShieldCheck,
+    color: "red",
     heroImage: "/images/hero-cybersecurity.png",
     secondaryImage: "/images/about-team.png",
     intro:
@@ -276,6 +337,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Enterprise-grade network design, installation, and WiFi solutions for offices, warehouses, and retail locations across Southern NJ, Philadelphia, and Delaware.",
     keywords: "network installation NJ, WiFi setup Southern NJ, business network New Jersey",
     Icon: Network,
+    color: "teal",
     heroImage: "/images/hero-network-wifi.png",
     secondaryImage: "/images/hero-cabling.png",
     brandsWeUse: ["Ubiquiti", "Ruckus", "Fortinet"],
@@ -331,6 +393,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Migrate to the cloud with confidence. ONPRO IT manages Microsoft 365, cloud backup, and secure remote access for businesses across Southern NJ, Philadelphia, and Delaware.",
     keywords: "cloud services NJ, Microsoft 365 NJ, cloud migration New Jersey",
     Icon: Cloud,
+    color: "indigo",
     heroImage:
       "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
     secondaryImage: "/images/about-team.png",
@@ -397,6 +460,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Protect your business from data loss with automated backup and disaster recovery from ONPRO IT — serving Southern NJ, Philadelphia, and Delaware.",
     keywords: "data backup NJ, disaster recovery Southern NJ, business continuity New Jersey",
     Icon: HardDrive,
+    color: "emerald",
     heroImage: "/images/hero-backup-recovery.png",
     secondaryImage: "/images/about-team.png",
     brandsWeUse: ["Synology", "AWS"],
@@ -452,6 +516,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Cat6, fiber optic, and structured cabling installation for businesses across New Jersey, Philadelphia, and Delaware. Certified and code-compliant.",
     keywords: "structured cabling NJ, Cat6 cabling NJ, fiber optic NJ, network cabling installation",
     Icon: Cable,
+    color: "orange",
     heroImage: "/images/hero-cabling.png",
     secondaryImage: "/images/hero-network-wifi.png",
     intro:
@@ -506,6 +571,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Conference room displays, video conferencing, digital signage, and sound system installation for businesses in Southern NJ, Philadelphia, and Delaware — designed and installed by ONPRO IT.",
     keywords: "AV installation NJ, conference room technology, video conferencing setup, digital signage NJ",
     Icon: Presentation,
+    color: "purple",
     heroImage: "/images/about-conference-room.jpg",
     secondaryImage: "/images/about-team.png",
     brandsWeUse: ["Control4", "Yealink", "Yamaha", "Shure"],
@@ -566,6 +632,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "AI-powered network security cameras, designed, installed, and managed by ONPRO IT for businesses in Southern NJ, Philadelphia, and Delaware.",
     keywords: "security camera installation NJ, business surveillance cameras, AI security cameras, video surveillance NJ",
     Icon: Camera,
+    color: "rose",
     heroImage: "/images/hero-cybersecurity.png",
     secondaryImage: "/images/about-team.png",
     brandsWeUse: ["UniFi", "Uniview"],
@@ -626,6 +693,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Keyless entry and access control systems, designed, installed, and managed by ONPRO IT for businesses in Southern NJ, Philadelphia, and Delaware.",
     keywords: "entry access control NJ, keyless entry systems, commercial door access control, key fob access control",
     Icon: KeyRound,
+    color: "amber",
     heroImage: "/images/about-conference-room.jpg",
     secondaryImage: "/images/about-team.png",
     brandsWeUse: ["PDK", "UniFi Access", "Keri Systems"],
@@ -686,6 +754,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Strategic IT consulting and technology planning for businesses in Southern NJ, Philadelphia, and Delaware. Align your technology budget with your business goals.",
     keywords: "IT consulting NJ, IT strategy Southern NJ, technology consulting New Jersey",
     Icon: Briefcase,
+    color: "violet",
     heroImage:
       "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
     secondaryImage: "/images/about-team.png",
@@ -749,35 +818,42 @@ export const SERVICES_DATA: ServiceData[] = [
     metaTitle: "VoIP Phone Systems NJ | ONPRO IT",
     metaDescription:
       "Reliable, feature-rich VoIP business phone systems for companies across Southern NJ, Philadelphia, and Delaware. Lower costs, more features, easy to scale.",
-    keywords: "VoIP NJ, business phone systems Southern NJ, VoIP installation New Jersey",
+    keywords:
+      "VoIP NJ, hosted PBX Philadelphia, business phone systems Southern NJ, VoIP phone systems South Jersey, VoIP installation New Jersey, hosted VoIP Delaware",
     Icon: PhoneCall,
+    color: "green",
     heroImage: "/images/hero-voip.jpg",
     brandsWeUse: ["Yealink", "Cisco", "Ubiquiti"],
     intro:
-      "Replace your outdated phone lines with a flexible, cloud-based communication platform that travels with you everywhere.",
+      "One business phone system, answered from a desk phone, a mobile app, or a laptop — with an auto-attendant, call routing, and voicemail transcription built in, and every user and device managed from one simple dashboard.",
     whatIsIt: [
-      "Your phone system is the lifeline of your business. In today's hybrid work environment, being tied to a desk phone is no longer an option. Our VoIP (Voice over IP) solutions provide crystal-clear voice quality, robust features, and the flexibility to work from anywhere — all while lowering your monthly telecommunications costs.",
+      "Your phone system is the lifeline of your business. In today's hybrid work environment, being tied to a single desk phone is no longer an option. Our hosted VoIP (Voice over IP) solutions let your team make and receive calls on a full-featured desk phone, the mobile app on their cell, or a softphone on their desktop — all ringing on the same business number, wherever they're standing.",
+      "Every plan includes a custom-recorded auto-attendant that greets callers by name and routes them with real business rules — by department, by business hours, by holiday schedule — before a call ever reaches a person. Voicemails are transcribed and emailed straight to the right inbox, and every phone, extension, and employee is managed from one simple online dashboard instead of a call to the phone company.",
       "We don't just sell you phones; we deliver a fully managed communication platform that integrates perfectly with your existing IT infrastructure. Because we also manage your network, we can guarantee Quality of Service settings are correct, preventing choppy calls and eliminating \"vendor ping-pong\" between your phone company and IT provider.",
     ],
     whoItsFor: [
       "Businesses paying high monthly costs for traditional phone lines (PRI/POTS)",
       "Companies with remote or multi-location teams needing unified calling",
-      "Organizations that have outgrown a basic phone system's features",
-      "Businesses opening a new location and needing phones installed quickly",
+      "Organizations that have outgrown a basic phone system's auto-attendant or call routing",
+      "Businesses opening a new location and needing phones, extensions, and users set up fast",
     ],
     risks: [
-      "Limited features like call routing, voicemail-to-email, or mobile apps",
+      "No auto-attendant, business-rule call routing, or voicemail transcription to keep callers moving to the right person",
+      "No simple dashboard for adding a user, assigning an extension, or managing every phone in the office",
       "Difficulty scaling phone service as the business adds staff or locations",
       "Choppy calls and dropped video conferences when phone and IT vendors don't coordinate",
     ],
     howWeDeliver: [
-      "Cloud-hosted PBX setup with auto-attendant and IVR menus configured for your business",
-      "Mobile app and desktop softphone deployment for iOS, Android, and desktop",
+      "Cloud-hosted PBX setup with a custom-recorded auto-attendant and business-rule call routing configured for your hours, departments, and holidays",
+      "Desk phone, mobile app, and desktop softphone deployment so every employee can make and receive calls from whichever device they're at",
+      "Extensions, voicemail transcription, and user accounts set up and managed from one simple online dashboard",
       "Local installation, number porting, and staff training so the switch is seamless",
     ],
     benefits: [
       "Lower, more predictable monthly phone bills compared to traditional lines",
       "HD voice quality with call recording and analytics included standard",
+      "Voicemail transcribed and emailed the moment a caller hangs up",
+      "Manage every user, extension, and phone from one simple dashboard — no phone company ticket required",
       "Keep your existing phone numbers — no disruption to your business",
       "No long-term contracts — we earn your business every month",
     ],
@@ -794,9 +870,39 @@ export const SERVICES_DATA: ServiceData[] = [
           "Yes — our mobile app and desktop softphone let remote employees make and receive calls on their business number from anywhere with internet access, while keeping their personal number private.",
       },
       {
-        question: "Do you install VoIP phone systems throughout New Jersey and Philadelphia?",
+        question: "Can callers be routed automatically based on our business hours or department?",
         answer:
-          "Yes — we design and install VoIP phone systems for businesses throughout New Jersey, and our business phone systems Philadelphia clients get the same local installation and ongoing support as our South Jersey customers.",
+          "Yes — every system we install includes a custom-recorded auto-attendant and business-rule call routing, so callers reach the right department or person based on the time of day, day of the week, or holiday schedule, with voicemail transcribed and emailed whenever a call is missed.",
+      },
+      {
+        question: "How do we manage users, extensions, and phones after installation?",
+        answer:
+          "From one simple online dashboard — add a new employee, assign an extension, reset a voicemail PIN, or pull call reports for every location, without waiting on hold with a phone company. We're also available to make changes for you any time.",
+      },
+      {
+        question: "Do you install hosted VoIP and PBX phone systems throughout New Jersey, Philadelphia, and Delaware?",
+        answer:
+          "Yes — we design and install hosted VoIP and PBX phone systems for businesses throughout New Jersey, and our business phone systems Philadelphia and hosted VoIP Delaware clients get the same local installation and ongoing support as our South Jersey customers.",
+      },
+    ],
+    productShowcase: [
+      {
+        heading: "A Full-Featured Desk Phone for the Office",
+        body: "Every desk gets a full-featured HD phone with a touchscreen directory, HD audio, and programmable extension keys — some models add a camera for face-to-face video calls right at the handset. It's the same business extension whether a call comes in here or follows an employee to their cell phone or laptop.",
+        image: "/images/voip/yealink-phone.png",
+        imageAlt: "Yealink HD desk phone with touchscreen directory and programmable extension keys",
+      },
+      {
+        heading: "The Same Business Line, Right in Your Pocket",
+        body: "The mobile app turns any smartphone into an extension of the office line — call from the business number instead of a personal cell, with the same keypad, call history, and company directory as the desk phone. Employees keep their personal number private, and the business keeps the number.",
+        image: "/images/voip/mobile-app-collage.png",
+        imageAlt: "VoIP mobile app screens on a smartphone showing the keypad, call history, and company directory",
+      },
+      {
+        heading: "Every User, Every Phone, One Dashboard",
+        body: "Add an employee, assign an extension, reset a voicemail PIN, or pull call reports for every location — all from one simple online dashboard. Auto-attendants greet callers with a custom recorded message and route them by business rule before a phone ever rings, and every voicemail is transcribed and emailed straight to the right inbox.",
+        image: "/images/voip/admin-dashboard.png",
+        imageAlt: "VoIP admin dashboard showing users, phones, extensions, and call activity in one interface",
       },
     ],
   },
@@ -809,6 +915,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "ONPRO IT helps businesses in Southern NJ, Philadelphia, and Delaware integrate AI tools — Microsoft Copilot, Claude, ChatGPT, and workflow automation — into daily operations, set up and supported by a team that uses AI to run its own business.",
     keywords: "AI integration NJ, Microsoft Copilot setup, AI workflow automation, business AI consulting New Jersey, ChatGPT and Claude for business",
     Icon: Sparkles,
+    color: "fuchsia",
     heroImage: "/images/hero-managed-it.png",
     secondaryImage: "/images/about-team.png",
     intro:

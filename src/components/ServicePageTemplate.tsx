@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, CheckCircle2, MapPin } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
-import { BRAND_LOGOS, SERVICES_DATA, type ServiceData } from "@/lib/services-data";
+import { BRAND_LOGOS, SERVICE_COLOR_HERO_ICON, SERVICES_DATA, type ServiceData } from "@/lib/services-data";
 import { PHONE_DISPLAY, PHONE_HREF, SITE_URL } from "@/lib/constants";
 
 export default function ServicePageTemplate({ service }: { service: ServiceData }) {
@@ -182,12 +182,76 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
     </section>
   );
 
-  const middleSections =
-    variant === 0
-      ? [involvesSection, whoItsForSection, risksSection, deliverSection, benefitsSection]
+  const productShowcaseSections = service.productShowcase?.map((item, i) => {
+    const imageRight = i % 2 === 0;
+    return (
+      <section key={item.heading} className={i % 2 === 0 ? "bg-white py-20" : "bg-gray-50 py-20"}>
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div
+            className={`flex flex-col items-center gap-10 lg:gap-16 ${
+              imageRight ? "lg:flex-row" : "lg:flex-row-reverse"
+            }`}
+          >
+            <div className="flex w-full justify-center lg:w-1/2">
+              <div className="relative h-72 w-full max-w-sm sm:h-96 sm:max-w-md">
+                <Image
+                  src={item.image}
+                  alt={item.imageAlt}
+                  fill
+                  sizes="(min-width: 1024px) 448px, 384px"
+                  quality={90}
+                  className="object-contain drop-shadow-xl"
+                />
+              </div>
+            </div>
+            <div className="w-full lg:w-1/2 lg:max-w-md">
+              <h3 className="text-2xl font-bold text-gray-900">{item.heading}</h3>
+              <p className="mt-4 text-gray-600">{item.body}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  });
+
+  // A low-key nudge, not a second "Let's Build It" — just a line and a link,
+  // so it doesn't compete with the bold CTA band at the bottom of the page.
+  const subtleCta = (key: string) => (
+    <div key={key} className="border-y border-gray-200 bg-white">
+      <div className="mx-auto flex max-w-4xl flex-col items-center justify-between gap-3 px-4 py-6 text-center sm:flex-row sm:px-6 sm:text-left lg:px-8">
+        <p className="text-sm text-gray-600">
+          Curious what {service.navTitle.toLowerCase()} would look like for your business?
+        </p>
+        <Link
+          href="/contact"
+          className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-accent hover:text-accent/80"
+        >
+          Get a Free Quote
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+    </div>
+  );
+
+  // Pages with a productShowcase lead with the intro, then the product visuals
+  // themselves, before easing into the pain-point/audience sections further
+  // down — the showcase is the hook, so it shouldn't be buried under copy.
+  const middleSections = productShowcaseSections
+    ? [
+        involvesSection,
+        ...productShowcaseSections,
+        subtleCta("cta-1"),
+        deliverSection,
+        risksSection,
+        whoItsForSection,
+        benefitsSection,
+        subtleCta("cta-2"),
+      ]
+    : variant === 0
+      ? [involvesSection, whoItsForSection, risksSection, deliverSection, benefitsSection, subtleCta("cta-2")]
       : variant === 1
-        ? [involvesSection, deliverSection, whoItsForSection, risksSection, benefitsSection]
-        : [involvesSection, risksSection, whoItsForSection, deliverSection, benefitsSection];
+        ? [involvesSection, deliverSection, whoItsForSection, risksSection, benefitsSection, subtleCta("cta-2")]
+        : [involvesSection, risksSection, whoItsForSection, deliverSection, benefitsSection, subtleCta("cta-2")];
 
   return (
     <>
@@ -212,7 +276,9 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 pb-16 pt-14 sm:px-6 lg:px-8 lg:pb-24 lg:pt-20">
           <div className="max-w-xl">
-            <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-accent/15 text-accent">
+            <div
+              className={`mb-6 flex h-14 w-14 items-center justify-center rounded-xl ${SERVICE_COLOR_HERO_ICON[service.color]}`}
+            >
               <service.Icon className="h-7 w-7" />
             </div>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{service.h1}</h1>
@@ -235,47 +301,6 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
       </section>
 
       {middleSections}
-
-      {service.productShowcase?.map((item, i) => {
-        const imageRight = i % 2 === 0;
-        return (
-          <section
-            key={item.heading}
-            className="relative overflow-hidden bg-white py-20 lg:min-h-140 lg:py-0"
-          >
-            <div
-              className={`absolute inset-y-0 hidden w-[52%] scale-125 lg:block ${
-                imageRight ? "right-0" : "left-0"
-              }`}
-            >
-              <Image
-                src={item.image}
-                alt={item.imageAlt}
-                fill
-                className={`object-contain drop-shadow-2xl ${
-                  imageRight ? "object-right" : "object-left"
-                }`}
-              />
-            </div>
-
-            <div className="relative mx-auto flex h-full max-w-6xl items-center px-4 sm:px-6 lg:px-8">
-              <div className={imageRight ? "lg:max-w-md" : "lg:ml-auto lg:max-w-md"}>
-                <h3 className="text-2xl font-bold text-gray-900">{item.heading}</h3>
-                <p className="mt-4 text-gray-600">{item.body}</p>
-              </div>
-            </div>
-
-            <div className="relative mx-auto mt-10 h-72 w-full max-w-md sm:h-96 lg:hidden">
-              <Image
-                src={item.image}
-                alt={item.imageAlt}
-                fill
-                className="object-contain drop-shadow-2xl"
-              />
-            </div>
-          </section>
-        );
-      })}
 
       <section className="bg-gray-50 py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">

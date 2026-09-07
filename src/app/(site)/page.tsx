@@ -92,6 +92,8 @@ const FEATURED_SERVICES = [
     href: "/services/managed-it",
     Icon: Server,
     image: "/images/hero-managed-it.png",
+    badgeClass: "bg-blue-500",
+    linkClass: "text-blue-400",
   },
   {
     title: "Structured Cabling",
@@ -100,21 +102,32 @@ const FEATURED_SERVICES = [
     href: "/services/cabling",
     Icon: Cable,
     image: "/images/hero-cabling.png",
+    badgeClass: "bg-orange-500",
+    linkClass: "text-orange-400",
+  },
+  {
+    title: "VoIP Phone Systems",
+    description:
+      "One business phone system, answered from a desk phone, a mobile app, or a laptop — with auto-attendants, call routing, and every user managed from one dashboard.",
+    href: "/services/voip",
+    Icon: PhoneCall,
+    image: "/images/hero-voip.jpg",
+    badgeClass: "bg-green-500",
+    linkClass: "text-green-400",
   },
 ];
 
 const SERVICE_CARDS = [
-  { title: "IT Help Desk", description: "Round-the-clock remote support for email, software, passwords, and every device your team relies on.", href: "/services/it-support", Icon: Headphones },
-  { title: "Cyber Security", description: "Comprehensive cybersecurity and security camera wiring to protect your organization.", href: "/services/cybersecurity", Icon: ShieldCheck },
-  { title: "Cloud Solutions", description: "Seamless cloud migration and management for Microsoft 365 and Google Workspace.", href: "/services/cloud", Icon: Cloud },
-  { title: "AI Integration & Automation", description: "Copilot, Claude, ChatGPT, and workflow automation — the right AI tools for your business, deployed by a team that uses them internally.", href: "/services/ai-integration", Icon: Sparkles },
-  { title: "VoIP Phone Systems", description: "Modern business telephony solutions to keep your team connected anywhere.", href: "/services/voip", Icon: PhoneCall },
-  { title: "Network Solutions", description: "Complete network design, WiFi setup, and infrastructure management for growing businesses.", href: "/services/network-wifi", Icon: Network },
-  { title: "AV & Conference Rooms", description: "Video conferencing, displays, and digital signage installed and integrated with your network.", href: "/services/av-integration", Icon: Presentation },
-  { title: "Network AI Security Cameras", description: "AI-powered security cameras installed and managed on the network we already run.", href: "/services/security-cameras", Icon: Camera },
-  { title: "Entry Access Control", description: "Keyless entry and access control systems for your building, doors, and multiple locations.", href: "/services/entry-access-control", Icon: KeyRound },
-  { title: "Data Backup", description: "Secure disaster recovery and data protection strategies for peace of mind.", href: "/services/backup-recovery", Icon: HardDrive },
-  { title: "IT Consulting", description: "Strategic IT planning and budgeting to align technology with your business goals.", href: "/services/consulting", Icon: Briefcase },
+  { title: "IT Help Desk", description: "Round-the-clock remote support for email, software, passwords, and every device your team relies on.", href: "/services/it-support", Icon: Headphones, color: "cyan" as const },
+  { title: "Cyber Security", description: "Comprehensive cybersecurity and security camera wiring to protect your organization.", href: "/services/cybersecurity", Icon: ShieldCheck, color: "red" as const },
+  { title: "Cloud Solutions", description: "Seamless cloud migration and management for Microsoft 365 and Google Workspace.", href: "/services/cloud", Icon: Cloud, color: "indigo" as const },
+  { title: "AI Integration & Automation", description: "Copilot, Claude, ChatGPT, and workflow automation — the right AI tools for your business, deployed by a team that uses them internally.", href: "/services/ai-integration", Icon: Sparkles, color: "fuchsia" as const },
+  { title: "Network Solutions", description: "Complete network design, WiFi setup, and infrastructure management for growing businesses.", href: "/services/network-wifi", Icon: Network, color: "teal" as const },
+  { title: "AV & Conference Rooms", description: "Video conferencing, displays, and digital signage installed and integrated with your network.", href: "/services/av-integration", Icon: Presentation, color: "purple" as const },
+  { title: "Network AI Security Cameras", description: "AI-powered security cameras installed and managed on the network we already run.", href: "/services/security-cameras", Icon: Camera, color: "rose" as const },
+  { title: "Entry Access Control", description: "Keyless entry and access control systems for your building, doors, and multiple locations.", href: "/services/entry-access-control", Icon: KeyRound, color: "amber" as const },
+  { title: "Data Backup", description: "Secure disaster recovery and data protection strategies for peace of mind.", href: "/services/backup-recovery", Icon: HardDrive, color: "emerald" as const },
+  { title: "IT Consulting", description: "Strategic IT planning and budgeting to align technology with your business goals.", href: "/services/consulting", Icon: Briefcase, color: "violet" as const },
 ];
 
 const ONBOARDING_STEPS = [
@@ -276,16 +289,13 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mx-auto mt-12 max-w-3xl rounded-2xl bg-gray-50 px-8 py-8">
+          <div className="mx-auto mt-12 max-w-3xl">
             <p className="text-center text-sm font-semibold uppercase tracking-wide text-gray-500">
               We Set Up and Support Every Major Ecosystem
             </p>
-            <div className="mt-6 grid grid-cols-3 gap-4">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
               {PLATFORM_ECOSYSTEMS.map((p) => (
-                <div
-                  key={p.name}
-                  className="flex flex-col items-center gap-3 rounded-xl bg-white px-4 py-6 shadow-sm"
-                >
+                <div key={p.name} className="flex items-center gap-3">
                   <Image src={p.logo} alt={p.name} width={40} height={40} className="h-10 w-10 shrink-0" />
                   <span className="text-sm font-semibold text-gray-800">{p.name}</span>
                 </div>
@@ -293,7 +303,11 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="mt-16 flex flex-wrap items-baseline justify-between gap-2">
+            <h3 className="text-lg font-bold text-gray-900">Where Most Clients Start</h3>
+            <p className="text-sm text-gray-500">Our three most-requested services</p>
+          </div>
+          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
             {FEATURED_SERVICES.map((s) => (
               <Link
                 key={s.href}
@@ -308,12 +322,12 @@ export default function HomePage() {
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-dark via-dark/70 to-dark/10" />
                 <div className="relative">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-accent text-white">
+                  <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-lg text-white ${s.badgeClass}`}>
                     <s.Icon className="h-6 w-6" />
                   </div>
                   <h3 className="text-xl font-bold">{s.title}</h3>
                   <p className="mt-2 max-w-md text-sm text-gray-200">{s.description}</p>
-                  <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-accent">
+                  <span className={`mt-4 inline-flex items-center gap-1 text-sm font-semibold ${s.linkClass}`}>
                     Learn more <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </span>
                 </div>
@@ -321,6 +335,10 @@ export default function HomePage() {
             ))}
           </div>
 
+          <div className="mt-16 flex flex-wrap items-baseline justify-between gap-2">
+            <h3 className="text-lg font-bold text-gray-900">The Full Lineup</h3>
+            <p className="text-sm text-gray-500">Everything else we design, install, and support under the same roof</p>
+          </div>
           <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
             {SERVICE_CARDS.map((s) => (
               <ServiceCard key={s.href} {...s} />

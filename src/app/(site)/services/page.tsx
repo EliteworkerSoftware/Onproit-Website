@@ -80,6 +80,7 @@ export default function ServicesOverviewPage() {
                 description={s.intro}
                 href={`/services/${s.slug}`}
                 Icon={s.Icon}
+                color={s.color}
               />
             ))}
           </div>
