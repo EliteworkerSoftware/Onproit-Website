@@ -60,13 +60,8 @@ export default async function BlogIndexPage() {
                 href={`/blog/${post.slug}`}
                 className="flex flex-col overflow-hidden rounded-xl border border-gray-200 shadow-sm transition-shadow hover:shadow-lg"
               >
-                <BlogThumbnail category={post.category} />
+                <BlogThumbnail category={post.category} className="h-16" />
                 <div className="flex flex-1 flex-col p-6">
-                {post.category && (
-                  <span className="mb-2 inline-block w-fit rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand">
-                    {post.category}
-                  </span>
-                )}
                 <h2 className="text-lg font-semibold text-gray-900">{post.title}</h2>
                 {post.excerpt && <p className="mt-2 text-sm text-gray-600">{post.excerpt}</p>}
                 {post.published_at && (

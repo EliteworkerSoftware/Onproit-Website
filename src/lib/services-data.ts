@@ -687,7 +687,7 @@ export const SERVICES_DATA: ServiceData[] = [
     keywords: "entry access control NJ, keyless entry systems, commercial door access control, key fob access control",
     Icon: KeyRound,
     color: "amber",
-    heroImage: "/images/about-conference-room.jpg",
+    heroImage: "/images/hero-entry-access-control.jpg",
     brandsWeUse: ["PDK", "UniFi Access", "Keri Systems"],
     intro:
       "Control who can get into your building and when, without a drawer full of spare keys or a locksmith bill every time someone leaves. We design, install, and manage entry access control as part of the same network we already build and support.",
