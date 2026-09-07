@@ -755,20 +755,6 @@ export const SERVICES_DATA: ServiceData[] = [
     brandsWeUse: ["Yealink", "Cisco", "Ubiquiti"],
     intro:
       "Replace your outdated phone lines with a flexible, cloud-based communication platform that travels with you everywhere.",
-    productShowcase: [
-      {
-        heading: "Business-Grade Yealink Desk Phones",
-        body: "Every install includes Yealink IP phones with full-color touchscreens, HD voice, and one-touch access to your directory, voicemail, and call history — real desk hardware, not just an app pinned to your phone.",
-        image: "/images/voip/yealink-phone.png",
-        imageAlt: "Yealink business VoIP desk phone with color touchscreen",
-      },
-      {
-        heading: "Modern Video-Ready Phones from Ubiquiti",
-        body: "For teams that want video calling built right into the handset, we also deploy Ubiquiti's UniFi Talk phones — a touchscreen, camera, and HD speaker in one device, managed on the same network we already run for you.",
-        image: "/images/voip/unifi-talk-phone.png",
-        imageAlt: "Ubiquiti UniFi Talk video-enabled business phone",
-      },
-    ],
     whatIsIt: [
       "Your phone system is the lifeline of your business. In today's hybrid work environment, being tied to a desk phone is no longer an option. Our VoIP (Voice over IP) solutions provide crystal-clear voice quality, robust features, and the flexibility to work from anywhere — all while lowering your monthly telecommunications costs.",
       "We don't just sell you phones; we deliver a fully managed communication platform that integrates perfectly with your existing IT infrastructure. Because we also manage your network, we can guarantee Quality of Service settings are correct, preventing choppy calls and eliminating \"vendor ping-pong\" between your phone company and IT provider.",
