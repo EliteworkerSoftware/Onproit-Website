@@ -1,40 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import { SITE_URL } from "@/lib/constants";
+import { STATIC_PAGES } from "@/lib/site-urls";
 
 export const revalidate = 3600;
-
-const pages = [
-  { url: "/", priority: "1.0", changefreq: "weekly" },
-  { url: "/about-us", priority: "0.8", changefreq: "monthly" },
-  { url: "/contact", priority: "0.9", changefreq: "monthly" },
-  { url: "/services", priority: "0.9", changefreq: "weekly" },
-  { url: "/services/managed-it", priority: "0.9", changefreq: "monthly" },
-  { url: "/services/it-support", priority: "0.8", changefreq: "monthly" },
-  { url: "/services/cybersecurity", priority: "0.8", changefreq: "monthly" },
-  { url: "/services/network-wifi", priority: "0.8", changefreq: "monthly" },
-  { url: "/services/cloud", priority: "0.8", changefreq: "monthly" },
-  { url: "/services/ai-integration", priority: "0.8", changefreq: "monthly" },
-  { url: "/services/backup-recovery", priority: "0.8", changefreq: "monthly" },
-  { url: "/services/cabling", priority: "0.9", changefreq: "monthly" },
-  { url: "/services/av-integration", priority: "0.7", changefreq: "monthly" },
-  { url: "/services/security-cameras", priority: "0.7", changefreq: "monthly" },
-  { url: "/services/entry-access-control", priority: "0.7", changefreq: "monthly" },
-  { url: "/services/consulting", priority: "0.7", changefreq: "monthly" },
-  { url: "/services/voip", priority: "0.7", changefreq: "monthly" },
-  { url: "/managed-it-services-new-jersey", priority: "0.9", changefreq: "monthly" },
-  { url: "/managed-it-services-cherry-hill-nj", priority: "0.8", changefreq: "monthly" },
-  { url: "/managed-it-services-west-berlin-nj", priority: "0.8", changefreq: "monthly" },
-  { url: "/managed-it-services-mount-laurel-nj", priority: "0.7", changefreq: "monthly" },
-  { url: "/managed-it-services-voorhees-nj", priority: "0.7", changefreq: "monthly" },
-  { url: "/managed-it-services-marlton-nj", priority: "0.7", changefreq: "monthly" },
-  { url: "/managed-it-services-king-of-prussia-pa", priority: "0.7", changefreq: "monthly" },
-  { url: "/managed-it-services-wilmington-de", priority: "0.7", changefreq: "monthly" },
-  { url: "/new-jersey-cabling", priority: "0.8", changefreq: "monthly" },
-  { url: "/pennsylvania-cabling", priority: "0.7", changefreq: "monthly" },
-  { url: "/delaware-cabling", priority: "0.7", changefreq: "monthly" },
-  { url: "/blog", priority: "0.7", changefreq: "weekly" },
-  { url: "/privacy-policy", priority: "0.3", changefreq: "yearly" },
-];
 
 export async function GET() {
   const lastmod = new Date().toISOString().split("T")[0];
@@ -57,7 +25,7 @@ export async function GET() {
     }
   }
 
-  const allPages = [...pages.map((p) => ({ ...p, lastmod })), ...blogPages];
+  const allPages = [...STATIC_PAGES.map((p) => ({ ...p, lastmod })), ...blogPages];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

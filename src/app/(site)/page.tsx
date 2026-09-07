@@ -162,7 +162,7 @@ export default function HomePage() {
               </span>
             </h1>
             <p className="mt-6 text-lg text-gray-300">
-              ONPRO IT is a full-scale technology partner — we design, install, and manage your IT
+              ONPRO IT is a local full-scale technology partner — we design, install, and manage your IT
               infrastructure for the life of your business. Serving New Jersey, Pennsylvania, and
               Delaware.
             </p>

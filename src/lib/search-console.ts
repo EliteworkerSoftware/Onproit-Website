@@ -1,6 +1,9 @@
 import { JWT } from "google-auth-library";
 
-const SCOPE = "https://www.googleapis.com/auth/webmasters.readonly";
+// Full (not .readonly) scope — the service account is provisioned as a Full
+// user on the property, so this also lets us resubmit the sitemap to force
+// a fresh crawl (see submitSitemap below), not just read analytics.
+const SCOPE = "https://www.googleapis.com/auth/webmasters";
 
 export function isSearchConsoleConfigured(): boolean {
   return Boolean(
@@ -17,6 +20,43 @@ function getClient() {
     key: privateKey,
     scopes: [SCOPE],
   });
+}
+
+// Tells Google the sitemap has changed and should be re-fetched. This does
+// NOT force individual pages to be (re)indexed — Google still crawls and
+// ranks on its own schedule — it just clears the "we haven't looked at this
+// sitemap in a while" staleness. There is no public API for the "Request
+// Indexing" action in Search Console's UI; that part stays manual.
+export async function submitSitemap(sitemapUrl: string): Promise<void> {
+  const siteUrl = process.env.GOOGLE_SEARCH_CONSOLE_SITE_URL!;
+  const client = getClient();
+
+  await client.request({
+    url: `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}/sitemaps/${encodeURIComponent(sitemapUrl)}`,
+    method: "PUT",
+  });
+}
+
+export interface SitemapStatus {
+  path: string;
+  lastSubmitted?: string;
+  lastDownloaded?: string;
+  isPending?: boolean;
+  errors?: string;
+  warnings?: string;
+  contents?: { type: string; submitted: string; indexed: string }[];
+}
+
+export async function listSitemaps(): Promise<SitemapStatus[]> {
+  const siteUrl = process.env.GOOGLE_SEARCH_CONSOLE_SITE_URL!;
+  const client = getClient();
+
+  const res = await client.request<{ sitemap?: SitemapStatus[] }>({
+    url: `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}/sitemaps`,
+    method: "GET",
+  });
+
+  return res.data.sitemap ?? [];
 }
 
 export interface SearchAnalyticsRow {
