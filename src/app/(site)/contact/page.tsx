@@ -30,21 +30,39 @@ export default async function ContactPage() {
   const hours = `Mon–Fri ${settings.hours_weekdays}`;
 
   const INFO_CARDS = [
-    { Icon: Phone, label: "Phone", value: settings.contact_phone, href: `tel:${settings.contact_phone.replace(/[^0-9+]/g, "")}` },
-    { Icon: MapPin, label: "Address", value: settings.contact_address, href: undefined },
-    { Icon: Clock, label: "Hours", value: hours, href: undefined },
+    {
+      Icon: Phone,
+      label: "Phone",
+      value: settings.contact_phone,
+      href: `tel:${settings.contact_phone.replace(/[^0-9+]/g, "")}`,
+      badge: "bg-brand/10 text-brand",
+    },
+    {
+      Icon: MapPin,
+      label: "Address",
+      value: settings.contact_address,
+      href: undefined,
+      badge: "bg-amber-500/10 text-amber-600",
+    },
+    {
+      Icon: Clock,
+      label: "Hours",
+      value: hours,
+      href: undefined,
+      badge: "bg-teal-500/10 text-teal-600",
+    },
   ];
 
   return (
     <>
-      <section className="bg-white pt-8 pb-16 sm:pt-12">
+      <section className="relative overflow-hidden bg-linear-to-b from-brand/5 to-white pt-8 pb-16 sm:pt-12">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-              Contact ONPRO IT
+              Let&apos;s Connect and Build Something Great
             </h1>
             <p className="mt-2 text-sm text-gray-600 sm:text-base">
-              Tell us what you need — a member of our team will get back to you within 24 hours.
+              Tell us what you&apos;re working on — we&apos;ll get back to you within 24 hours.
             </p>
           </div>
 
@@ -55,13 +73,13 @@ export default async function ContactPage() {
               </Suspense>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3 rounded-2xl bg-gray-50 p-4">
               {INFO_CARDS.map((card) => (
                 <div
                   key={card.label}
-                  className="flex items-center gap-4 rounded-xl border border-gray-200 p-4"
+                  className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm"
                 >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
+                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${card.badge}`}>
                     <card.Icon className="h-5 w-5" />
                   </div>
                   <div className="min-w-0">
@@ -69,11 +87,11 @@ export default async function ContactPage() {
                       {card.label}
                     </p>
                     {card.href ? (
-                      <a href={card.href} className="block truncate text-sm font-medium text-gray-900 hover:text-brand">
+                      <a href={card.href} className="block wrap-break-word text-sm font-medium text-gray-900 hover:text-brand">
                         {card.value}
                       </a>
                     ) : (
-                      <p className="truncate text-sm font-medium text-gray-900">{card.value}</p>
+                      <p className="wrap-break-word text-sm font-medium text-gray-900">{card.value}</p>
                     )}
                     {card.label === "Hours" && (
                       <p className="mt-0.5 text-xs text-gray-500">{HOURS_NOTE_TEXT}</p>
@@ -89,7 +107,11 @@ export default async function ContactPage() {
       <section className="bg-gray-50 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold text-gray-900">Find Us</h2>
-          <div className="mt-6 overflow-hidden rounded-xl border border-gray-200">
+          <p className="mt-2 flex items-center gap-2 text-sm text-gray-600">
+            <MapPin className="h-4 w-4 shrink-0 text-amber-600" />
+            {settings.contact_address}
+          </p>
+          <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 shadow-sm">
             <iframe
               title="ONPRO IT location map"
               src={`https://www.google.com/maps?q=${encodeURIComponent(settings.contact_address)}&output=embed`}
