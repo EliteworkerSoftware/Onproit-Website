@@ -598,6 +598,7 @@ function TargetKeywordsPanel() {
                     {k.last_impressions != null
                       ? `#${Number(k.last_position).toFixed(1)} avg · ${k.last_impressions} shown · ${k.last_clicks} clicked (last synced ${k.last_synced_at ? formatTimestamp(k.last_synced_at) : "—"})`
                       : "No Search Console data recorded yet"}
+                    {" · "}added {formatTimestamp(k.created_at)}
                   </p>
                   {k.notes && <p className="mt-1 text-xs italic text-gray-400">{k.notes}</p>}
                   {k.status === "queued" && k.queued_at && (

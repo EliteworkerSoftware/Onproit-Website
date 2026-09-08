@@ -13,6 +13,7 @@ function AcceptInviteForm() {
   const params = useSearchParams();
   const token = params.get("token") || "";
 
+  const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +33,7 @@ function AcceptInviteForm() {
       const res = await fetch("/api/admin/accept-invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ token, password, fullName }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to set up your account");
@@ -62,7 +63,17 @@ function AcceptInviteForm() {
       <h2 className="text-2xl font-bold text-white">Set your password</h2>
       <p className="mt-1 text-sm text-white/60">Choose a password to activate your admin account.</p>
 
-      <label className="mt-6 block text-sm text-white/70">Password</label>
+      <label className="mt-6 block text-sm text-white/70">Full name</label>
+      <input
+        type="text"
+        required
+        value={fullName}
+        onChange={(e) => setFullName(e.target.value)}
+        placeholder="Your name"
+        className={`mt-1.5 ${inputClasses}`}
+      />
+
+      <label className="mt-4 block text-sm text-white/70">Password</label>
       <div className="relative mt-1.5">
         <input
           type={showPassword ? "text" : "password"}
