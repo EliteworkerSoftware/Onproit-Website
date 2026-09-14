@@ -62,7 +62,7 @@ interface AnalyticsData {
   recentLeads: number | null;
   botViews: number;
   recentBotViews: number | null;
-  topBotAgents: { agent: string; count: number }[];
+  topBotAgents: { agent: string; count: number; lastSeen: string }[];
   sessions: VisitorSession[];
 }
 
@@ -259,6 +259,25 @@ const PRIORITY_BADGE_CLASSES: Record<string, string> = {
   medium: "rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-amber-600",
 };
 
+const PRIORITY_LEGEND: { key: string; label: string; description: string }[] = [
+  { key: "high", label: "High", description: "50+ searches in the last 30 days, and already ranking within reach of page 1 (position ≤30) — the best content opportunities." },
+  { key: "medium", label: "Medium", description: "15+ searches in the last 30 days, but ranking further out — worth a look, less urgent." },
+  { key: "low", label: "Low", description: "Fewer than 15 searches, or the keyword names a town outside your service area (forced Low automatically even with decent volume)." },
+];
+
+function PriorityLegend() {
+  return (
+    <div className="mt-3 flex flex-col gap-1.5 rounded-lg border border-gray-100 bg-gray-50 p-3 sm:flex-row sm:flex-wrap sm:items-start sm:gap-4">
+      {PRIORITY_LEGEND.map((p) => (
+        <div key={p.key} className="flex items-start gap-2 text-xs sm:max-w-64">
+          <span className={PRIORITY_BADGE_CLASSES[p.key]}>{p.label}</span>
+          <span className="text-gray-500">{p.description}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   queued: { label: "Queued for content", className: "bg-brand/10 text-brand" },
   done: { label: "Done", className: "bg-green-50 text-green-600" },
@@ -423,7 +442,7 @@ function TargetKeywordsPanel() {
                     </div>
                     <p className="mt-0.5 text-xs text-gray-500">
                       {k.last_impressions != null
-                        ? `#${Number(k.last_position).toFixed(1)} avg · ${k.last_impressions} shown · ${k.last_clicks} clicked`
+                        ? `${k.last_impressions} searches (30d) · #${Number(k.last_position).toFixed(1)} avg position · ${k.last_clicks} clicked`
                         : "No Search Console data yet"}
                       {k.status === "queued" && k.queued_at && ` · queued ${formatTimestamp(k.queued_at)}`}
                     </p>
@@ -443,12 +462,20 @@ function TargetKeywordsPanel() {
                     )}
                   </div>
                   {k.status === "queued" && (
-                    <button
-                      onClick={() => handleMarkDone(k.id)}
-                      className="shrink-0 text-xs font-medium text-green-600 hover:underline"
-                    >
-                      Mark done
-                    </button>
+                    <div className="flex shrink-0 items-center gap-3">
+                      <button
+                        onClick={() => handleMarkDone(k.id)}
+                        className="text-xs font-medium text-green-600 hover:underline"
+                      >
+                        Mark done
+                      </button>
+                      <button
+                        onClick={() => setStatus(k.id, "discovered")}
+                        className="text-xs font-medium text-gray-500 hover:underline"
+                      >
+                        Unqueue
+                      </button>
+                    </div>
                   )}
                 </li>
               );
@@ -561,6 +588,8 @@ function TargetKeywordsPanel() {
             )}
           </div>
 
+          <PriorityLegend />
+
           <p className="mt-3 text-xs text-gray-400">
             Showing {filtered.length === 0 ? 0 : (currentPage - 1) * KEYWORDS_PAGE_SIZE + 1}–
             {Math.min(currentPage * KEYWORDS_PAGE_SIZE, filtered.length)} of {filtered.length}
@@ -596,7 +625,7 @@ function TargetKeywordsPanel() {
                   {k.target_url && <p className="text-xs text-gray-400">{k.target_url}</p>}
                   <p className="mt-0.5 text-xs text-gray-500">
                     {k.last_impressions != null
-                      ? `#${Number(k.last_position).toFixed(1)} avg · ${k.last_impressions} shown · ${k.last_clicks} clicked (last synced ${k.last_synced_at ? formatTimestamp(k.last_synced_at) : "—"})`
+                      ? `${k.last_impressions} searches (30d) · #${Number(k.last_position).toFixed(1)} avg position · ${k.last_clicks} clicked (last synced ${k.last_synced_at ? formatTimestamp(k.last_synced_at) : "—"})`
                       : "No Search Console data recorded yet"}
                     {" · "}added {formatTimestamp(k.created_at)}
                   </p>
@@ -629,12 +658,20 @@ function TargetKeywordsPanel() {
                     </button>
                   )}
                   {k.status === "queued" && (
-                    <button
-                      onClick={() => handleMarkDone(k.id)}
-                      className="text-xs font-medium text-green-600 hover:underline"
-                    >
-                      Mark done
-                    </button>
+                    <>
+                      <button
+                        onClick={() => handleMarkDone(k.id)}
+                        className="text-xs font-medium text-green-600 hover:underline"
+                      >
+                        Mark done
+                      </button>
+                      <button
+                        onClick={() => setStatus(k.id, "discovered")}
+                        className="text-xs font-medium text-gray-500 hover:underline"
+                      >
+                        Unqueue
+                      </button>
+                    </>
                   )}
                   <button onClick={() => handleRemove(k.id)} className="text-xs font-medium text-red-600 hover:underline">
                     Remove
@@ -1242,7 +1279,10 @@ export default function AdminAnalyticsPage() {
                     {data.topBotAgents.map((b) => (
                       <li key={b.agent} className="flex items-center justify-between gap-3 text-sm">
                         <span className="truncate text-amber-900">{b.agent}</span>
-                        <span className="shrink-0 font-medium text-amber-900">{b.count}</span>
+                        <span className="ml-3 flex shrink-0 items-center gap-2">
+                          <span className="text-xs text-amber-600">last {formatTimestamp(b.lastSeen)}</span>
+                          <span className="font-medium text-amber-900">{b.count}</span>
+                        </span>
                       </li>
                     ))}
                   </ul>

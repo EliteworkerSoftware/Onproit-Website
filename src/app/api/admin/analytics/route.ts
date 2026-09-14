@@ -215,12 +215,16 @@ export async function GET(req: NextRequest) {
     .slice(0, 10);
 
   const botAgentCounts = new Map<string, number>();
+  const botAgentLastSeen = new Map<string, string>();
   for (const row of botPageviewRows) {
     const agent = row.user_agent || "(no User-Agent)";
     botAgentCounts.set(agent, (botAgentCounts.get(agent) ?? 0) + 1);
+    // Rows are fetched newest-first, so the first time we see an agent here
+    // is already its most recent crawl in the selected range.
+    if (!botAgentLastSeen.has(agent)) botAgentLastSeen.set(agent, row.created_at);
   }
   const topBotAgents = Array.from(botAgentCounts.entries())
-    .map(([agent, count]) => ({ agent, count }))
+    .map(([agent, count]) => ({ agent, count, lastSeen: botAgentLastSeen.get(agent)! }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 8);
 
