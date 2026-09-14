@@ -280,6 +280,7 @@ function PriorityLegend() {
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   queued: { label: "Queued for content", className: "bg-brand/10 text-brand" },
+  in_review: { label: "PR open — in review", className: "bg-purple-50 text-purple-600" },
   done: { label: "Done", className: "bg-green-50 text-green-600" },
   discovered: { label: "Discovered", className: "bg-gray-100 text-gray-500" },
 };
@@ -368,7 +369,7 @@ function TargetKeywordsPanel() {
   const inProgress = useMemo(() => {
     if (!keywords) return [];
     return keywords
-      .filter((k) => k.status === "queued" || k.status === "done")
+      .filter((k) => k.status === "queued" || k.status === "in_review" || k.status === "done")
       .sort((a, b) => {
         const aTime = a.content_published_at || a.queued_at || a.created_at;
         const bTime = b.content_published_at || b.queued_at || b.created_at;
@@ -442,7 +443,7 @@ function TargetKeywordsPanel() {
         <div className="flex items-center gap-2">
           <MousePointerClick className="h-4 w-4 text-brand" />
           <h2 className="text-sm font-semibold text-gray-900">Content Effort</h2>
-          <InfoTooltip text="Every keyword you've queued or finished content for, most recently touched first — the record of actual work, separate from the much bigger list of everything Search Console has discovered. Position shown is as of the last daily sync, so you can watch whether a keyword's ranking actually moved after you published something for it." />
+          <InfoTooltip text="Every keyword you've queued or finished content for, most recently touched first — the record of actual work, separate from the much bigger list of everything Search Console has discovered. A scheduled agent checks the queue on its own and opens a pull request for anything sitting in it (status flips to 'PR open — in review'); nothing goes live until you review and merge it yourself, then come back and mark it done with the real published URL. Position shown is as of the last daily sync, so you can watch whether a keyword's ranking actually moved after you published something for it." />
         </div>
         <p className="mt-1 text-xs text-gray-400">
           What you&apos;ve actually put effort into — queued for content or already published.
@@ -473,6 +474,15 @@ function TargetKeywordsPanel() {
                         : "No Search Console data yet"}
                       {k.status === "queued" && k.queued_at && ` · queued ${formatTimestamp(k.queued_at)}`}
                     </p>
+                    {k.status === "in_review" && k.content_url && (
+                      <p className="mt-0.5 text-xs text-purple-600">
+                        The content agent opened a pull request:{" "}
+                        <a href={k.content_url} target="_blank" rel="noopener noreferrer" className="underline">
+                          {k.content_url}
+                        </a>
+                        . Review and merge it, then come back and mark this done with the live URL.
+                      </p>
+                    )}
                     {k.status === "done" && (
                       <p className="mt-0.5 text-xs text-green-600">
                         {k.content_url ? (
@@ -488,7 +498,7 @@ function TargetKeywordsPanel() {
                       </p>
                     )}
                   </div>
-                  {k.status === "queued" && (
+                  {(k.status === "queued" || k.status === "in_review") && (
                     <div className="flex shrink-0 items-center gap-3">
                       <button
                         onClick={() => handleMarkDone(k.id)}
@@ -497,10 +507,10 @@ function TargetKeywordsPanel() {
                         Mark done
                       </button>
                       <button
-                        onClick={() => setStatus(k.id, "discovered")}
+                        onClick={() => setStatus(k.id, k.status === "in_review" ? "queued" : "discovered")}
                         className="text-xs font-medium text-gray-500 hover:underline"
                       >
-                        Unqueue
+                        {k.status === "in_review" ? "Send back to queue" : "Unqueue"}
                       </button>
                     </div>
                   )}
@@ -535,7 +545,7 @@ function TargetKeywordsPanel() {
             <input
               value={newKeyword}
               onChange={(e) => setNewKeyword(e.target.value)}
-              placeholder="Keyword, e.g. emergency plumber lakewood nj"
+              placeholder="Keyword, e.g. managed it services marlton nj"
               autoFocus
               className="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
             />
@@ -638,6 +648,7 @@ function TargetKeywordsPanel() {
               <option value="all">All statuses</option>
               <option value="discovered">Discovered</option>
               <option value="queued">Queued</option>
+              <option value="in_review">In review (PR open)</option>
               <option value="done">Done</option>
             </select>
             <select
@@ -712,6 +723,14 @@ function TargetKeywordsPanel() {
                   {k.status === "queued" && k.queued_at && (
                     <p className="mt-1 text-xs text-brand">Queued {formatTimestamp(k.queued_at)}</p>
                   )}
+                  {k.status === "in_review" && k.content_url && (
+                    <p className="mt-1 text-xs text-purple-600">
+                      Content agent opened a PR:{" "}
+                      <a href={k.content_url} target="_blank" rel="noopener noreferrer" className="underline">
+                        {k.content_url}
+                      </a>
+                    </p>
+                  )}
                   {k.status === "done" && (
                     <p className="mt-1 text-xs text-green-600">
                       {k.content_url ? (
@@ -728,7 +747,7 @@ function TargetKeywordsPanel() {
                   )}
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
-                  {k.status !== "queued" && (
+                  {k.status === "discovered" && (
                     <button
                       onClick={() => setStatus(k.id, "queued")}
                       className="text-xs font-medium text-brand hover:underline"
@@ -736,7 +755,7 @@ function TargetKeywordsPanel() {
                       Queue for content
                     </button>
                   )}
-                  {k.status === "queued" && (
+                  {(k.status === "queued" || k.status === "in_review") && (
                     <>
                       <button
                         onClick={() => handleMarkDone(k.id)}
@@ -745,10 +764,10 @@ function TargetKeywordsPanel() {
                         Mark done
                       </button>
                       <button
-                        onClick={() => setStatus(k.id, "discovered")}
+                        onClick={() => setStatus(k.id, k.status === "in_review" ? "queued" : "discovered")}
                         className="text-xs font-medium text-gray-500 hover:underline"
                       >
-                        Unqueue
+                        {k.status === "in_review" ? "Send back to queue" : "Unqueue"}
                       </button>
                     </>
                   )}

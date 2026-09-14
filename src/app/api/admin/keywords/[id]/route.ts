@@ -14,7 +14,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (priority !== undefined) update.priority = priority || "medium";
   if (notes !== undefined) update.notes = notes || null;
   if (content_url !== undefined) update.content_url = content_url || null;
-  if (status !== undefined && ["discovered", "queued", "done"].includes(status)) {
+  if (status !== undefined && ["discovered", "queued", "in_review", "done"].includes(status)) {
     update.status = status;
     // Stamp when it entered each stage so there's a real timeline, not just
     // a status flip — queued_at when flagged, content_published_at once
