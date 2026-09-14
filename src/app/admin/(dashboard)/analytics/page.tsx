@@ -720,6 +720,8 @@ const RANGE_PRESETS = [
   { label: "Last 90 Days", from: () => isoDateNDaysAgo(89), to: () => todayIso() },
 ];
 
+const SESSIONS_PAGE_SIZE = 10;
+
 export default function AdminAnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [error, setError] = useState("");
@@ -727,6 +729,7 @@ export default function AdminAnalyticsPage() {
   const [from, setFrom] = useState(isoDateNDaysAgo(29));
   const [to, setTo] = useState(todayIso());
   const [searchData, setSearchData] = useState<SearchConsoleData | null>(null);
+  const [sessionsPage, setSessionsPage] = useState(1);
 
   useEffect(() => {
     let cancelled = false;
@@ -735,7 +738,10 @@ export default function AdminAnalyticsPage() {
         const res = await fetch(`/api/admin/analytics?from=${from}&to=${to}`);
         const json = await res.json();
         if (!res.ok) throw new Error(json.error || "Failed to load analytics");
-        if (!cancelled) setData(json);
+        if (!cancelled) {
+          setData(json);
+          setSessionsPage(1);
+        }
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load analytics");
       }
@@ -779,6 +785,15 @@ export default function AdminAnalyticsPage() {
   // by Day of Week" would just repeat "Views Per Day" with different labels.
   const rangeDays = Math.round((new Date(to).getTime() - new Date(from).getTime()) / 86400000) + 1;
   const showDayOfWeekChart = rangeDays > 7;
+
+  const totalSessionsPages = data ? Math.max(1, Math.ceil(data.sessions.length / SESSIONS_PAGE_SIZE)) : 1;
+  const currentSessionsPage = Math.min(sessionsPage, totalSessionsPages);
+  const pagedSessions = data
+    ? data.sessions.slice(
+        (currentSessionsPage - 1) * SESSIONS_PAGE_SIZE,
+        currentSessionsPage * SESSIONS_PAGE_SIZE
+      )
+    : [];
 
   return (
     <div>
@@ -1047,12 +1062,14 @@ export default function AdminAnalyticsPage() {
             </div>
           </div>
 
-          <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
-            <div className="flex items-center gap-2">
+          <details className="group mt-6 rounded-xl border border-gray-200 bg-white p-6" open>
+            <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
               <MousePointerClick className="h-4 w-4 text-gray-500" />
               <h2 className="text-sm font-semibold text-gray-900">Recent Visitors</h2>
+              <span className="text-xs text-gray-400">({data.sessions.length})</span>
               <InfoTooltip text="One row per browser session (a visit lasts until the tab/browser closes). Device is parsed from the visitor's browser (Apple/Android logo plus phone, tablet, or desktop) — Windows and other platforms show just the form-factor icon. CTA Clicks counts every link and button clicked anywhere on the site during that visit. Time on Site is measured live as they browse, so it only appears once they've navigated away or closed the tab." />
-            </div>
+              <ChevronDown className="ml-auto h-4 w-4 shrink-0 text-gray-400 transition-transform group-open:rotate-180" />
+            </summary>
             <p className="mt-1 text-xs text-gray-400">
               Click a row for the full page-by-page timeline — time on each page and every link or
               button clicked, in order.
@@ -1077,7 +1094,7 @@ export default function AdminAnalyticsPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.sessions.map((s) => {
+                      {pagedSessions.map((s) => {
                         const isOpen = expanded.has(s.sessionId);
                         return (
                           <Fragment key={s.sessionId}>
@@ -1116,7 +1133,7 @@ export default function AdminAnalyticsPage() {
 
                 {/* Mobile: stacked cards instead of a wide table that requires side-scrolling */}
                 <div className="mt-4 space-y-3 sm:hidden">
-                  {data.sessions.map((s) => {
+                  {pagedSessions.map((s) => {
                     const isOpen = expanded.has(s.sessionId);
                     return (
                       <div key={s.sessionId} className="rounded-lg border border-gray-200">
@@ -1165,9 +1182,31 @@ export default function AdminAnalyticsPage() {
                     );
                   })}
                 </div>
+
+                {totalSessionsPages > 1 && (
+                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-gray-100 pt-3">
+                    <button
+                      onClick={() => setSessionsPage((p) => Math.max(1, p - 1))}
+                      disabled={currentSessionsPage <= 1}
+                      className="text-xs font-medium text-gray-600 hover:underline disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:no-underline"
+                    >
+                      ← Previous
+                    </button>
+                    <span className="text-xs text-gray-400">
+                      Page {currentSessionsPage} of {totalSessionsPages}
+                    </span>
+                    <button
+                      onClick={() => setSessionsPage((p) => Math.min(totalSessionsPages, p + 1))}
+                      disabled={currentSessionsPage >= totalSessionsPages}
+                      className="text-xs font-medium text-gray-600 hover:underline disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:no-underline"
+                    >
+                      Next →
+                    </button>
+                  </div>
+                )}
               </>
             )}
-          </div>
+          </details>
 
           {searchData?.configured && (
             <details className="group mt-6 rounded-xl border border-gray-200 bg-white p-6">
