@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, FormEvent, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import {
   Bot,
@@ -293,6 +293,11 @@ function TargetKeywordsPanel() {
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [regionFilter, setRegionFilter] = useState("all");
   const [page, setPage] = useState(1);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newKeyword, setNewKeyword] = useState("");
+  const [newTargetUrl, setNewTargetUrl] = useState("");
+  const [adding, setAdding] = useState(false);
+  const [addError, setAddError] = useState("");
 
   async function load() {
     const res = await fetch("/api/admin/keywords");
@@ -331,6 +336,28 @@ function TargetKeywordsPanel() {
 
   async function handleRemove(id: string) {
     await fetch(`/api/admin/keywords/${id}`, { method: "DELETE" });
+    load();
+  }
+
+  async function handleAdd(e: FormEvent) {
+    e.preventDefault();
+    if (!newKeyword.trim()) return;
+    setAdding(true);
+    setAddError("");
+    const res = await fetch("/api/admin/keywords", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ keyword: newKeyword, target_url: newTargetUrl || undefined }),
+    });
+    const data = await res.json().catch(() => ({}));
+    setAdding(false);
+    if (!res.ok) {
+      setAddError(data.error || "Failed to add keyword");
+      return;
+    }
+    setNewKeyword("");
+    setNewTargetUrl("");
+    setShowAddForm(false);
     load();
   }
 
@@ -494,6 +521,58 @@ function TargetKeywordsPanel() {
         Auto-synced daily from Search Console — nothing here was typed in by hand. Queue anything
         worth building content for, then ask Claude to check the queue.
       </p>
+
+      {!showAddForm ? (
+        <button
+          onClick={() => setShowAddForm(true)}
+          className="mt-3 text-xs font-medium text-brand hover:underline"
+        >
+          + Add keyword to track
+        </button>
+      ) : (
+        <form onSubmit={handleAdd} className="mt-3 flex flex-wrap items-start gap-2 rounded-lg border border-gray-200 bg-gray-50 p-3">
+          <div className="flex-1 min-w-40">
+            <input
+              value={newKeyword}
+              onChange={(e) => setNewKeyword(e.target.value)}
+              placeholder="Keyword, e.g. emergency plumber lakewood nj"
+              autoFocus
+              className="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            />
+          </div>
+          <div className="flex-1 min-w-40">
+            <input
+              value={newTargetUrl}
+              onChange={(e) => setNewTargetUrl(e.target.value)}
+              placeholder="Target URL (optional)"
+              className="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={adding || !newKeyword.trim()}
+            className="shrink-0 rounded-md bg-brand px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {adding ? "Adding…" : "Add"}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setShowAddForm(false);
+              setAddError("");
+            }}
+            className="shrink-0 text-xs font-medium text-gray-500 hover:underline"
+          >
+            Cancel
+          </button>
+          {addError && <p className="w-full text-xs text-red-600">{addError}</p>}
+          <p className="w-full text-xs text-gray-400">
+            For a keyword you found via Keyword Planner, competitor research, or a town/service
+            combo you don&apos;t have content for yet — it&apos;ll start showing real Search
+            Console data once it gets any impressions.
+          </p>
+        </form>
+      )}
 
       {regionSummary && (
         <p
