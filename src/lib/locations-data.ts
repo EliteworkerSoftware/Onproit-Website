@@ -5,7 +5,9 @@ export interface LocationFaq {
 
 export interface LocationData {
   path: string;
-  focus: "managed-it" | "cabling";
+  // The service this page is about — any slug from SERVICES_DATA
+  // (e.g. "managed-it", "cabling", "consulting", "cybersecurity").
+  focus: string;
   heroImage?: string;
   h1: string;
   metaTitle: string;
@@ -544,4 +546,10 @@ export const LOCATIONS_DATA: LocationData[] = [
 
 export function getLocationByPath(path: string) {
   return LOCATIONS_DATA.find((l) => l.path === path);
+}
+
+// Link text for a location page, e.g. "Managed IT Services in Marlton, NJ" —
+// its H1 minus the brand suffix, so internal links carry the page's keyword.
+export function locationLinkLabel(location: LocationData) {
+  return location.h1.replace(/\s*\|\s*ONPRO IT$/, "");
 }

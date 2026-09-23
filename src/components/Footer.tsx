@@ -66,6 +66,11 @@ export default async function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link href="/service-areas" className="hover:text-white">
+                  All service areas &rarr;
+                </Link>
+              </li>
             </ul>
           </div>
 

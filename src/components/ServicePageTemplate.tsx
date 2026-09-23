@@ -4,8 +4,12 @@ import { ArrowRight, CheckCircle2, MapPin } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
 import { BRAND_LOGOS, SERVICE_COLOR_HERO_ICON, SERVICES_DATA, type ServiceData } from "@/lib/services-data";
 import { PHONE_DISPLAY, PHONE_HREF, SITE_URL } from "@/lib/constants";
+import { LOCATIONS_DATA, locationLinkLabel } from "@/lib/locations-data";
 
 export default function ServicePageTemplate({ service }: { service: ServiceData }) {
+  // Links this service's local pages from the service page itself, so
+  // they aren't orphans only reachable through the sitemap.
+  const localPages = LOCATIONS_DATA.filter((l) => l.focus === service.slug);
   const serviceSchema = {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -348,6 +352,16 @@ export default function ServicePageTemplate({ service }: { service: ServiceData 
               </span>
             ))}
           </div>
+
+          {localPages.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+              {localPages.map((l) => (
+                <Link key={l.path} href={`/${l.path}`} className="text-sm font-medium text-accent hover:underline">
+                  {locationLinkLabel(l)}
+                </Link>
+              ))}
+            </div>
+          )}
 
           {service.brandsWeUse && service.brandsWeUse.length > 0 && (
             <div className="mt-6 border-t border-gray-200 pt-6">

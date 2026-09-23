@@ -2,8 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, MapPin } from "lucide-react";
 import ConsultationButton from "@/components/ConsultationButton";
-import type { LocationData } from "@/lib/locations-data";
-import { SERVICES_DATA } from "@/lib/services-data";
+import { LOCATIONS_DATA, locationLinkLabel, type LocationData } from "@/lib/locations-data";
+import { SERVICES_DATA, getServiceBySlug } from "@/lib/services-data";
 import { PHONE_DISPLAY, PHONE_HREF, SITE_URL } from "@/lib/constants";
 
 export default function LocationPageTemplate({ location }: { location: LocationData }) {
@@ -26,15 +26,24 @@ export default function LocationPageTemplate({ location }: { location: LocationD
     ],
   };
 
-  const serviceLabel = location.focus === "cabling" ? "Structured Cabling" : "Managed IT Services";
+  const serviceLabel = getServiceBySlug(location.focus)?.navTitle ?? "Managed IT Services";
 
-  // Every service is available in every service area — this just varies which
-  // three get spotlighted so a "cabling" page doesn't imply that's all we do here.
-  const relatedServiceSlugs =
-    location.focus === "cabling"
-      ? ["cabling", "managed-it", "network-wifi"]
-      : ["managed-it", "cabling", "cybersecurity"];
-  const relatedServices = SERVICES_DATA.filter((s) => relatedServiceSlugs.includes(s.slug));
+  // Every service is available in every service area — this spotlights the
+  // page's own service plus two others, so a "cabling" page doesn't imply
+  // that's all we do here.
+  const others = location.focus === "cabling" ? ["managed-it", "network-wifi"] : ["managed-it", "cabling", "cybersecurity"];
+  const relatedServiceSlugs = [location.focus, ...others]
+    .filter((slug, i, all) => all.indexOf(slug) === i)
+    .slice(0, 3);
+  // Cross-links to the other local pages, same service first — keeps every
+  // location page reachable by internal links, not just the sitemap.
+  const otherAreas = LOCATIONS_DATA.filter((l) => l.path !== location.path)
+    .sort((a, b) => Number(b.focus === location.focus) - Number(a.focus === location.focus))
+    .slice(0, 12);
+
+  const relatedServices = relatedServiceSlugs
+    .map((slug) => SERVICES_DATA.find((s) => s.slug === slug))
+    .filter((s) => s !== undefined);
 
   return (
     <>
@@ -124,6 +133,24 @@ export default function LocationPageTemplate({ location }: { location: LocationD
         </div>
       </section>
 
+      {otherAreas.length > 0 && (
+        <section className="bg-gray-50 py-12">
+          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+            <h2 className="text-2xl font-bold text-gray-900">More Areas We Serve</h2>
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+              {otherAreas.map((l) => (
+                <Link key={l.path} href={`/${l.path}`} className="text-sm font-medium text-accent hover:underline">
+                  {locationLinkLabel(l)}
+                </Link>
+              ))}
+            </div>
+            <Link href="/service-areas" className="mt-4 inline-block text-sm text-gray-500 hover:underline">
+              See every area we serve &rarr;
+            </Link>
+          </div>
+        </section>
+      )}
+
       <section className="bg-white py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900">What Else We Design, Install & Manage</h2>
@@ -146,7 +173,7 @@ export default function LocationPageTemplate({ location }: { location: LocationD
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold">Let&apos;s Build It</h2>
           <p className="mt-4 text-white/90">
-            Talk to the ONPRO IT team about {serviceLabel.toLowerCase()} for your business.
+            Talk to the ONPRO IT team about {serviceLabel} for your business.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <ConsultationButton href={`tel:${PHONE_HREF}`} variant="accent">

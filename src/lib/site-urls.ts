@@ -32,6 +32,7 @@ export const STATIC_PAGES = [
   { url: "/new-jersey-cabling", priority: "0.8", changefreq: "monthly" },
   { url: "/pennsylvania-cabling", priority: "0.7", changefreq: "monthly" },
   { url: "/delaware-cabling", priority: "0.7", changefreq: "monthly" },
+  { url: "/service-areas", priority: "0.8", changefreq: "weekly" },
   { url: "/blog", priority: "0.7", changefreq: "weekly" },
   { url: "/privacy-policy", priority: "0.3", changefreq: "yearly" },
 ];
