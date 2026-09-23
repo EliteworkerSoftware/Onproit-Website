@@ -11,7 +11,7 @@ import type { AdminUser } from "@/lib/current-admin";
 const NAV_LINKS = [
   { title: "Inquiries", href: "/admin/inquiries" },
   { title: "Analytics", href: "/admin/analytics" },
-  { title: "Blog Drafts", href: "/admin/blog-drafts" },
+  { title: "Content Review", href: "/admin/content-review" },
   { title: "Admin Users", href: "/admin/admin-users" },
   { title: "Settings", href: "/admin/settings" },
 ];

@@ -9,15 +9,15 @@ import { COLORS, SITE_URL } from "./constants";
 const COPY = {
   pr: {
     what: "wrote content for",
-    where: "opened a pull request",
-    next: "review the PR and merge it to publish",
-    button: "Review the pull request",
+    where: "prepared the website changes",
+    next: "preview them and click Publish on the Content Review page",
+    button: "Review and publish",
   },
   blog: {
     what: "wrote a blog post for",
     where: "saved it as a draft",
-    next: "review the draft and publish it from the dashboard",
-    button: "Review the blog draft",
+    next: "read it and click Publish on the Content Review page",
+    button: "Review and publish",
   },
 } as const;
 

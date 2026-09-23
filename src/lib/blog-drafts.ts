@@ -17,5 +17,5 @@ export const BLOG_CATEGORIES = [
 // Where a draft is reviewed. Also stored as the keyword's content_url while
 // the draft is pending, which is how publishing finds the keyword to close.
 export function draftReviewUrl(draftId: string) {
-  return `${SITE_URL}/admin/blog-drafts#draft-${draftId}`;
+  return `${SITE_URL}/admin/content-review#draft-${draftId}`;
 }
