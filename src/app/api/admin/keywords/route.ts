@@ -13,16 +13,19 @@ export async function GET() {
   const { data, error } = await supabase
     .from("target_keywords")
     .select(
-      "id, keyword, target_url, priority, notes, source, status, region, last_impressions, last_clicks, last_position, last_synced_at, content_url, queued_at, content_published_at, created_at"
+      "id, keyword, target_url, priority, notes, source, status, region, last_impressions, last_clicks, last_position, last_synced_at, content_url, queued_at, content_published_at, created_at, seen_at"
     );
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // Queued keywords first (they need action), then by priority, then by
-  // real demand (impressions) — not insertion order.
+  // real demand (impressions) — not insertion order. Within discovered,
+  // ones nobody has seen yet float to the top so "New" is what you see first.
   const keywords = [...data].sort((a, b) => {
     const statusDiff = (STATUS_RANK[a.status] ?? 1) - (STATUS_RANK[b.status] ?? 1);
     if (statusDiff !== 0) return statusDiff;
+    const seenDiff = Number(!!a.seen_at) - Number(!!b.seen_at);
+    if (seenDiff !== 0) return seenDiff;
     const priorityDiff = (PRIORITY_RANK[a.priority] ?? 1) - (PRIORITY_RANK[b.priority] ?? 1);
     if (priorityDiff !== 0) return priorityDiff;
     return (b.last_impressions ?? 0) - (a.last_impressions ?? 0);
@@ -50,6 +53,8 @@ export async function POST(req: NextRequest) {
     notes: typeof notes === "string" && notes.trim() ? notes.trim() : null,
     source: "manual",
     status: "discovered",
+    // You typed it in yourself, so it's already been seen.
+    seen_at: new Date().toISOString(),
   });
 
   if (error) {

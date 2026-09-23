@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
 import { isSearchConsoleConfigured, querySearchAnalytics } from "@/lib/search-console";
 import { classifyKeywordRegion } from "@/lib/keyword-region";
+import { enrichSearchVolumes } from "@/lib/keyword-volume";
 
 // Minimum impressions in the trailing 30 days for a query to be worth
 // tracking at all — filters out one-off noise (a single odd search) rather
@@ -94,5 +95,9 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, scanned: rows.length, qualifying: qualifying.length, inserted, updated });
+  // Runs after the sync so keywords it just inserted get their volume in the
+  // same pass. Budget-capped inside; a failure here doesn't fail the sync.
+  const volume = await enrichSearchVolumes(supabase).catch((err) => ({ error: String(err) }));
+
+  return NextResponse.json({ ok: true, scanned: rows.length, qualifying: qualifying.length, inserted, updated, volume });
 }

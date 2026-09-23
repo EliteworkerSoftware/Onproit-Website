@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, FormEvent, useEffect, useMemo, useState } from "react";
+import { Fragment, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import {
   Bot,
@@ -251,6 +251,7 @@ interface TrackedKeyword {
   queued_at: string | null;
   content_published_at: string | null;
   created_at: string;
+  seen_at: string | null;
 }
 
 const PRIORITY_BADGE_CLASSES: Record<string, string> = {
@@ -283,6 +284,8 @@ const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   in_review: { label: "PR open — in review", className: "bg-purple-50 text-purple-600" },
   done: { label: "Done", className: "bg-green-50 text-green-600" },
   discovered: { label: "Discovered", className: "bg-gray-100 text-gray-500" },
+  // Not a real status — a discovered keyword nobody has looked at yet.
+  new: { label: "New", className: "bg-green-600 text-white" },
 };
 
 const KEYWORDS_PAGE_SIZE = 20;
@@ -299,11 +302,25 @@ function TargetKeywordsPanel() {
   const [newTargetUrl, setNewTargetUrl] = useState("");
   const [adding, setAdding] = useState(false);
   const [addError, setAddError] = useState("");
+  // Keywords that were unseen when this visit loaded them. Kept for the whole
+  // visit so the "New" badge doesn't vanish the moment it's marked seen —
+  // it clears on the next visit instead.
+  const [newIds, setNewIds] = useState<Set<string>>(new Set());
+  const reportedSeen = useRef(new Set<string>());
+
+  function receive(list: TrackedKeyword[]) {
+    setKeywords(list);
+    setNewIds((prev) => {
+      const next = new Set(prev);
+      for (const k of list) if (!k.seen_at) next.add(k.id);
+      return next;
+    });
+  }
 
   async function load() {
     const res = await fetch("/api/admin/keywords");
     const data = await res.json();
-    if (res.ok) setKeywords(data.keywords);
+    if (res.ok) receive(data.keywords);
   }
 
   useEffect(() => {
@@ -311,7 +328,7 @@ function TargetKeywordsPanel() {
     (async () => {
       const res = await fetch("/api/admin/keywords");
       const data = await res.json();
-      if (!cancelled && res.ok) setKeywords(data.keywords);
+      if (!cancelled && res.ok) receive(data.keywords);
     })();
     return () => {
       cancelled = true;
@@ -401,26 +418,42 @@ function TargetKeywordsPanel() {
       total: keywords.length,
       queued: keywords.filter((k) => k.status === "queued").length,
       done: keywords.filter((k) => k.status === "done").length,
+      new: keywords.filter((k) => k.status === "discovered" && newIds.has(k.id)).length,
       high: keywords.filter((k) => k.priority === "high").length,
       outOfArea: keywords.filter((k) => k.region === "out_of_area").length,
     };
-  }, [keywords]);
+  }, [keywords, newIds]);
 
   const filtered = useMemo(() => {
     if (!keywords) return [];
     const q = search.trim().toLowerCase();
     return keywords.filter((k) => {
       if (q && !k.keyword.toLowerCase().includes(q)) return false;
-      if (statusFilter !== "all" && k.status !== statusFilter) return false;
+      if (statusFilter === "new") {
+        if (k.status !== "discovered" || !newIds.has(k.id)) return false;
+      } else if (statusFilter !== "all" && k.status !== statusFilter) return false;
       if (priorityFilter !== "all" && k.priority !== priorityFilter) return false;
       if (regionFilter !== "all" && (k.region ?? "unspecified") !== regionFilter) return false;
       return true;
     });
-  }, [keywords, search, statusFilter, priorityFilter, regionFilter]);
+  }, [keywords, newIds, search, statusFilter, priorityFilter, regionFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / KEYWORDS_PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
   const paged = filtered.slice((currentPage - 1) * KEYWORDS_PAGE_SIZE, currentPage * KEYWORDS_PAGE_SIZE);
+
+  // Mark what's actually on screen as seen — only the current page, so
+  // keywords further down stay "New" until you page to them.
+  useEffect(() => {
+    const ids = paged.filter((k) => !k.seen_at && !reportedSeen.current.has(k.id)).map((k) => k.id);
+    if (ids.length === 0) return;
+    for (const id of ids) reportedSeen.current.add(id);
+    fetch("/api/admin/keywords/seen", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids }),
+    }).catch(() => {});
+  }, [paged]);
 
   function updateFilter(setter: (v: string) => void, value: string) {
     setter(value);
@@ -605,6 +638,14 @@ function TargetKeywordsPanel() {
         <>
           {counts && (
             <div className="mt-4 flex flex-wrap gap-2 text-xs">
+              {counts.new > 0 && (
+                <button
+                  onClick={() => updateFilter(setStatusFilter, "new")}
+                  className="rounded-full bg-green-600 px-3 py-1 font-medium text-white hover:bg-green-700"
+                >
+                  {counts.new} new
+                </button>
+              )}
               <button
                 onClick={() => updateFilter(setStatusFilter, "queued")}
                 className="rounded-full bg-brand/10 px-3 py-1 font-medium text-brand hover:bg-brand/20"
@@ -646,6 +687,7 @@ function TargetKeywordsPanel() {
               className="rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
             >
               <option value="all">All statuses</option>
+              <option value="new">New (not seen yet)</option>
               <option value="discovered">Discovered</option>
               <option value="queued">Queued</option>
               <option value="in_review">In review (PR open)</option>
@@ -691,7 +733,10 @@ function TargetKeywordsPanel() {
       {keywords && keywords.length > 0 && paged.length > 0 && (
         <ul className="mt-4 divide-y divide-gray-100">
           {paged.map((k) => {
-            const status = STATUS_BADGE[k.status] ?? STATUS_BADGE.discovered;
+            const status =
+              k.status === "discovered" && newIds.has(k.id)
+                ? STATUS_BADGE.new
+                : (STATUS_BADGE[k.status] ?? STATUS_BADGE.discovered);
             return (
               <li key={k.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
                 <div className="min-w-0">
