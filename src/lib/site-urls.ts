@@ -29,6 +29,8 @@ export const STATIC_PAGES = [
   { url: "/managed-it-services-marlton-nj", priority: "0.7", changefreq: "monthly" },
   { url: "/managed-it-services-king-of-prussia-pa", priority: "0.7", changefreq: "monthly" },
   { url: "/managed-it-services-wilmington-de", priority: "0.7", changefreq: "monthly" },
+  { url: "/it-consulting-philadelphia-pa", priority: "0.7", changefreq: "monthly" },
+  { url: "/managed-it-services-ocean-county-nj", priority: "0.7", changefreq: "monthly" },
   { url: "/new-jersey-cabling", priority: "0.8", changefreq: "monthly" },
   { url: "/pennsylvania-cabling", priority: "0.7", changefreq: "monthly" },
   { url: "/delaware-cabling", priority: "0.7", changefreq: "monthly" },

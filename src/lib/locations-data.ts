@@ -542,6 +542,103 @@ export const LOCATIONS_DATA: LocationData[] = [
       },
     ],
   },
+  {
+    path: "it-consulting-philadelphia-pa",
+    focus: "consulting",
+    heroImage:
+      "https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&q=80&w=1600",
+    h1: "IT Consulting Services in Philadelphia, PA | ONPRO IT",
+    metaTitle: "IT Consulting Services in Philadelphia, PA | ONPRO IT",
+    metaDescription:
+      "Strategic IT consulting and vCIO services for Philadelphia, PA businesses from ONPRO IT — call for a free technology roadmap assessment.",
+    keywords: "IT consulting Philadelphia, IT consultants Philadelphia, vCIO Philadelphia PA, technology consulting Philadelphia",
+    intro:
+      "Philadelphia businesses from Center City to University City need a technology plan, not just a break-fix vendor. ONPRO IT provides strategic IT consulting and Virtual CIO (vCIO) services for Philadelphia companies, building the same technology roadmap and budget planning a large enterprise gets from an in-house CIO — sized and priced for a small or mid-sized business.",
+    areasServed: [
+      "Center City",
+      "University City",
+      "Old City",
+      "Northern Liberties",
+      "Fishtown",
+      "Navy Yard",
+      "Manayunk",
+      "Chestnut Hill",
+    ],
+    whyChoose: [
+      "We build the roadmap and then implement it ourselves — no separate consultant and IT vendor to coordinate between",
+      "Familiar with the law firms, healthcare practices, and professional services common throughout Philadelphia",
+      "Quarterly Business Reviews keep your technology budget and plans aligned as your business grows",
+      "An unbiased second opinion if you already have an internal IT team or another provider",
+    ],
+    faqs: [
+      {
+        question: "Do you offer IT consulting for Philadelphia businesses, or just South Jersey?",
+        answer:
+          "Both. While ONPRO IT is based in South Jersey, our IT consulting and vCIO services extend across Philadelphia and the Greater Philadelphia area, building the same long-term technology roadmap for businesses on either side of the bridge.",
+      },
+      {
+        question: "What industries do your Philadelphia IT consulting clients work in?",
+        answer:
+          "We work with Philadelphia law firms, healthcare and dental practices, financial and professional services firms, and nonprofits — businesses that need a technology plan tied to their budget and compliance requirements, not just someone to call when something breaks.",
+      },
+      {
+        question: "Can IT consulting work alongside our current IT provider in Philadelphia?",
+        answer:
+          "Yes — consulting engagements can run independently as an unbiased second opinion on your technology strategy, or be combined with ONPRO IT's managed IT services for a fully integrated approach.",
+      },
+      {
+        question: "How is ONPRO IT different from other IT consultants in Philadelphia?",
+        answer:
+          "Most IT consultants in Philadelphia only offer advice — you still have to hire someone else to execute it. ONPRO IT builds the strategy and then implements it ourselves, since we're also a managed IT provider, so nothing gets lost between the plan and the people building it.",
+      },
+    ],
+  },
+  {
+    path: "managed-it-services-ocean-county-nj",
+    focus: "managed-it",
+    heroImage:
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1600",
+    h1: "Managed IT Services in Ocean County, NJ | ONPRO IT",
+    metaTitle: "Managed IT Services in Ocean County, NJ | ONPRO IT",
+    metaDescription:
+      "Managed IT, cybersecurity, and cabling for Toms River, Brick, and Lakewood businesses in Ocean County, NJ. Call ONPRO IT for a free assessment.",
+    keywords: "managed IT services Ocean County NJ, IT support Toms River, IT company Brick NJ, IT services Lakewood NJ",
+    intro:
+      "From the medical offices around Toms River to the retail and hospitality businesses along the Jersey Shore, Ocean County companies depend on technology that doesn't go down during their busiest season. ONPRO IT provides managed IT, cybersecurity, structured cabling, and network installation for Ocean County businesses, backed by a team headquartered a short drive away in Berlin Township.",
+    areasServed: [
+      "Toms River",
+      "Brick",
+      "Lakewood",
+      "Manahawkin / Stafford Township",
+      "Barnegat",
+      "Berkeley Township",
+      "Jackson",
+      "Point Pleasant",
+    ],
+    whyChoose: [
+      "Experience with the healthcare, hospitality, and retail businesses common throughout Ocean County",
+      "Proactive monitoring that catches problems before a busy shore-season weekend, not after",
+      "One team for everything — managed IT, cabling, and network installation without juggling separate vendors",
+      "Predictable flat-rate monthly pricing — no surprise invoices",
+    ],
+    faqs: [
+      {
+        question: "Do you provide managed IT services throughout Ocean County, or just Toms River?",
+        answer:
+          "We support businesses throughout Ocean County, including Toms River, Brick, Lakewood, Manahawkin, Barnegat, Berkeley Township, Jackson, and Point Pleasant.",
+      },
+      {
+        question: "Can you support a seasonal or tourism-driven business in Ocean County?",
+        answer:
+          "Yes — we work with retail, hospitality, and shore-area businesses that see demand spike seasonally, with proactive monitoring designed to catch problems before they hit during your busiest weeks.",
+      },
+      {
+        question: "How quickly can you respond to an IT issue in Ocean County?",
+        answer:
+          "Most issues are resolved remotely through our monitoring and help desk tools, and we schedule on-site visits from our South Jersey headquarters whenever hands-on work is needed.",
+      },
+    ],
+  },
 ];
 
 export function getLocationByPath(path: string) {
