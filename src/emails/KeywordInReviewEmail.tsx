@@ -4,9 +4,35 @@ import { PillButton } from "./components/PillButton";
 import { Spacer } from "./components/Spacer";
 import { COLORS, SITE_URL } from "./constants";
 
-export function KeywordInReviewEmail({ keyword, prUrl }: { keyword: string; prUrl: string }) {
+// "pr" = a pull request with new/changed pages; "blog" = a blog post draft
+// waiting in the admin dashboard. Either way nothing is live until approved.
+const COPY = {
+  pr: {
+    what: "wrote content for",
+    where: "opened a pull request",
+    next: "review the PR and merge it to publish",
+    button: "Review the pull request",
+  },
+  blog: {
+    what: "wrote a blog post for",
+    where: "saved it as a draft",
+    next: "review the draft and publish it from the dashboard",
+    button: "Review the blog draft",
+  },
+} as const;
+
+export function KeywordInReviewEmail({
+  keyword,
+  reviewUrl,
+  kind = "pr",
+}: {
+  keyword: string;
+  reviewUrl: string;
+  kind?: keyof typeof COPY;
+}) {
+  const copy = COPY[kind];
   return (
-    <EmailLayout preview={`New page ready for review: "${keyword}"`}>
+    <EmailLayout preview={`New content ready for review: "${keyword}"`}>
       <Text
         style={{
           margin: "0 0 4px",
@@ -30,19 +56,19 @@ export function KeywordInReviewEmail({ keyword, prUrl }: { keyword: string; prUr
           color: COLORS.ink,
         }}
       >
-        A new page is ready for your review
+        New content is ready for your review
       </Heading>
 
       <Text style={{ margin: "0 0 28px", fontFamily: FONT_STACK, fontSize: 16, lineHeight: "26px", color: COLORS.ink }}>
-        The content agent wrote a page for the keyword <strong>&ldquo;{keyword}&rdquo;</strong> and opened a
-        pull request. Nothing is live yet &mdash; review the PR and merge it to publish.
+        The content agent {copy.what} <strong>&ldquo;{keyword}&rdquo;</strong> and {copy.where}. Nothing is live
+        yet &mdash; {copy.next}.
       </Text>
 
-      <PillButton href={prUrl}>Review the pull request</PillButton>
+      <PillButton href={reviewUrl}>{copy.button}</PillButton>
 
       <Spacer height={28} />
       <Text style={{ margin: 0, fontFamily: FONT_STACK, fontSize: 13, lineHeight: "22px", color: COLORS.inkMuted }}>
-        Once it&rsquo;s merged and live, mark the keyword done on the{" "}
+        Track every keyword on the{" "}
         <a href={`${SITE_URL}/admin/analytics#target-keywords`} style={{ color: COLORS.brand }}>
           analytics dashboard
         </a>

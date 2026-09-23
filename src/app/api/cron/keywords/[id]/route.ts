@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse, after } from "next/server";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
-import { sendMail, isMailerConfigured } from "@/lib/mailer";
-import { KeywordInReviewEmail } from "@/emails/KeywordInReviewEmail";
-import { getSettings, parseNotificationEmails } from "@/lib/get-settings";
+import { notifyContentReview } from "@/lib/notify-content-review";
 
 // Narrow write path for the content-writing automation — the only thing it's
 // allowed to do is flag a queued keyword as "in_review" with a link to the PR
@@ -41,23 +39,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   // Only notify when a row actually flipped — a repeat call on a keyword
   // that's already in_review matches nothing and shouldn't re-send.
   const keyword = data?.[0]?.keyword;
-  if (keyword) {
-    after(async () => {
-      if (!isMailerConfigured()) return;
-      const settings = await getSettings();
-      const to = parseNotificationEmails(settings.contact_notification_emails);
-      if (to.length === 0) return;
-      try {
-        await sendMail({
-          to,
-          subject: `Page ready for review: "${keyword}"`,
-          react: KeywordInReviewEmail({ keyword, prUrl }),
-        });
-      } catch (err) {
-        console.error("Keyword in-review notification email error:", err);
-      }
-    });
-  }
+  if (keyword) after(() => notifyContentReview({ keyword, reviewUrl: prUrl, kind: "pr" }));
 
   return NextResponse.json({ ok: true });
 }
