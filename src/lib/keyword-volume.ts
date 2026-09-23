@@ -63,10 +63,12 @@ export async function enrichSearchVolumes(supabase: SupabaseClient): Promise<Rec
     });
 
   let volumes;
+  let cost;
   try {
     const result = await fetchSearchVolumes(candidates.map((r) => r.keyword));
     volumes = result.volumes;
-    await recordSpend(result.costUsd);
+    cost = result.costUsd;
+    await recordSpend(cost);
   } catch (err) {
     // A failed task can still be billed — record whatever it reported.
     const cost = (err as { costUsd?: number }).costUsd;
@@ -86,5 +88,5 @@ export async function enrichSearchVolumes(supabase: SupabaseClient): Promise<Rec
     await supabase.from("target_keywords").update(update).eq("id", r.id);
   }
 
-  return { checked: candidates.length, spent: spent + 0, budget };
+  return { checked: candidates.length, spent: spent + cost, budget };
 }

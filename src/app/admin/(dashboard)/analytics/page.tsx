@@ -252,7 +252,14 @@ interface TrackedKeyword {
   content_published_at: string | null;
   created_at: string;
   seen_at: string | null;
+  search_volume: number | null;
 }
+
+const SOURCE_LABEL: Record<string, string> = {
+  search_console: "from Search Console",
+  agent: "suggested by agent",
+  manual: "manual",
+};
 
 const PRIORITY_BADGE_CLASSES: Record<string, string> = {
   high: "rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-red-600",
@@ -749,7 +756,7 @@ function TargetKeywordsPanel() {
                       {status.label}
                     </span>
                     <span className="text-[10px] uppercase tracking-wide text-gray-400">
-                      {k.source === "search_console" ? "from Search Console" : "manual"}
+                      {SOURCE_LABEL[k.source] ?? "manual"}
                     </span>
                     {k.region === "out_of_area" && (
                       <span className="rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-orange-600">
@@ -762,6 +769,7 @@ function TargetKeywordsPanel() {
                     {k.last_impressions != null
                       ? `${k.last_impressions} searches (30d) · #${Number(k.last_position).toFixed(1)} avg position · ${k.last_clicks} clicked (last synced ${k.last_synced_at ? formatTimestamp(k.last_synced_at) : "—"})`
                       : "No Search Console data recorded yet"}
+                    {k.search_volume != null && ` · ~${k.search_volume.toLocaleString()}/mo Google searches`}
                     {" · "}added {formatTimestamp(k.created_at)}
                   </p>
                   {k.notes && <p className="mt-1 text-xs italic text-gray-400">{k.notes}</p>}
