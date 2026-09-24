@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import SystemStatusPanel from "@/components/admin/SystemStatusPanel";
 
 interface Settings {
   contact_email: string;
@@ -161,6 +162,10 @@ export default function AdminSettingsPage() {
 
       <div className="mt-6 max-w-md">
         <ChangePasswordCard />
+      </div>
+
+      <div className="mt-6 max-w-2xl">
+        <SystemStatusPanel />
       </div>
     </div>
   );
