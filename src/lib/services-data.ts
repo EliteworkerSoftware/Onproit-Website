@@ -450,17 +450,17 @@ export const SERVICES_DATA: ServiceData[] = [
   {
     slug: "backup-recovery",
     navTitle: "Data Backup & Recovery",
-    h1: "Backup & Disaster Recovery Services",
-    metaTitle: "Data Backup & Disaster Recovery NJ | ONPRO IT",
+    h1: "Backup & Disaster Recovery Solutions for New Jersey Businesses",
+    metaTitle: "Data Backup & Disaster Recovery in New Jersey | ONPRO IT",
     metaDescription:
-      "Protect your business from data loss with automated backup and disaster recovery from ONPRO IT — serving Southern NJ, Philadelphia, and Delaware.",
-    keywords: "data backup NJ, disaster recovery Southern NJ, business continuity New Jersey",
+      "Protect your business from data loss with automated backup and disaster recovery from ONPRO IT — serving businesses across New Jersey. Call now.",
+    keywords: "backup and recovery solutions New Jersey, data backup NJ, disaster recovery Southern NJ, business continuity New Jersey",
     Icon: HardDrive,
     color: "emerald",
     heroImage: "/images/hero-backup-recovery.png",
     brandsWeUse: ["Synology", "AWS"],
     intro:
-      "Protect your business data from ransomware, hardware failure, and human error. We ensure you can recover fast and keep working no matter what happens.",
+      "Protect your business data from ransomware, hardware failure, and human error. ONPRO IT delivers backup and recovery solutions for businesses across New Jersey, ensuring you can recover fast and keep working no matter what happens.",
     whatIsIt: [
       "Imagine walking into your office tomorrow and all your data was gone. Could your business survive? Traditional file backups are no longer enough in an age of sophisticated ransomware and immediate operational demands.",
       "ONPRO IT provides robust Business Continuity and Disaster Recovery (BCDR) solutions for businesses in New Jersey and Pennsylvania. We ensure not only that your data is safe, but that your operations can get back up and running in minutes, not days.",
@@ -499,6 +499,11 @@ export const SERVICES_DATA: ServiceData[] = [
         question: "What's the difference between backup and disaster recovery?",
         answer:
           "Backup is having a copy of your data. Disaster recovery is the full plan and process for getting your business back up and running after an outage — including rapid virtualization of a failed server, not just whether the files exist.",
+      },
+      {
+        question: "Does ONPRO IT provide backup and recovery solutions throughout New Jersey?",
+        answer:
+          "Yes — we provide automated backup, business continuity, and disaster recovery solutions for businesses throughout New Jersey, as well as Philadelphia and Delaware, all backed by daily manual verification of every backup job.",
       },
     ],
   },
@@ -805,18 +810,18 @@ export const SERVICES_DATA: ServiceData[] = [
   {
     slug: "voip",
     navTitle: "VoIP Phone Systems",
-    h1: "VoIP Phone Systems for Modern Businesses",
-    metaTitle: "VoIP Phone Systems NJ | ONPRO IT",
+    h1: "VoIP Phone Systems for New Jersey Businesses",
+    metaTitle: "VoIP Phone Systems in New Jersey | ONPRO IT",
     metaDescription:
-      "Reliable, feature-rich VoIP business phone systems for companies across Southern NJ, Philadelphia, and Delaware. Lower costs, more features, easy to scale.",
+      "Reliable, feature-rich VoIP business phone systems for companies across New Jersey, Philadelphia, and Delaware. Call ONPRO IT for a free quote.",
     keywords:
-      "VoIP NJ, hosted PBX Philadelphia, business phone systems Southern NJ, VoIP phone systems South Jersey, VoIP installation New Jersey, hosted VoIP Delaware",
+      "VoIP New Jersey, VoIP NJ, hosted PBX Philadelphia, business phone systems Southern NJ, VoIP phone systems South Jersey, VoIP installation New Jersey, hosted VoIP Delaware",
     Icon: PhoneCall,
     color: "green",
     heroImage: "/images/hero-voip.jpg",
     brandsWeUse: ["Yealink", "Cisco", "Ubiquiti"],
     intro:
-      "One business phone system, answered from a desk phone, a mobile app, or a laptop — with an auto-attendant, call routing, and voicemail transcription built in, and every user and device managed from one simple dashboard.",
+      "One business phone system for New Jersey companies, answered from a desk phone, a mobile app, or a laptop — with an auto-attendant, call routing, and voicemail transcription built in, and every user and device managed from one simple dashboard.",
     whatIsIt: [
       "Your phone system is the lifeline of your business. In today's hybrid work environment, being tied to a single desk phone is no longer an option. Our hosted VoIP (Voice over IP) solutions let your team make and receive calls on a full-featured desk phone, the mobile app on their cell, or a softphone on their desktop — all ringing on the same business number, wherever they're standing.",
       "Every plan includes a custom-recorded auto-attendant that greets callers by name and routes them with real business rules — by department, by business hours, by holiday schedule — before a call ever reaches a person. Voicemails are transcribed and emailed straight to the right inbox, and every phone, extension, and employee is managed from one simple online dashboard instead of a call to the phone company.",
@@ -874,6 +879,11 @@ export const SERVICES_DATA: ServiceData[] = [
         question: "Do you install hosted VoIP and PBX phone systems throughout New Jersey, Philadelphia, and Delaware?",
         answer:
           "Yes — we design and install hosted VoIP and PBX phone systems for businesses throughout New Jersey, and our business phone systems Philadelphia and hosted VoIP Delaware clients get the same local installation and ongoing support as our South Jersey customers.",
+      },
+      {
+        question: "Why should a New Jersey business choose ONPRO IT for VoIP instead of a national phone provider?",
+        answer:
+          "Because we also manage your network, we can guarantee the Quality of Service settings that keep calls clear — a national VoIP-only provider can't touch your network configuration, so when call quality suffers, you're stuck between two vendors pointing fingers at each other.",
       },
     ],
     productShowcase: [
