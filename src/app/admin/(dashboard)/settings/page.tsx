@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import SystemStatusPanel from "@/components/admin/SystemStatusPanel";
+import ServiceAreaCard from "@/components/admin/ServiceAreaCard";
 
 interface Settings {
   contact_email: string;
@@ -159,6 +160,10 @@ export default function AdminSettingsPage() {
           </button>
         </div>
       </form>
+
+      <div className="mt-6">
+        <ServiceAreaCard />
+      </div>
 
       <div className="mt-6 max-w-md">
         <ChangePasswordCard />

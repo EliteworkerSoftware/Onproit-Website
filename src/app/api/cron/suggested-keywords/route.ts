@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
 import { classifyKeywordRegion } from "@/lib/keyword-region";
+import { getServiceArea } from "@/lib/service-area";
 
 // Most keywords one call can add — keeps a runaway or leaked-secret caller
 // from flooding the dashboard.
@@ -31,6 +32,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: `At most ${MAX_PER_CALL} keywords per call` }, { status: 400 });
   }
 
+  const supabase = getSupabaseAdmin();
+  const area = await getServiceArea(supabase);
   const rows = [];
   for (const entry of keywords) {
     const keyword = typeof entry?.keyword === "string" ? entry.keyword.trim().toLowerCase() : "";
@@ -38,7 +41,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Each entry needs a keyword of 1-80 characters" }, { status: 400 });
     }
     const reason = typeof entry?.reason === "string" ? entry.reason.trim().slice(0, MAX_NOTE_LENGTH) : "";
-    const region = classifyKeywordRegion(keyword);
+    const region = classifyKeywordRegion(keyword, area);
     rows.push({
       keyword,
       region,
@@ -49,7 +52,6 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("target_keywords")
     .upsert(rows, { onConflict: "keyword", ignoreDuplicates: true })

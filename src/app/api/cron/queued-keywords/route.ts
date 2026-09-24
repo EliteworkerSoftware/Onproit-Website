@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
+import { getServiceArea } from "@/lib/service-area";
 
 // Read-only feed for the content-writing automation (see the "content-agent"
 // scheduled routine) — deliberately scoped to just the queued rows rather
@@ -24,5 +25,9 @@ export async function GET(req: NextRequest) {
     .order("queued_at", { ascending: true });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ keywords: data });
+
+  // The owner's service area (editable in Admin → Settings), so the agent
+  // targets the same places the dashboard does.
+  const area = await getServiceArea(supabase);
+  return NextResponse.json({ keywords: data, service_area: { in_area: area.inArea, out_of_area: area.outOfArea } });
 }

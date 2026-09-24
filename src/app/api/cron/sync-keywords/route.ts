@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
 import { isSearchConsoleConfigured, querySearchAnalytics } from "@/lib/search-console";
 import { classifyKeywordRegion } from "@/lib/keyword-region";
+import { computePriority } from "@/lib/keyword-priority";
+import { getServiceArea } from "@/lib/service-area";
 import { enrichSearchVolumes } from "@/lib/keyword-volume";
 
 // Minimum impressions in the trailing 30 days for a query to be worth
@@ -15,11 +17,6 @@ function isoDayNDaysAgo(n: number) {
   return d.toISOString().slice(0, 10);
 }
 
-function computePriority(impressions: number, position: number): "high" | "medium" | "low" {
-  if (impressions >= 50 && position <= 30) return "high";
-  if (impressions >= 15) return "medium";
-  return "low";
-}
 
 export async function GET(req: NextRequest) {
   // Vercel Cron sends this header automatically when CRON_SECRET is set as
@@ -46,6 +43,7 @@ export async function GET(req: NextRequest) {
   });
 
   const qualifying = rows.filter((r) => r.impressions >= MIN_IMPRESSIONS);
+  const area = await getServiceArea(supabase);
 
   // Existing rows keep their status (queued/done) and priority isn't
   // downgraded below what a human already set by queuing it — the sync
@@ -58,7 +56,7 @@ export async function GET(req: NextRequest) {
 
   for (const r of qualifying) {
     const keyword = r.keys[0];
-    const region = classifyKeywordRegion(keyword);
+    const region = classifyKeywordRegion(keyword, area);
     // Out-of-area terms (North/Central Jersey towns) are never worth
     // pursuing regardless of real demand — force Low so they never surface
     // as a recommendation, but keep the row so the demand is still visible.
