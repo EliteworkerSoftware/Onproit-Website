@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, FormEvent, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import {
   Bot,
@@ -234,6 +234,77 @@ function InfoTooltip({ text }: { text: string }) {
   );
 }
 
+const SECTION_STORAGE_PREFIX = "onproit-analytics-open:";
+const TOGGLE_ALL_EVENT = "onproit-analytics-toggle-all";
+
+// A collapsible analytics card. Remembers whether you left it open or
+// closed (per browser), and responds to the page's Collapse all / Expand all.
+function Section({
+  storageKey,
+  id,
+  className = "",
+  defaultOpen = true,
+  header,
+  children,
+}: {
+  storageKey: string;
+  id?: string;
+  className?: string;
+  defaultOpen?: boolean;
+  header: ReactNode;
+  children: ReactNode;
+}) {
+  const ref = useRef<HTMLDetailsElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    try {
+      const saved = localStorage.getItem(SECTION_STORAGE_PREFIX + storageKey);
+      if (saved !== null) el.open = saved === "1";
+    } catch {
+      // storage unavailable — keep the default
+    }
+    const onToggleAll = (e: Event) => {
+      el.open = (e as CustomEvent<boolean>).detail;
+    };
+    window.addEventListener(TOGGLE_ALL_EVENT, onToggleAll);
+    return () => window.removeEventListener(TOGGLE_ALL_EVENT, onToggleAll);
+  }, [storageKey]);
+
+  return (
+    <details
+      ref={ref}
+      id={id}
+      open={defaultOpen}
+      onToggle={(e) => {
+        try {
+          localStorage.setItem(SECTION_STORAGE_PREFIX + storageKey, e.currentTarget.open ? "1" : "0");
+        } catch {
+          // storage unavailable — state just won't persist
+        }
+      }}
+      className={`group scroll-mt-6 self-start rounded-xl border p-6 ${className}`}
+    >
+      <summary
+        // Clicking an info (i) button in the header shouldn't also collapse the card.
+        onClick={(e) => {
+          if ((e.target as HTMLElement).closest("button")) e.preventDefault();
+        }}
+        className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden"
+      >
+        {header}
+        <ChevronDown className="ml-auto h-4 w-4 shrink-0 text-gray-400 transition-transform group-open:rotate-180" />
+      </summary>
+      {children}
+    </details>
+  );
+}
+
+function toggleAllSections(open: boolean) {
+  window.dispatchEvent(new CustomEvent(TOGGLE_ALL_EVENT, { detail: open }));
+}
+
 interface TrackedKeyword {
   id: string;
   keyword: string;
@@ -288,7 +359,7 @@ function PriorityLegend() {
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   queued: { label: "Queued for content", className: "bg-brand/10 text-brand" },
-  in_review: { label: "PR open — in review", className: "bg-purple-50 text-purple-600" },
+  in_review: { label: "Ready for review", className: "bg-purple-50 text-purple-600" },
   done: { label: "Done", className: "bg-green-50 text-green-600" },
   discovered: { label: "Discovered", className: "bg-gray-100 text-gray-500" },
   // Not a real status — a discovered keyword nobody has looked at yet.
@@ -479,12 +550,18 @@ function TargetKeywordsPanel() {
 
   return (
     <>
-      <div id="content-effort" className="mt-6 scroll-mt-6 rounded-xl border border-brand/30 bg-brand/5 p-6">
-        <div className="flex items-center gap-2">
-          <MousePointerClick className="h-4 w-4 text-brand" />
-          <h2 className="text-sm font-semibold text-gray-900">Content Effort</h2>
-          <InfoTooltip text="Every keyword you've queued or finished content for, most recently touched first — the record of actual work, separate from the much bigger list of everything Search Console has discovered. A scheduled agent checks the queue on its own and opens a pull request for anything sitting in it (status flips to 'PR open — in review'); nothing goes live until you review and merge it yourself, then come back and mark it done with the real published URL. Position shown is as of the last daily sync, so you can watch whether a keyword's ranking actually moved after you published something for it." />
-        </div>
+      <Section
+        storageKey="content-effort"
+        id="content-effort"
+        className="mt-6 border-brand/30 bg-brand/5"
+        header={
+          <>
+            <MousePointerClick className="h-4 w-4 text-brand" />
+            <h2 className="text-sm font-semibold text-gray-900">Content Effort</h2>
+            <InfoTooltip text="Every keyword you've queued or finished content for, most recently touched first — the record of actual work, separate from the much bigger list of everything Search Console has discovered. The content agent checks the queue every morning and writes whatever each keyword needs — a new page, a stronger existing page, or a blog post. The status flips to 'Ready for review', nothing goes live until you click Publish on the Content Review page, and publishing marks it done with the live URL automatically. Position shown is as of the last daily sync, so you can watch whether a keyword's ranking actually moved after you published something for it." />
+          </>
+        }
+      >
         <p className="mt-1 text-xs text-gray-400">
           What you&apos;ve actually put effort into — queued for content or already published.
         </p>
@@ -516,11 +593,11 @@ function TargetKeywordsPanel() {
                     </p>
                     {k.status === "in_review" && k.content_url && (
                       <p className="mt-0.5 text-xs text-purple-600">
-                        The content agent opened a pull request:{" "}
-                        <a href={k.content_url} target="_blank" rel="noopener noreferrer" className="underline">
-                          {k.content_url}
+                        Content is written and waiting for you on{" "}
+                        <a href="/admin/content-review" className="underline">
+                          Content Review
                         </a>
-                        . Review and merge it, then come back and mark this done with the live URL.
+                        {" "}&mdash; publishing it marks this done automatically.
                       </p>
                     )}
                     {k.status === "done" && (
@@ -559,17 +636,23 @@ function TargetKeywordsPanel() {
             })}
           </ul>
         )}
-      </div>
+      </Section>
 
-      <div id="target-keywords" className="mt-6 scroll-mt-6 rounded-xl border border-gray-200 bg-white p-6">
-      <div className="flex items-center gap-2">
-        <Search className="h-4 w-4 text-gray-500" />
-        <h2 className="text-sm font-semibold text-gray-900">Target Keywords</h2>
-        <InfoTooltip text="This list populates itself — a daily job pulls every real query Search Console sees for your site (at least 3 impressions in the trailing 30 days) with no manual entry. Priority is computed automatically from real numbers, not a guess: High = 50+ impressions and within reach of page 1 (position ≤30). Medium = decent demand (15+ impressions) further out. Low = everything else. Search Console only reports the searcher's country, never city/state, so 'Outside service area' is detected by parsing the town name in the query text itself against your real coverage area — any North/Central Jersey town gets forced to Low priority automatically regardless of demand, since you don't want to pursue that. Click 'Queue for content' on anything worth writing about — that just flags it. Tell Claude to check the content queue in a chat session and it'll go write the actual blog post or page update for whatever's flagged, then mark it done with a link to what was actually published, so there's a real record instead of just a checkbox." />
-      </div>
+      <Section
+        storageKey="target-keywords"
+        id="target-keywords"
+        className="mt-6 border-gray-200 bg-white"
+        header={
+          <>
+            <Search className="h-4 w-4 text-gray-500" />
+            <h2 className="text-sm font-semibold text-gray-900">Target Keywords</h2>
+            <InfoTooltip text="This list populates itself — a daily job pulls every real query Search Console sees for your site (at least 3 impressions in the trailing 30 days) with no manual entry. Priority is computed automatically from real numbers, not a guess: High = 50+ impressions and within reach of page 1 (position ≤30). Medium = decent demand (15+ impressions) further out. Low = everything else. Search Console only reports the searcher's country, never city/state, so 'Outside service area' is detected by parsing the town name in the query text itself against your real coverage area — any North/Central Jersey town gets forced to Low priority automatically regardless of demand, since you don't want to pursue that. Green 'New' means you haven't seen it yet. Click 'Queue for content' on anything worth chasing — the content agent picks it up on its next morning run and prepares the content for you to review and publish on the Content Review page." />
+          </>
+        }
+      >
       <p className="mt-1 text-xs text-gray-400">
-        Auto-synced daily from Search Console — nothing here was typed in by hand. Queue anything
-        worth building content for, then ask Claude to check the queue.
+        Auto-synced daily from Search Console, plus weekly suggestions from the content agent. Queue
+        anything worth chasing — it gets written on the next morning run.
       </p>
 
       {!showAddForm ? (
@@ -697,7 +780,7 @@ function TargetKeywordsPanel() {
               <option value="new">New (not seen yet)</option>
               <option value="discovered">Discovered</option>
               <option value="queued">Queued</option>
-              <option value="in_review">In review (PR open)</option>
+              <option value="in_review">Ready for review</option>
               <option value="done">Done</option>
             </select>
             <select
@@ -778,10 +861,11 @@ function TargetKeywordsPanel() {
                   )}
                   {k.status === "in_review" && k.content_url && (
                     <p className="mt-1 text-xs text-purple-600">
-                      Content agent opened a PR:{" "}
-                      <a href={k.content_url} target="_blank" rel="noopener noreferrer" className="underline">
-                        {k.content_url}
+                      Content is written and waiting for you on{" "}
+                      <a href="/admin/content-review" className="underline">
+                        Content Review
                       </a>
+                      .
                     </p>
                   )}
                   {k.status === "done" && (
@@ -859,7 +943,7 @@ function TargetKeywordsPanel() {
           </button>
         </div>
       )}
-      </div>
+      </Section>
     </>
   );
 }
@@ -948,7 +1032,23 @@ export default function AdminAnalyticsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
+        <div className="flex gap-2">
+          <button
+            onClick={() => toggleAllSections(false)}
+            className="rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:border-brand hover:text-brand"
+          >
+            Collapse all
+          </button>
+          <button
+            onClick={() => toggleAllSections(true)}
+            className="rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:border-brand hover:text-brand"
+          >
+            Expand all
+          </button>
+        </div>
+      </div>
       <p className="mt-1 text-sm text-gray-500">
         Real human visits, calls, and leads for onproit.com. Suspected bot traffic is tracked
         separately below, not mixed into these numbers.
@@ -1042,11 +1142,16 @@ export default function AdminAnalyticsPage() {
             </div>
           </div>
 
-          <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
-            <div className="flex items-center gap-2">
-              <h2 className="text-sm font-semibold text-gray-900">Views Per Day</h2>
-              <InfoTooltip text="Total page views for each calendar day in the selected range (day boundaries in UTC). Shows the day-to-day trend — spikes, dips, and the effect of anything you changed on a given date." />
-            </div>
+          <Section
+            storageKey="views-per-day"
+            className="mt-6 border-gray-200 bg-white"
+            header={
+              <>
+                <h2 className="text-sm font-semibold text-gray-900">Views Per Day</h2>
+                <InfoTooltip text="Total page views for each calendar day in the selected range (day boundaries in UTC). Shows the day-to-day trend — spikes, dips, and the effect of anything you changed on a given date." />
+              </>
+            }
+          >
             {data.viewsByDay.length === 0 ? (
               <p className="mt-4 text-sm text-gray-500">No page views recorded yet.</p>
             ) : (
@@ -1080,14 +1185,19 @@ export default function AdminAnalyticsPage() {
                 })}
               </div>
             )}
-          </div>
+          </Section>
 
           <div className={`mt-6 grid grid-cols-1 gap-6 ${showDayOfWeekChart ? "lg:grid-cols-2" : ""}`}>
-            <div className="rounded-xl border border-gray-200 bg-white p-6">
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-semibold text-gray-900">Views by Time of Day</h2>
-                <InfoTooltip text="Every page view in the range, bucketed by the hour it happened (converted to Eastern time) and summed across all days. Shows what time of day people tend to visit — useful for staffing chat/phone coverage." />
-              </div>
+            <Section
+              storageKey="time-of-day"
+              className="border-gray-200 bg-white"
+              header={
+                <>
+                  <h2 className="text-sm font-semibold text-gray-900">Views by Time of Day</h2>
+                  <InfoTooltip text="Every page view in the range, bucketed by the hour it happened (converted to Eastern time) and summed across all days. Shows what time of day people tend to visit — useful for staffing chat/phone coverage." />
+                </>
+              }
+            >
               <p className="mt-1 text-xs text-gray-400">Eastern time, selected range</p>
               <div className="mt-4 flex gap-2">
                 <ChartYAxis max={maxHourCount} heightClass="h-32" />
@@ -1114,14 +1224,19 @@ export default function AdminAnalyticsPage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Section>
 
             {showDayOfWeekChart && (
-              <div className="rounded-xl border border-gray-200 bg-white p-6">
-                <div className="flex items-center gap-2">
-                  <h2 className="text-sm font-semibold text-gray-900">Views by Day of Week</h2>
-                  <InfoTooltip text="Page views bucketed by weekday (Eastern time) and added together across every occurrence in the range — e.g. every Monday's views summed into one bar. Shows which day of the week performs best on average, not a day-by-day timeline." />
-                </div>
+              <Section
+                storageKey="day-of-week"
+                className="border-gray-200 bg-white"
+                header={
+                  <>
+                    <h2 className="text-sm font-semibold text-gray-900">Views by Day of Week</h2>
+                    <InfoTooltip text="Page views bucketed by weekday (Eastern time) and added together across every occurrence in the range — e.g. every Monday's views summed into one bar. Shows which day of the week performs best on average, not a day-by-day timeline." />
+                  </>
+                }
+              >
                 <p className="mt-1 text-xs text-gray-400">Eastern time, selected range</p>
                 <div className="mt-4 flex gap-2">
                   <ChartYAxis max={maxDowCount} heightClass="h-32" />
@@ -1146,16 +1261,21 @@ export default function AdminAnalyticsPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </Section>
             )}
           </div>
 
           <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <div className="rounded-xl border border-gray-200 bg-white p-6">
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-semibold text-gray-900">Top Pages</h2>
-                <InfoTooltip text="The pages with the most page views in the selected range, most-viewed first." />
-              </div>
+            <Section
+              storageKey="top-pages"
+              className="border-gray-200 bg-white"
+              header={
+                <>
+                  <h2 className="text-sm font-semibold text-gray-900">Top Pages</h2>
+                  <InfoTooltip text="The pages with the most page views in the selected range, most-viewed first." />
+                </>
+              }
+            >
               {data.topPages.length === 0 ? (
                 <p className="mt-4 text-sm text-gray-500">No page views recorded yet.</p>
               ) : (
@@ -1168,13 +1288,18 @@ export default function AdminAnalyticsPage() {
                   ))}
                 </ul>
               )}
-            </div>
+            </Section>
 
-            <div className="rounded-xl border border-gray-200 bg-white p-6">
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-semibold text-gray-900">Traffic Sources</h2>
-                <InfoTooltip text="How visitors arrived, based on the referrer their browser sent: Direct (typed the URL, used a bookmark, or the browser sent no referrer at all — e.g. links from texts or some email/privacy apps), a named search engine (Google, Bing, Yahoo, DuckDuckGo, etc.), Social, or Referral from another site." />
-              </div>
+            <Section
+              storageKey="traffic-sources"
+              className="border-gray-200 bg-white"
+              header={
+                <>
+                  <h2 className="text-sm font-semibold text-gray-900">Traffic Sources</h2>
+                  <InfoTooltip text="How visitors arrived, based on the referrer their browser sent: Direct (typed the URL, used a bookmark, or the browser sent no referrer at all — e.g. links from texts or some email/privacy apps), a named search engine (Google, Bing, Yahoo, DuckDuckGo, etc.), Social, or Referral from another site." />
+                </>
+              }
+            >
               {data.trafficSources.length === 0 ? (
                 <p className="mt-4 text-sm text-gray-500">No page views recorded yet.</p>
               ) : (
@@ -1187,14 +1312,19 @@ export default function AdminAnalyticsPage() {
                   ))}
                 </ul>
               )}
-            </div>
+            </Section>
 
-            <div className="rounded-xl border border-gray-200 bg-white p-6">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-gray-500" />
-                <h2 className="text-sm font-semibold text-gray-900">Top Locations</h2>
-                <InfoTooltip text="Visitor city/state/country resolved from their IP address, only shown here when all three could be determined. VPNs and some mobile carriers can't be resolved this precisely and are left out of this list (though still counted in Page Views above)." />
-              </div>
+            <Section
+              storageKey="top-locations"
+              className="border-gray-200 bg-white"
+              header={
+                <>
+                  <MapPin className="h-4 w-4 text-gray-500" />
+                  <h2 className="text-sm font-semibold text-gray-900">Top Locations</h2>
+                  <InfoTooltip text="Visitor city/state/country resolved from their IP address, only shown here when all three could be determined. VPNs and some mobile carriers can't be resolved this precisely and are left out of this list (though still counted in Page Views above)." />
+                </>
+              }
+            >
               <p className="mt-1 text-xs text-gray-400">
                 Only visits we could resolve to a full city, state, and country.
               </p>
@@ -1210,17 +1340,21 @@ export default function AdminAnalyticsPage() {
                   ))}
                 </ul>
               )}
-            </div>
+            </Section>
           </div>
 
-          <details className="group mt-6 rounded-xl border border-gray-200 bg-white p-6" open>
-            <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
-              <MousePointerClick className="h-4 w-4 text-gray-500" />
-              <h2 className="text-sm font-semibold text-gray-900">Recent Visitors</h2>
-              <span className="text-xs text-gray-400">({data.sessions.length})</span>
-              <InfoTooltip text="One row per browser session (a visit lasts until the tab/browser closes). Device is parsed from the visitor's browser (Apple/Android logo plus phone, tablet, or desktop) — Windows and other platforms show just the form-factor icon. CTA Clicks counts every link and button clicked anywhere on the site during that visit. Time on Site is measured live as they browse, so it only appears once they've navigated away or closed the tab." />
-              <ChevronDown className="ml-auto h-4 w-4 shrink-0 text-gray-400 transition-transform group-open:rotate-180" />
-            </summary>
+          <Section
+            storageKey="recent-visitors"
+            className="mt-6 border-gray-200 bg-white"
+            header={
+              <>
+                <MousePointerClick className="h-4 w-4 text-gray-500" />
+                <h2 className="text-sm font-semibold text-gray-900">Recent Visitors</h2>
+                <span className="text-xs text-gray-400">({data.sessions.length})</span>
+                <InfoTooltip text="One row per browser session (a visit lasts until the tab/browser closes). Device is parsed from the visitor's browser (Apple/Android logo plus phone, tablet, or desktop) — Windows and other platforms show just the form-factor icon. CTA Clicks counts every link and button clicked anywhere on the site during that visit. Time on Site is measured live as they browse, so it only appears once they've navigated away or closed the tab." />
+              </>
+            }
+          >
             <p className="mt-1 text-xs text-gray-400">
               Click a row for the full page-by-page timeline — time on each page and every link or
               button clicked, in order.
@@ -1357,18 +1491,23 @@ export default function AdminAnalyticsPage() {
                 )}
               </>
             )}
-          </details>
+          </Section>
 
           {searchData?.configured && (
-            <details className="group mt-6 rounded-xl border border-gray-200 bg-white p-6">
-              <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
-                <Search className="h-4 w-4 text-gray-500" />
-                <h2 className="text-sm font-semibold text-gray-900">Top Search Queries &amp; Landing Pages</h2>
-                <span className="text-xs text-gray-400">
+            <Section
+              storageKey="search-queries"
+              className="mt-6 border-gray-200 bg-white"
+              defaultOpen={false}
+              header={
+                <>
+                  <Search className="h-4 w-4 text-gray-500" />
+                  <h2 className="text-sm font-semibold text-gray-900">Top Search Queries &amp; Landing Pages</h2>
+                  <span className="text-xs text-gray-400">
                   ({searchData.topQueries.length} queries · {searchData.topQueriesByPage.length} pages)
-                </span>
-                <ChevronDown className="ml-auto h-4 w-4 shrink-0 text-gray-400 transition-transform group-open:rotate-180" />
-              </summary>
+                  </span>
+                </>
+              }
+            >
               <p className="mt-1 text-xs text-gray-400">
                 Respects the date range above — useful for &quot;what happened this specific period,&quot;
                 separate from Target Keywords below which always tracks a rolling last-30-days sync.
@@ -1433,17 +1572,22 @@ export default function AdminAnalyticsPage() {
                 )}
               </div>
               </div>
-            </details>
+            </Section>
           )}
 
           {searchData?.configured && <TargetKeywordsPanel />}
 
-          <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-6">
-            <div className="flex items-center gap-2">
-              <Bot className="h-4 w-4 text-amber-600" />
-              <h2 className="text-sm font-semibold text-amber-900">Potential Bot Traffic</h2>
-              <InfoTooltip text="Requests whose User-Agent self-identifies or pattern-matches a known crawler, script, or monitoring tool. These are excluded from every number above rather than mixed in — but a sophisticated bot pretending to be a real browser looks identical to a human here and won't be caught." />
-            </div>
+          <Section
+            storageKey="bot-traffic"
+            className="mt-6 border-amber-200 bg-amber-50"
+            header={
+              <>
+                <Bot className="h-4 w-4 text-amber-600" />
+                <h2 className="text-sm font-semibold text-amber-900">Potential Bot Traffic</h2>
+                <InfoTooltip text="Requests whose User-Agent self-identifies or pattern-matches a known crawler, script, or monitoring tool. These are excluded from every number above rather than mixed in — but a sophisticated bot pretending to be a real browser looks identical to a human here and won't be caught." />
+              </>
+            }
+          >
             <p className="mt-1 text-xs text-amber-700">
               Requests that self-identify or pattern-match as automated (crawlers, scripts,
               monitoring tools). Kept separate from the human numbers above rather than hidden —
@@ -1479,7 +1623,7 @@ export default function AdminAnalyticsPage() {
                 )}
               </div>
             </div>
-          </div>
+          </Section>
         </>
       )}
     </div>
