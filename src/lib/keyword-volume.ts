@@ -81,11 +81,19 @@ export async function enrichSearchVolumes(supabase: SupabaseClient): Promise<Rec
 
   // Every candidate gets stamped, even with no volume returned, so a keyword
   // Google has no data for isn't re-sent (and re-paid for) every day.
+  // Written in two batched upserts (one write per keyword ran past the
+  // function's time limit); agent suggestions without Search Console data
+  // also get a priority from their volume, so they're a separate batch.
+  const plain: Record<string, unknown>[] = [];
+  const withPriority: Record<string, unknown>[] = [];
   for (const r of candidates) {
     const volume = byKeyword.get(r.keyword.toLowerCase()) ?? null;
-    const update: Record<string, unknown> = { search_volume: volume, volume_checked_at: checkedAt };
-    if (r.source === "agent" && r.last_impressions == null) update.priority = priorityFromVolume(volume);
-    await supabase.from("target_keywords").update(update).eq("id", r.id);
+    const row = { keyword: r.keyword, search_volume: volume, volume_checked_at: checkedAt };
+    if (r.source === "agent" && r.last_impressions == null) withPriority.push({ ...row, priority: priorityFromVolume(volume) });
+    else plain.push(row);
+  }
+  for (const rows of [plain, withPriority]) {
+    if (rows.length > 0) await supabase.from("target_keywords").upsert(rows, { onConflict: "keyword" });
   }
 
   return { checked: candidates.length, spent: spent + cost, budget };

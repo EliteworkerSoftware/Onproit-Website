@@ -11,6 +11,20 @@ import { enrichSearchVolumes } from "@/lib/keyword-volume";
 // than cluttering the list with hundreds of near-zero-signal queries.
 const MIN_IMPRESSIONS = 3;
 
+// Rows written per database call. One write per keyword (~800 calls) ran
+// past the function's time limit; batches keep the whole sync to a handful.
+const WRITE_BATCH = 500;
+
+// Headroom for the Search Console query, the batched writes, and the
+// DataForSEO lookup that follows.
+export const maxDuration = 60;
+
+function chunks<T>(list: T[], size: number): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < list.length; i += size) out.push(list.slice(i, i + size));
+  return out;
+}
+
 function isoDayNDaysAgo(n: number) {
   const d = new Date();
   d.setDate(d.getDate() - n);
@@ -51,8 +65,13 @@ export async function GET(req: NextRequest) {
   const { data: existing } = await supabase.from("target_keywords").select("keyword, status");
   const existingByKeyword = new Map((existing ?? []).map((r) => [r.keyword, r.status]));
 
-  let inserted = 0;
-  let updated = 0;
+  const now = new Date().toISOString();
+  const inserts: Record<string, unknown>[] = [];
+  // Upserts on `keyword` touch only the columns listed, so a human's status
+  // and priority survive — out-of-area rows are a separate batch because
+  // they also force priority to Low.
+  const updates: Record<string, unknown>[] = [];
+  const outOfAreaUpdates: Record<string, unknown>[] = [];
 
   for (const r of qualifying) {
     const keyword = r.keys[0];
@@ -69,29 +88,28 @@ export async function GET(req: NextRequest) {
       last_impressions: r.impressions,
       last_clicks: r.clicks,
       last_position: r.position,
-      last_synced_at: new Date().toISOString(),
+      last_synced_at: now,
       region,
     };
 
     if (existingByKeyword.has(keyword)) {
-      const update: Record<string, unknown> = { ...stats, notes };
       // Out-of-area is a hard override even on a keyword a human already
       // touched; anything else respects whatever priority is already set.
-      if (region === "out_of_area") update.priority = "low";
-      await supabase.from("target_keywords").update(update).eq("keyword", keyword);
-      updated++;
+      if (region === "out_of_area") outOfAreaUpdates.push({ keyword, ...stats, notes, priority: "low" });
+      else updates.push({ keyword, ...stats, notes });
     } else {
-      await supabase.from("target_keywords").insert({
-        keyword,
-        priority,
-        notes,
-        source: "search_console",
-        status: "discovered",
-        ...stats,
-      });
-      inserted++;
+      inserts.push({ keyword, priority, notes, source: "search_console", status: "discovered", ...stats });
     }
   }
+
+  for (const batch of chunks(inserts, WRITE_BATCH)) {
+    await supabase.from("target_keywords").insert(batch);
+  }
+  for (const batch of [...chunks(updates, WRITE_BATCH), ...chunks(outOfAreaUpdates, WRITE_BATCH)]) {
+    await supabase.from("target_keywords").upsert(batch, { onConflict: "keyword" });
+  }
+  const inserted = inserts.length;
+  const updated = updates.length + outOfAreaUpdates.length;
 
   // Runs after the sync so keywords it just inserted get their volume in the
   // same pass. Budget-capped inside; a failure here doesn't fail the sync.
