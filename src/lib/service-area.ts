@@ -1,7 +1,7 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { classifyKeywordRegion, DEFAULT_SERVICE_AREA, parseAreaList, type ServiceArea } from "@/lib/keyword-region";
-import { computePriority } from "@/lib/keyword-priority";
+import { recomputePriorities } from "@/lib/keyword-volume";
 
 // The service area lives in app_settings (editable in Admin → Settings) so it
 // can change without a deploy. Falls back to the defaults in keyword-region.ts
@@ -44,31 +44,18 @@ export async function saveServiceArea(supabase: SupabaseClient, area: ServiceAre
 }
 
 // Re-tags every tracked keyword against a new service area, so a change in
-// Settings shows up immediately instead of waiting for the next daily sync.
-// Moving out of the area forces Low priority; moving back in restores a
-// priority computed from the keyword's real numbers.
+// Settings shows up immediately instead of waiting for the next daily sync,
+// then recomputes priorities (the opportunity score depends on the area).
 export async function reclassifyKeywords(supabase: SupabaseClient, area: ServiceArea): Promise<number> {
-  const { data, error } = await supabase
-    .from("target_keywords")
-    .select("id, keyword, region, last_impressions, last_position");
+  const { data, error } = await supabase.from("target_keywords").select("keyword, region");
   if (error) throw new Error(error.message);
 
-  let changed = 0;
-  for (const k of data ?? []) {
-    const region = classifyKeywordRegion(k.keyword, area);
-    if (region === k.region) continue;
+  const changed = (data ?? [])
+    .map((k) => ({ keyword: k.keyword, region: classifyKeywordRegion(k.keyword, area), was: k.region }))
+    .filter((k) => k.region !== k.was)
+    .map(({ keyword, region }) => ({ keyword, region }));
+  if (changed.length > 0) await supabase.from("target_keywords").upsert(changed, { onConflict: "keyword" });
 
-    const update: Record<string, unknown> = { region };
-    if (region === "out_of_area") {
-      update.priority = "low";
-    } else if (k.region === "out_of_area") {
-      update.priority =
-        k.last_impressions != null && k.last_position != null
-          ? computePriority(k.last_impressions, Number(k.last_position))
-          : "medium";
-    }
-    await supabase.from("target_keywords").update(update).eq("id", k.id);
-    changed++;
-  }
-  return changed;
+  await recomputePriorities(supabase);
+  return changed.length;
 }

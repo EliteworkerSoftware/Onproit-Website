@@ -324,6 +324,7 @@ interface TrackedKeyword {
   created_at: string;
   seen_at: string | null;
   search_volume: number | null;
+  score: { score: number; priority: string; demand: number; closeness: number; area: number };
 }
 
 const SOURCE_LABEL: Record<string, string> = {
@@ -339,10 +340,145 @@ const PRIORITY_BADGE_CLASSES: Record<string, string> = {
 };
 
 const PRIORITY_LEGEND: { key: string; label: string; description: string }[] = [
-  { key: "high", label: "High", description: "50+ searches in the last 30 days, and already ranking within reach of page 1 (position ≤30) — the best content opportunities." },
-  { key: "medium", label: "Medium", description: "15+ searches in the last 30 days, but ranking further out — worth a look, less urgent." },
-  { key: "low", label: "Low", description: "Fewer than 15 searches, or the keyword names a town outside your service area (forced Low automatically even with decent volume)." },
+  { key: "high", label: "High", description: "Opportunity score 45+: real local demand and already close to page 1 — the best keywords to queue." },
+  { key: "medium", label: "Medium", description: "Score 25–44: worth chasing, but less demand or further from page 1." },
+  { key: "low", label: "Low", description: "Under 25: little demand, far from page 1, or outside your service area (always 0)." },
 ];
+
+// "Opportunity 48" chip; hovering shows the three parts it's built from.
+function OpportunityChip({ score }: { score: TrackedKeyword["score"] }) {
+  const why = `Opportunity ${score.score} = demand ${score.demand} (how many people search it, 0–100) × closeness ${score.closeness} (how near page 1 we rank) × area ${score.area} (1 = names a place we serve, 0.75 = no place, 0 = outside the area)`;
+  return (
+    <span title={why} className="cursor-help rounded-full border border-gray-200 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
+      Opportunity {score.score}
+    </span>
+  );
+}
+
+interface DataForSeoCall {
+  id: string;
+  created_at: string;
+  kind: "volume" | "ideas";
+  trigger: string | null;
+  market: string | null;
+  keywords_sent: number | null;
+  results: number | null;
+  cost_usd: number;
+  ok: boolean;
+  detail: string | null;
+  sample: string[] | null;
+}
+
+interface DataForSeoData {
+  configured: boolean;
+  market?: string;
+  budget?: { month: string; spent: number; calls: number; budget: number };
+  calls?: DataForSeoCall[];
+  logMissing?: boolean;
+}
+
+// Every DataForSEO request, when and why it ran, what it sent and got back,
+// and what it cost — so the paid keyword data is never a black box.
+function DataForSeoActivity() {
+  const [data, setData] = useState<DataForSeoData | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/admin/dataforseo")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (!cancelled && json) setData(json);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (!data?.configured || !data.budget) return null;
+  const pct = Math.min(100, Math.round((data.budget.spent / Math.max(data.budget.budget, 0.01)) * 100));
+
+  return (
+    <Section
+      storageKey="dataforseo-activity"
+      className="mt-6 border-gray-200 bg-white"
+      defaultOpen={false}
+      header={
+        <>
+          <Search className="h-4 w-4 text-gray-500" />
+          <h2 className="text-sm font-semibold text-gray-900">DataForSEO activity</h2>
+          <span className="text-xs text-gray-400">
+            (${data.budget.spent.toFixed(2)} of ${data.budget.budget} this month)
+          </span>
+          <InfoTooltip text="DataForSEO sells Google's keyword data. It's used for two things only: (1) the 7 AM daily sync looks up how many people search each new or month-old keyword — one request covers up to 1,000 keywords; (2) on Mondays the content agent asks for related searches from up to 20 starting phrases, so its suggestions are real searches with real demand. Every request is checked against the monthly budget first and listed here." />
+        </>
+      }
+    >
+      <div className="mt-4 grid grid-cols-1 gap-4 text-sm sm:grid-cols-3">
+        <div>
+          <p className="text-xs text-gray-400">This month ({data.budget.month})</p>
+          <p className="font-semibold text-gray-900">
+            ${data.budget.spent.toFixed(2)} of ${data.budget.budget} · {data.budget.calls} request{data.budget.calls === 1 ? "" : "s"}
+          </p>
+          <div className="mt-1 h-1.5 rounded-full bg-gray-100">
+            <div className="h-1.5 rounded-full bg-brand" style={{ width: `${pct}%` }} />
+          </div>
+        </div>
+        <div>
+          <p className="text-xs text-gray-400">Search volumes measured in</p>
+          <p className="font-semibold text-gray-900">{data.market}</p>
+        </div>
+        <div>
+          <p className="text-xs text-gray-400">When it runs</p>
+          <p className="text-gray-700">Daily 7 AM (volumes for new keywords) · Mondays (agent research)</p>
+        </div>
+      </div>
+
+      {data.logMissing ? (
+        <p className="mt-4 text-sm text-amber-700">Run supabase/migration-dataforseo-log.sql to start recording requests here.</p>
+      ) : !data.calls || data.calls.length === 0 ? (
+        <p className="mt-4 text-sm text-gray-500">No requests recorded yet.</p>
+      ) : (
+        <ul className="mt-4 divide-y divide-gray-100">
+          {data.calls.map((c) => (
+            <li key={c.id} className="py-2.5 text-sm">
+              <button onClick={() => setOpenId(openId === c.id ? null : c.id)} className="flex w-full flex-wrap items-center gap-x-3 gap-y-1 text-left">
+                <span className="w-36 shrink-0 text-xs text-gray-400">{formatTimestamp(c.created_at)}</span>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${
+                    c.kind === "volume" ? "bg-brand/10 text-brand" : "bg-purple-50 text-purple-600"
+                  }`}
+                >
+                  {c.kind === "volume" ? "Search volumes" : "Keyword research"}
+                </span>
+                <span className="min-w-0 flex-1 text-gray-700">{c.detail}</span>
+                <span className={`shrink-0 text-xs font-medium ${c.ok ? "text-gray-600" : "text-red-600"}`}>
+                  {c.ok ? `$${Number(c.cost_usd).toFixed(3)}` : "failed / skipped"}
+                </span>
+              </button>
+              {openId === c.id && (
+                <div className="mt-2 rounded-lg bg-gray-50 p-3 text-xs text-gray-600">
+                  <p>
+                    <strong>Why:</strong> {c.trigger} · <strong>Market:</strong> {c.market} · <strong>Sent:</strong>{" "}
+                    {c.keywords_sent} {c.kind === "volume" ? "keywords" : "starting phrases"}
+                    {c.results != null && ` · ${c.results} results`}
+                  </p>
+                  {c.sample && c.sample.length > 0 && (
+                    <p className="mt-1">
+                      <strong>{c.kind === "volume" ? "Keywords included:" : "Starting phrases:"}</strong> {c.sample.join(", ")}
+                      {c.keywords_sent && c.keywords_sent > c.sample.length ? ` … and ${c.keywords_sent - c.sample.length} more` : ""}
+                    </p>
+                  )}
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </Section>
+  );
+}
 
 function PriorityLegend() {
   return (
@@ -835,6 +971,7 @@ function TargetKeywordsPanel() {
                     <span className={PRIORITY_BADGE_CLASSES[k.priority] ?? PRIORITY_BADGE_CLASSES.medium}>
                       {k.priority}
                     </span>
+                    <OpportunityChip score={k.score} />
                     <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${status.className}`}>
                       {status.label}
                     </span>
@@ -852,7 +989,7 @@ function TargetKeywordsPanel() {
                     {k.last_impressions != null
                       ? `${k.last_impressions} searches (30d) · #${Number(k.last_position).toFixed(1)} avg position · ${k.last_clicks} clicked (last synced ${k.last_synced_at ? formatTimestamp(k.last_synced_at) : "—"})`
                       : "No Search Console data recorded yet"}
-                    {k.search_volume != null && ` · ~${k.search_volume.toLocaleString()}/mo Google searches`}
+                    {k.search_volume != null && ` · ~${k.search_volume.toLocaleString()}/mo searches in your market`}
                     {" · "}added {formatTimestamp(k.created_at)}
                   </p>
                   {k.notes && <p className="mt-1 text-xs italic text-gray-400">{k.notes}</p>}
@@ -1576,6 +1713,8 @@ export default function AdminAnalyticsPage() {
           )}
 
           {searchData?.configured && <TargetKeywordsPanel />}
+
+          <DataForSeoActivity />
 
           <Section
             storageKey="bot-traffic"

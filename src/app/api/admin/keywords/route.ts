@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/current-admin";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { scoreKeyword } from "@/lib/keyword-score";
 
-const PRIORITY_RANK: Record<string, number> = { high: 0, medium: 1, low: 2 };
 const STATUS_RANK: Record<string, number> = { queued: 0, discovered: 1, done: 2 };
 
 export async function GET() {
@@ -18,17 +18,27 @@ export async function GET() {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // Queued keywords first (they need action), then by priority, then by
-  // real demand (impressions) — not insertion order. Within discovered,
-  // ones nobody has seen yet float to the top so "New" is what you see first.
-  const keywords = [...data].sort((a, b) => {
+  // Each keyword carries its opportunity score and the three parts behind
+  // it, so the dashboard can show exactly why it's High, Medium or Low.
+  const scored = data.map((k) => ({
+    ...k,
+    score: scoreKeyword({
+      searchVolume: k.search_volume,
+      impressions: k.last_impressions,
+      position: k.last_position == null ? null : Number(k.last_position),
+      region: k.region,
+    }),
+  }));
+
+  // Queued keywords first (they need action); within discovered, ones nobody
+  // has seen yet float to the top so "New" is what you see first; then by
+  // opportunity score — not insertion order.
+  const keywords = scored.sort((a, b) => {
     const statusDiff = (STATUS_RANK[a.status] ?? 1) - (STATUS_RANK[b.status] ?? 1);
     if (statusDiff !== 0) return statusDiff;
     const seenDiff = Number(!!a.seen_at) - Number(!!b.seen_at);
     if (seenDiff !== 0) return seenDiff;
-    const priorityDiff = (PRIORITY_RANK[a.priority] ?? 1) - (PRIORITY_RANK[b.priority] ?? 1);
-    if (priorityDiff !== 0) return priorityDiff;
-    return (b.last_impressions ?? 0) - (a.last_impressions ?? 0);
+    return b.score.score - a.score.score;
   });
 
   return NextResponse.json({ keywords });

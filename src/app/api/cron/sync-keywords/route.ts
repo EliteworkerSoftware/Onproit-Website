@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
 import { isSearchConsoleConfigured, querySearchAnalytics } from "@/lib/search-console";
 import { classifyKeywordRegion } from "@/lib/keyword-region";
-import { computePriority } from "@/lib/keyword-priority";
+import { scoreKeyword } from "@/lib/keyword-score";
 import { getServiceArea } from "@/lib/service-area";
-import { enrichSearchVolumes } from "@/lib/keyword-volume";
+import { enrichSearchVolumes, recomputePriorities } from "@/lib/keyword-volume";
 
 // Minimum impressions in the trailing 30 days for a query to be worth
 // tracking at all — filters out one-off noise (a single odd search) rather
@@ -68,18 +68,16 @@ export async function GET(req: NextRequest) {
   const now = new Date().toISOString();
   const inserts: Record<string, unknown>[] = [];
   // Upserts on `keyword` touch only the columns listed, so a human's status
-  // and priority survive — out-of-area rows are a separate batch because
-  // they also force priority to Low.
+  // survives; priority is recomputed for everything afterward.
   const updates: Record<string, unknown>[] = [];
-  const outOfAreaUpdates: Record<string, unknown>[] = [];
 
   for (const r of qualifying) {
     const keyword = r.keys[0];
     const region = classifyKeywordRegion(keyword, area);
-    // Out-of-area terms (North/Central Jersey towns) are never worth
-    // pursuing regardless of real demand — force Low so they never surface
-    // as a recommendation, but keep the row so the demand is still visible.
-    const priority = region === "out_of_area" ? "low" : computePriority(r.impressions, r.position);
+    // A starting priority for new keywords; every keyword's priority is
+    // recomputed from its opportunity score at the end of the sync, once
+    // search volumes are in (out-of-area always scores 0 = Low).
+    const { priority } = scoreKeyword({ searchVolume: null, impressions: r.impressions, position: r.position, region });
     const notes =
       region === "out_of_area"
         ? `Auto: ${r.impressions} impressions, position #${r.position.toFixed(1)}, ${r.clicks} clicks — outside the real service area, not a target regardless of demand.`
@@ -93,10 +91,7 @@ export async function GET(req: NextRequest) {
     };
 
     if (existingByKeyword.has(keyword)) {
-      // Out-of-area is a hard override even on a keyword a human already
-      // touched; anything else respects whatever priority is already set.
-      if (region === "out_of_area") outOfAreaUpdates.push({ keyword, ...stats, notes, priority: "low" });
-      else updates.push({ keyword, ...stats, notes });
+      updates.push({ keyword, ...stats, notes });
     } else {
       inserts.push({ keyword, priority, notes, source: "search_console", status: "discovered", ...stats });
     }
@@ -105,15 +100,16 @@ export async function GET(req: NextRequest) {
   for (const batch of chunks(inserts, WRITE_BATCH)) {
     await supabase.from("target_keywords").insert(batch);
   }
-  for (const batch of [...chunks(updates, WRITE_BATCH), ...chunks(outOfAreaUpdates, WRITE_BATCH)]) {
+  for (const batch of chunks(updates, WRITE_BATCH)) {
     await supabase.from("target_keywords").upsert(batch, { onConflict: "keyword" });
   }
   const inserted = inserts.length;
-  const updated = updates.length + outOfAreaUpdates.length;
+  const updated = updates.length;
 
   // Runs after the sync so keywords it just inserted get their volume in the
   // same pass. Budget-capped inside; a failure here doesn't fail the sync.
   const volume = await enrichSearchVolumes(supabase).catch((err) => ({ error: String(err) }));
+  const priorities = await recomputePriorities(supabase);
 
-  return NextResponse.json({ ok: true, scanned: rows.length, qualifying: qualifying.length, inserted, updated, volume });
+  return NextResponse.json({ ok: true, scanned: rows.length, qualifying: qualifying.length, inserted, updated, volume, priorities });
 }
