@@ -21,3 +21,7 @@ alter table review_requests enable row level security;
 -- Which admin the request was sent as (Admin → Reviews "Send as"), so the
 -- follow-up comes from the same person. Safe to re-run.
 alter table review_requests add column if not exists sender_id uuid;
+
+-- Set with "Mark as reviewed" once their review shows up on Google; blocks
+-- any further resends or new requests to them. Safe to re-run.
+alter table review_requests add column if not exists reviewed_at timestamptz;

@@ -18,11 +18,14 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   const supabase = getSupabaseAdmin();
   const { data: request } = await supabase
     .from("review_requests")
-    .select("created_at, customer_name, customer_email, note, token, reminder_sent_at, sender_id")
+    .select("created_at, customer_name, customer_email, note, token, reminder_sent_at, sender_id, reviewed_at")
     .eq("id", id)
     .maybeSingle();
 
   if (!request) return NextResponse.json({ error: "Request not found" }, { status: 404 });
+  if (request.reviewed_at) {
+    return NextResponse.json({ error: `${request.customer_name} already left a review — no need to ask again` }, { status: 400 });
+  }
 
   const lastSent = new Date(request.reminder_sent_at ?? request.created_at).getTime();
   if (Date.now() - lastSent < MIN_HOURS_BETWEEN_RESENDS * 3_600_000) {
@@ -53,6 +56,25 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
 
   await supabase.from("review_requests").update({ reminder_sent_at: new Date().toISOString() }).eq("id", id);
   return NextResponse.json({ ok: true, kind: isReminder ? "follow-up" : "original" });
+}
+
+// Mark (or unmark) that this customer's review showed up on Google — Google
+// doesn't report who reviewed, so this is the admin's confirmation. Once
+// marked, the request can't be resent.
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const admin = await getCurrentAdmin();
+  if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const { id } = await params;
+  const { reviewed } = await req.json().catch(() => ({}));
+  if (typeof reviewed !== "boolean") return NextResponse.json({ error: "reviewed is required" }, { status: 400 });
+
+  const { error } = await getSupabaseAdmin()
+    .from("review_requests")
+    .update({ reviewed_at: reviewed ? new Date().toISOString() : null })
+    .eq("id", id);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ ok: true });
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

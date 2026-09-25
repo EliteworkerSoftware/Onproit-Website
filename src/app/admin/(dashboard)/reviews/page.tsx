@@ -12,6 +12,7 @@ interface ReviewRequest {
   sent_by: string | null;
   reminder_sent_at: string | null;
   clicked_at: string | null;
+  reviewed_at: string | null;
 }
 
 // After this many days a resend goes out as the follow-up wording (matches
@@ -133,13 +134,31 @@ export default function AdminReviewsPage() {
   async function resend(r: ReviewRequest) {
     const followUp = isFollowUp(r);
     const what = followUp ? "a friendly follow-up" : "the review request again";
-    if (!confirm(`Send ${r.customer_name} ${what}?`)) return;
+    // Google doesn't tell us who actually posted — an open is the best hint
+    // they may already have, so double-check before nagging them.
+    const question = r.clicked_at
+      ? `${r.customer_name} opened your review page on ${formatDate(r.clicked_at)} — they may have already left a review. Send ${what} anyway?`
+      : `Send ${r.customer_name} ${what}?`;
+    if (!confirm(question)) return;
     setBusyId(r.id);
     const res = await fetch(`/api/admin/reviews/${r.id}`, { method: "POST" });
     const data = await res.json().catch(() => ({}));
     setBusyId(null);
     if (!res.ok) alert(data.error || "Failed to resend");
     else setSendNotice(`Resent to ${r.customer_name}${data.kind === "follow-up" ? " (as a follow-up)" : ""}.`);
+    load();
+  }
+
+  async function setReviewed(r: ReviewRequest, reviewed: boolean) {
+    setBusyId(r.id);
+    const res = await fetch(`/api/admin/reviews/${r.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reviewed }),
+    });
+    const data = await res.json().catch(() => ({}));
+    setBusyId(null);
+    if (!res.ok) alert(data.error || "Failed to update");
     load();
   }
 
@@ -157,6 +176,7 @@ export default function AdminReviewsPage() {
     return {
       sent: list.length,
       clicked,
+      reviewed: list.filter((r) => r.reviewed_at).length,
       rate: list.length ? Math.round((clicked / list.length) * 100) : 0,
     };
   }, [requests]);
@@ -281,7 +301,7 @@ export default function AdminReviewsPage() {
             </div>
           </form>
 
-          <div className="grid grid-cols-3 gap-4 rounded-xl border border-gray-200 bg-white p-6 text-center">
+          <div className="grid grid-cols-2 gap-4 rounded-xl border border-gray-200 bg-white p-6 text-center sm:grid-cols-4">
             <div>
               <p className="text-2xl font-bold text-gray-900">{stats.sent}</p>
               <p className="text-xs text-gray-500">Requests sent</p>
@@ -289,6 +309,10 @@ export default function AdminReviewsPage() {
             <div>
               <p className="text-2xl font-bold text-gray-900">{stats.clicked}</p>
               <p className="text-xs text-gray-500">Opened review page</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-gray-900">{stats.reviewed}</p>
+              <p className="text-xs text-gray-500">Reviews confirmed</p>
             </div>
             <div>
               <p className="text-2xl font-bold text-gray-900">{stats.rate}%</p>
@@ -301,8 +325,9 @@ export default function AdminReviewsPage() {
       <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
         <h2 className="text-lg font-semibold text-gray-900">Sent requests</h2>
         <p className="mt-1 text-sm text-gray-500">
-          &ldquo;Opened&rdquo; means they clicked through to your Google review page. Google doesn&apos;t say whether
-          they finished writing it, so check your Business Profile for new reviews.
+          &ldquo;Opened&rdquo; means they clicked through to your Google review page. Google doesn&apos;t say who
+          actually posted a review, so when you see theirs on your Business Profile, click{" "}
+          <strong>Mark as reviewed</strong> — that stops any more resends to them.
         </p>
 
         {!requests ? (
@@ -317,7 +342,11 @@ export default function AdminReviewsPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-medium text-gray-900">{r.customer_name}</span>
                     <span className="text-gray-500">{r.customer_email}</span>
-                    {r.clicked_at ? (
+                    {r.reviewed_at ? (
+                      <span className="flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700 uppercase">
+                        <Star className="h-3 w-3 fill-amber-400 text-amber-500" /> Reviewed {formatDate(r.reviewed_at)}
+                      </span>
+                    ) : r.clicked_at ? (
                       <span className="flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-semibold text-green-700 uppercase">
                         <CheckCircle2 className="h-3 w-3" /> Opened {formatDate(r.clicked_at)}
                       </span>
@@ -346,14 +375,33 @@ export default function AdminReviewsPage() {
                   </p>
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
-                  <button
-                    onClick={() => resend(r)}
-                    disabled={busyId === r.id}
-                    title={isFollowUp(r) ? "Sends the friendly follow-up version" : "Sends the same email again"}
-                    className="flex items-center gap-1 text-xs font-medium text-brand hover:underline disabled:opacity-50"
-                  >
-                    <RotateCw className="h-3.5 w-3.5" /> Resend
-                  </button>
+                  {r.reviewed_at ? (
+                    <button
+                      onClick={() => setReviewed(r, false)}
+                      disabled={busyId === r.id}
+                      className="text-xs font-medium text-gray-500 hover:underline disabled:opacity-50"
+                    >
+                      Undo reviewed
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => resend(r)}
+                        disabled={busyId === r.id}
+                        title={isFollowUp(r) ? "Sends the friendly follow-up version" : "Sends the same email again"}
+                        className="flex items-center gap-1 text-xs font-medium text-brand hover:underline disabled:opacity-50"
+                      >
+                        <RotateCw className="h-3.5 w-3.5" /> Resend
+                      </button>
+                      <button
+                        onClick={() => setReviewed(r, true)}
+                        disabled={busyId === r.id}
+                        className="flex items-center gap-1 text-xs font-medium text-amber-600 hover:underline disabled:opacity-50"
+                      >
+                        <Star className="h-3.5 w-3.5" /> Mark as reviewed
+                      </button>
+                    </>
+                  )}
                   <button
                     onClick={() => remove(r)}
                     disabled={busyId === r.id}

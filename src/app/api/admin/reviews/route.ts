@@ -19,7 +19,7 @@ export async function GET() {
     getReviewLink(supabase),
     supabase
       .from("review_requests")
-      .select("id, created_at, customer_name, customer_email, note, sent_by, reminder_sent_at, clicked_at")
+      .select("id, created_at, customer_name, customer_email, note, sent_by, reminder_sent_at, clicked_at, reviewed_at")
       .order("created_at", { ascending: false })
       .limit(500),
     supabase.from("profiles").select("id, full_name, email").order("full_name", { ascending: true }),
@@ -61,6 +61,24 @@ export async function POST(req: NextRequest) {
   }
 
   if (!body.force) {
+    // Someone who already left a review can't leave another from the same
+    // Google account — asking again just annoys them.
+    const { data: reviewed } = await supabase
+      .from("review_requests")
+      .select("reviewed_at")
+      .ilike("customer_email", email)
+      .not("reviewed_at", "is", null)
+      .limit(1);
+    if (reviewed && reviewed.length > 0) {
+      return NextResponse.json(
+        {
+          duplicate: true,
+          error: `${email} already left a review (marked ${new Date(reviewed[0].reviewed_at).toLocaleDateString("en-US")}). Send another request anyway?`,
+        },
+        { status: 409 }
+      );
+    }
+
     const since = new Date(Date.now() - DUPLICATE_WINDOW_DAYS * 86_400_000).toISOString();
     const { data: recent } = await supabase
       .from("review_requests")
