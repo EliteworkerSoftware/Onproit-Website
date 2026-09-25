@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { BellRing, CheckCircle2, ExternalLink, Mail, Send, Star, Trash2 } from "lucide-react";
+import { CheckCircle2, ExternalLink, Mail, RotateCw, Send, Star, Trash2 } from "lucide-react";
 
 interface ReviewRequest {
   id: string;
@@ -14,8 +14,9 @@ interface ReviewRequest {
   clicked_at: string | null;
 }
 
-// Offer a follow-up once a request has sat unopened this long.
-const REMINDER_AFTER_DAYS = 5;
+// After this many days a resend goes out as the follow-up wording (matches
+// FOLLOW_UP_AFTER_DAYS in the resend API route).
+const FOLLOW_UP_AFTER_DAYS = 3;
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
@@ -129,13 +130,16 @@ export default function AdminReviewsPage() {
     load();
   }
 
-  async function remind(r: ReviewRequest) {
-    if (!confirm(`Send ${r.customer_name} one friendly follow-up?`)) return;
+  async function resend(r: ReviewRequest) {
+    const followUp = isFollowUp(r);
+    const what = followUp ? "a friendly follow-up" : "the review request again";
+    if (!confirm(`Send ${r.customer_name} ${what}?`)) return;
     setBusyId(r.id);
     const res = await fetch(`/api/admin/reviews/${r.id}`, { method: "POST" });
     const data = await res.json().catch(() => ({}));
     setBusyId(null);
-    if (!res.ok) alert(data.error || "Failed to send reminder");
+    if (!res.ok) alert(data.error || "Failed to resend");
+    else setSendNotice(`Resent to ${r.customer_name}${data.kind === "follow-up" ? " (as a follow-up)" : ""}.`);
     load();
   }
 
@@ -157,9 +161,10 @@ export default function AdminReviewsPage() {
     };
   }, [requests]);
 
-  function reminderDue(r: ReviewRequest) {
-    if (r.clicked_at || r.reminder_sent_at) return false;
-    return Date.now() - new Date(r.created_at).getTime() > REMINDER_AFTER_DAYS * 86_400_000;
+  // Matches the server: after this many days a resend goes out as the
+  // follow-up wording instead of repeating the original.
+  function isFollowUp(r: ReviewRequest) {
+    return Date.now() - new Date(r.created_at).getTime() > FOLLOW_UP_AFTER_DAYS * 86_400_000;
   }
 
   return (
@@ -325,19 +330,30 @@ export default function AdminReviewsPage() {
                   <p className="mt-0.5 text-xs text-gray-400">
                     Sent {formatDate(r.created_at)}
                     {r.sent_by && ` by ${r.sent_by}`}
-                    {r.reminder_sent_at && ` · reminder sent ${formatDate(r.reminder_sent_at)}`}
+                    {r.reminder_sent_at && (
+                      <span className="font-medium text-gray-500">
+                        {" "}
+                        · Last resent{" "}
+                        {new Date(r.reminder_sent_at).toLocaleString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    )}
                   </p>
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
-                  {reminderDue(r) && (
-                    <button
-                      onClick={() => remind(r)}
-                      disabled={busyId === r.id}
-                      className="flex items-center gap-1 text-xs font-medium text-brand hover:underline disabled:opacity-50"
-                    >
-                      <BellRing className="h-3.5 w-3.5" /> Send reminder
-                    </button>
-                  )}
+                  <button
+                    onClick={() => resend(r)}
+                    disabled={busyId === r.id}
+                    title={isFollowUp(r) ? "Sends the friendly follow-up version" : "Sends the same email again"}
+                    className="flex items-center gap-1 text-xs font-medium text-brand hover:underline disabled:opacity-50"
+                  >
+                    <RotateCw className="h-3.5 w-3.5" /> Resend
+                  </button>
                   <button
                     onClick={() => remove(r)}
                     disabled={busyId === r.id}
