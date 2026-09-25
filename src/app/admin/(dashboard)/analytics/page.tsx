@@ -507,6 +507,7 @@ function TargetKeywordsPanel() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [regionFilter, setRegionFilter] = useState("all");
+  const [sourceFilter, setSourceFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newKeyword, setNewKeyword] = useState("");
@@ -632,6 +633,7 @@ function TargetKeywordsPanel() {
       new: keywords.filter((k) => k.status === "discovered" && newIds.has(k.id)).length,
       high: keywords.filter((k) => k.priority === "high").length,
       outOfArea: keywords.filter((k) => k.region === "out_of_area").length,
+      research: keywords.filter((k) => k.source === "dataforseo" || k.source === "agent").length,
     };
   }, [keywords, newIds]);
 
@@ -645,9 +647,13 @@ function TargetKeywordsPanel() {
       } else if (statusFilter !== "all" && k.status !== statusFilter) return false;
       if (priorityFilter !== "all" && k.priority !== priorityFilter) return false;
       if (regionFilter !== "all" && (k.region ?? "unspecified") !== regionFilter) return false;
+      // "research" = everything DataForSEO found, whether you or the agent ran it.
+      if (sourceFilter === "research") {
+        if (k.source !== "dataforseo" && k.source !== "agent") return false;
+      } else if (sourceFilter !== "all" && k.source !== sourceFilter) return false;
       return true;
     });
-  }, [keywords, newIds, search, statusFilter, priorityFilter, regionFilter]);
+  }, [keywords, newIds, search, statusFilter, priorityFilter, regionFilter, sourceFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / KEYWORDS_PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -671,13 +677,15 @@ function TargetKeywordsPanel() {
     setPage(1);
   }
 
-  const hasActiveFilters = search !== "" || statusFilter !== "all" || priorityFilter !== "all" || regionFilter !== "all";
+  const hasActiveFilters =
+    search !== "" || statusFilter !== "all" || priorityFilter !== "all" || regionFilter !== "all" || sourceFilter !== "all";
 
   function clearFilters() {
     setSearch("");
     setStatusFilter("all");
     setPriorityFilter("all");
     setRegionFilter("all");
+    setSourceFilter("all");
     setPage(1);
   }
 
@@ -842,7 +850,16 @@ function TargetKeywordsPanel() {
       )}
 
       <div className="mt-2">
-        <FindKeywordsPanel onAdded={load} />
+        <FindKeywordsPanel
+          onAdded={() => {
+            load();
+            setStatusFilter("all");
+            setPriorityFilter("all");
+            setRegionFilter("all");
+            setSearch("");
+            updateFilter(setSourceFilter, "dataforseo");
+          }}
+        />
       </div>
 
       {regionSummary && (
@@ -898,6 +915,14 @@ function TargetKeywordsPanel() {
               >
                 {counts.outOfArea} outside area
               </button>
+              {counts.research > 0 && (
+                <button
+                  onClick={() => updateFilter(setSourceFilter, "research")}
+                  className="rounded-full bg-purple-50 px-3 py-1 font-medium text-purple-600 hover:bg-purple-100"
+                >
+                  {counts.research} from DataForSEO
+                </button>
+              )}
               <span className="rounded-full bg-gray-100 px-3 py-1 font-medium text-gray-500">{counts.total} total</span>
             </div>
           )}
@@ -940,6 +965,18 @@ function TargetKeywordsPanel() {
               <option value="in_area">In service area</option>
               <option value="out_of_area">Outside service area</option>
               <option value="unspecified">No town mentioned</option>
+            </select>
+            <select
+              value={sourceFilter}
+              onChange={(e) => updateFilter(setSourceFilter, e.target.value)}
+              className="rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            >
+              <option value="all">All sources</option>
+              <option value="search_console">From Search Console</option>
+              <option value="research">From DataForSEO research (all)</option>
+              <option value="dataforseo">From your DataForSEO searches</option>
+              <option value="agent">From the agent&apos;s research</option>
+              <option value="manual">Added by you</option>
             </select>
             {hasActiveFilters && (
               <button onClick={clearFilters} className="text-xs font-medium text-gray-500 hover:underline">
