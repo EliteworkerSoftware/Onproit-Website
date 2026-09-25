@@ -45,27 +45,45 @@ export function trackedReviewUrl(token: string) {
   return `${SITE_URL}/review/${token}`;
 }
 
+export interface ReviewSender {
+  id: string;
+  firstName: string;
+  fullName: string;
+  email: string;
+}
+
+// Any admin can be the sender a request goes out as ("Send as" in Admin →
+// Reviews) — the customer sees that person's name and replies reach them.
+export async function getReviewSender(supabase: SupabaseClient, id: string): Promise<ReviewSender | null> {
+  const { data } = await supabase.from("profiles").select("id, full_name, email").eq("id", id).maybeSingle();
+  if (!data) return null;
+  const fullName = data.full_name?.trim() || data.email;
+  return { id: data.id, fullName, firstName: fullName.split(/[\s@]+/)[0], email: data.email };
+}
+
 export async function sendReviewRequestEmail(params: {
   to: string;
   customerName: string;
   token: string;
   note?: string | null;
-  senderName: string;
+  sender: ReviewSender;
   isReminder?: boolean;
 }) {
   const firstName = params.customerName.trim().split(/\s+/)[0];
-  // From the real monitored inbox with a person's name on it — personal asks
-  // get far more reviews than a noreply@, and replies come straight to us.
+  // Sent from the real monitored inbox (the address Mailgun is authorized
+  // for) with the chosen admin's name on it — personal asks get far more
+  // reviews than a noreply@ — and Reply-To goes to that admin directly.
   const inbox = (process.env.CONTACT_TO_EMAIL || EMAIL).trim();
   await sendMail({
     to: params.to,
-    from: `${params.senderName} at ONPRO IT <${inbox}>`,
+    from: `${params.sender.firstName} at ONPRO IT <${inbox}>`,
+    replyTo: params.sender.email,
     subject: params.isReminder ? `Quick follow-up, ${firstName}` : `${firstName}, how did we do?`,
     react: ReviewRequestEmail({
       firstName,
       reviewLink: trackedReviewUrl(params.token),
       note: params.note,
-      senderName: params.senderName,
+      senderName: params.sender.firstName,
       isReminder: params.isReminder,
     }),
   });

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/current-admin";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { isMailerConfigured } from "@/lib/mailer";
-import { getReviewLink, sendReviewRequestEmail } from "@/lib/review-requests";
+import { getReviewLink, getReviewSender, sendReviewRequestEmail } from "@/lib/review-requests";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Asking the same customer twice in a month is pushy; the admin can still
@@ -15,13 +15,14 @@ export async function GET() {
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const supabase = getSupabaseAdmin();
-  const [link, { data, error }] = await Promise.all([
+  const [link, { data, error }, { data: admins }] = await Promise.all([
     getReviewLink(supabase),
     supabase
       .from("review_requests")
       .select("id, created_at, customer_name, customer_email, note, sent_by, reminder_sent_at, clicked_at")
       .order("created_at", { ascending: false })
       .limit(500),
+    supabase.from("profiles").select("id, full_name, email").order("full_name", { ascending: true }),
   ]);
 
   if (error) {
@@ -31,7 +32,12 @@ export async function GET() {
       { status: 500 }
     );
   }
-  return NextResponse.json({ reviewLink: link, requests: data });
+  return NextResponse.json({
+    reviewLink: link,
+    requests: data,
+    senders: (admins ?? []).map((a) => ({ id: a.id, name: a.full_name?.trim() || a.email })),
+    currentUserId: admin.id,
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -72,11 +78,12 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const token = randomUUID();
-  const senderName = admin.full_name?.trim().split(/\s+/)[0] || "The team";
+  const sender = await getReviewSender(supabase, typeof body.senderId === "string" ? body.senderId : admin.id);
+  if (!sender) return NextResponse.json({ error: "Pick who the email is from" }, { status: 400 });
 
+  const token = randomUUID();
   try {
-    await sendReviewRequestEmail({ to: email, customerName: name, token, note, senderName });
+    await sendReviewRequestEmail({ to: email, customerName: name, token, note, sender });
   } catch (err) {
     console.error("Review request email error:", err);
     return NextResponse.json({ error: "The email couldn't be sent — try again in a minute" }, { status: 502 });
@@ -87,7 +94,8 @@ export async function POST(req: NextRequest) {
     customer_email: email,
     note,
     token,
-    sent_by: admin.full_name || admin.email,
+    sent_by: sender.fullName,
+    sender_id: sender.id,
   });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 

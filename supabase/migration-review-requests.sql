@@ -17,3 +17,7 @@ create index if not exists review_requests_created_at_idx on review_requests (cr
 create index if not exists review_requests_email_idx on review_requests (lower(customer_email));
 
 alter table review_requests enable row level security;
+
+-- Which admin the request was sent as (Admin → Reviews "Send as"), so the
+-- follow-up comes from the same person. Safe to re-run.
+alter table review_requests add column if not exists sender_id uuid;

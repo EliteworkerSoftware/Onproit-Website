@@ -40,12 +40,19 @@ export default function AdminReviewsPage() {
   const [sendError, setSendError] = useState("");
   const [sendNotice, setSendNotice] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [senders, setSenders] = useState<{ id: string; name: string }[]>([]);
+  const [senderId, setSenderId] = useState("");
 
   async function fetchData() {
     const res = await fetch("/api/admin/reviews");
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Failed to load");
-    return data as { reviewLink: string | null; requests: ReviewRequest[] };
+    return data as {
+      reviewLink: string | null;
+      requests: ReviewRequest[];
+      senders: { id: string; name: string }[];
+      currentUserId: string;
+    };
   }
 
   async function load() {
@@ -63,6 +70,8 @@ export default function AdminReviewsPage() {
       .then((data) => {
         if (cancelled) return;
         setRequests(data.requests);
+        setSenders(data.senders);
+        setSenderId(data.currentUserId);
         setSavedLink(data.reviewLink);
         setReviewLink(data.reviewLink ?? "");
       })
@@ -100,7 +109,7 @@ export default function AdminReviewsPage() {
     const res = await fetch("/api/admin/reviews", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, note, force }),
+      body: JSON.stringify({ name, email, note, force, senderId }),
     });
     const data = await res.json().catch(() => ({}));
     setSending(false);
@@ -174,6 +183,19 @@ export default function AdminReviewsPage() {
           </p>
 
           <div className="mt-4 space-y-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700">Send as</label>
+              <select value={senderId} onChange={(e) => setSenderId(e.target.value)} className={inputClasses}>
+                {senders.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-gray-400">
+                The email is signed with their first name, and customer replies go to their inbox.
+              </p>
+            </div>
             <div>
               <label className="text-sm font-medium text-gray-700">Customer name</label>
               <input value={name} onChange={(e) => setName(e.target.value)} required className={inputClasses} placeholder="Jane Smith" />

@@ -13,11 +13,13 @@ export async function sendMail({
   subject,
   react,
   from,
+  replyTo,
 }: {
   to: string | string[];
   subject: string;
   react: ReactElement;
   from?: string;
+  replyTo?: string;
 }): Promise<void> {
   if (!isMailerConfigured()) {
     throw new Error("Mailgun is not configured: set MAILGUN_API_KEY and MAILGUN_DOMAIN in .env.local.");
@@ -33,5 +35,6 @@ export async function sendMail({
     subject,
     html,
     text,
+    ...(replyTo ? { "h:Reply-To": replyTo } : {}),
   });
 }
