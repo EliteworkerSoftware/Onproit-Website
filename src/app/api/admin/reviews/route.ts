@@ -35,7 +35,8 @@ export async function GET() {
   return NextResponse.json({
     reviewLink: link,
     requests: data,
-    senders: (admins ?? []).map((a) => ({ id: a.id, name: a.full_name?.trim() || a.email })),
+    // Name plus email, since one person can have several admin logins.
+    senders: (admins ?? []).map((a) => ({ id: a.id, name: a.full_name?.trim() ? `${a.full_name.trim()} (${a.email})` : a.email })),
     currentUserId: admin.id,
   });
 }
