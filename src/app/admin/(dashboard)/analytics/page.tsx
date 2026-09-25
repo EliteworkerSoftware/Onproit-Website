@@ -2,6 +2,8 @@
 
 import { Fragment, FormEvent, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
+import FindKeywordsPanel from "@/components/admin/FindKeywordsPanel";
+import { KEYWORD_SOURCE_LABEL } from "@/lib/research-seeds";
 import {
   Bot,
   ChevronDown,
@@ -327,11 +329,6 @@ interface TrackedKeyword {
   score: { score: number; priority: string; demand: number; closeness: number; area: number };
 }
 
-const SOURCE_LABEL: Record<string, string> = {
-  search_console: "from Search Console",
-  agent: "suggested by agent",
-  manual: "manual",
-};
 
 const PRIORITY_BADGE_CLASSES: Record<string, string> = {
   high: "rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-red-600",
@@ -787,8 +784,9 @@ function TargetKeywordsPanel() {
         }
       >
       <p className="mt-1 text-xs text-gray-400">
-        Auto-synced daily from Search Console, plus weekly suggestions from the content agent. Queue
-        anything worth chasing — it gets written on the next morning run.
+        Auto-synced daily from Search Console, plus real searches found through DataForSEO research (weekly by
+        the content agent, or any time with Find new keywords). Queue anything worth chasing — it gets written
+        on the next morning run.
       </p>
 
       {!showAddForm ? (
@@ -842,6 +840,10 @@ function TargetKeywordsPanel() {
           </p>
         </form>
       )}
+
+      <div className="mt-2">
+        <FindKeywordsPanel onAdded={load} />
+      </div>
 
       {regionSummary && (
         <p
@@ -976,7 +978,7 @@ function TargetKeywordsPanel() {
                       {status.label}
                     </span>
                     <span className="text-[10px] uppercase tracking-wide text-gray-400">
-                      {SOURCE_LABEL[k.source] ?? "manual"}
+                      {KEYWORD_SOURCE_LABEL[k.source] ?? k.source}
                     </span>
                     {k.region === "out_of_area" && (
                       <span className="rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-orange-600">
