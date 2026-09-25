@@ -6,8 +6,9 @@ import { getReviewSender, sendReviewRequestEmail } from "@/lib/review-requests";
 // Within this long of the original, a resend repeats the original email
 // (e.g. "I never got it"); after that it's the friendlier follow-up.
 const FOLLOW_UP_AFTER_DAYS = 3;
-// Guards against double-clicks and back-to-back resends to the same person.
-const MIN_HOURS_BETWEEN_RESENDS = 1;
+// Only guards against an accidental double-click — resending is a manual
+// decision, so it shouldn't be blocked for long.
+const MIN_MINUTES_BETWEEN_RESENDS = 2;
 
 // Resend a review request. reminder_sent_at records the most recent resend.
 export async function POST(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -28,8 +29,8 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   }
 
   const lastSent = new Date(request.reminder_sent_at ?? request.created_at).getTime();
-  if (Date.now() - lastSent < MIN_HOURS_BETWEEN_RESENDS * 3_600_000) {
-    return NextResponse.json({ error: "This was just sent — wait an hour before resending" }, { status: 429 });
+  if (Date.now() - lastSent < MIN_MINUTES_BETWEEN_RESENDS * 60_000) {
+    return NextResponse.json({ error: "This was sent less than 2 minutes ago — give it a moment to arrive" }, { status: 429 });
   }
   const isReminder = Date.now() - new Date(request.created_at).getTime() > FOLLOW_UP_AFTER_DAYS * 86_400_000;
 

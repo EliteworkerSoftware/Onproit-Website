@@ -20,7 +20,13 @@ interface ReviewRequest {
 const FOLLOW_UP_AFTER_DAYS = 3;
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  return new Date(iso).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }
 
 const inputClasses =
@@ -42,6 +48,7 @@ export default function AdminReviewsPage() {
   const [sendError, setSendError] = useState("");
   const [sendNotice, setSendNotice] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [listNotice, setListNotice] = useState<{ ok: boolean; text: string } | null>(null);
   const [senders, setSenders] = useState<{ id: string; name: string }[]>([]);
   const [senderId, setSenderId] = useState("");
 
@@ -141,11 +148,18 @@ export default function AdminReviewsPage() {
       : `Send ${r.customer_name} ${what}?`;
     if (!confirm(question)) return;
     setBusyId(r.id);
+    setListNotice(null);
     const res = await fetch(`/api/admin/reviews/${r.id}`, { method: "POST" });
     const data = await res.json().catch(() => ({}));
     setBusyId(null);
-    if (!res.ok) alert(data.error || "Failed to resend");
-    else setSendNotice(`Resent to ${r.customer_name}${data.kind === "follow-up" ? " (as a follow-up)" : ""}.`);
+    setListNotice(
+      res.ok
+        ? {
+            ok: true,
+            text: `Resent to ${r.customer_name} (${r.customer_email})${data.kind === "follow-up" ? " as a follow-up" : ""}.`,
+          }
+        : { ok: false, text: data.error || "The resend failed — try again." }
+    );
     load();
   }
 
@@ -158,7 +172,7 @@ export default function AdminReviewsPage() {
     });
     const data = await res.json().catch(() => ({}));
     setBusyId(null);
-    if (!res.ok) alert(data.error || "Failed to update");
+    if (!res.ok) setListNotice({ ok: false, text: data.error || "Failed to update" });
     load();
   }
 
@@ -330,6 +344,16 @@ export default function AdminReviewsPage() {
           <strong>Mark as reviewed</strong> — that stops any more resends to them.
         </p>
 
+        {listNotice && (
+          <p
+            className={`mt-4 rounded-lg border p-3 text-sm ${
+              listNotice.ok ? "border-green-200 bg-green-50 text-green-700" : "border-red-200 bg-red-50 text-red-700"
+            }`}
+          >
+            {listNotice.text}
+          </p>
+        )}
+
         {!requests ? (
           <p className="mt-4 text-sm text-gray-500">{loadError ? "" : "Loading…"}</p>
         ) : requests.length === 0 ? (
@@ -362,14 +386,7 @@ export default function AdminReviewsPage() {
                     {r.reminder_sent_at && (
                       <span className="font-medium text-gray-500">
                         {" "}
-                        · Last resent{" "}
-                        {new Date(r.reminder_sent_at).toLocaleString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                          hour: "numeric",
-                          minute: "2-digit",
-                        })}
+                        · Last resent {formatDate(r.reminder_sent_at)}
                       </span>
                     )}
                   </p>
