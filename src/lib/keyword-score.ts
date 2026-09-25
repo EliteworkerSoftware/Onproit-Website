@@ -24,6 +24,12 @@ export interface Score {
   area: number;
 }
 
+// A Search Console average position from a handful of appearances isn't a
+// real ranking — e.g. "it support" at #1 from 27 appearances and no clicks
+// is the listing shown to people searching right next to the office. Below
+// this many appearances the position is treated as unknown.
+export const MIN_IMPRESSIONS_FOR_POSITION = 30;
+
 export const HIGH_AT = 45;
 export const MEDIUM_AT = 25;
 
@@ -37,7 +43,7 @@ function demandPoints(searches: number): number {
 // Page 2 (11–20) is the sweet spot — real ranking, one push from page 1.
 // Already on page 1 still counts (moving up gets more clicks) but less.
 function closenessFactor(position: number | null): number {
-  if (position == null) return 0.6; // not ranking yet: a fresh opportunity
+  if (position == null) return 0.6; // not ranking yet, or too little data to trust the position
   if (position <= 10) return 0.9;
   if (position <= 20) return 1;
   if (position <= 30) return 0.85;
@@ -56,7 +62,8 @@ function areaFactor(region: string | null): number {
 export function scoreKeyword(k: ScoreInput): Score {
   const searches = Math.max(k.searchVolume ?? 0, k.impressions ?? 0);
   const demand = demandPoints(searches);
-  const closeness = closenessFactor(k.position);
+  const trustedPosition = (k.impressions ?? 0) >= MIN_IMPRESSIONS_FOR_POSITION ? k.position : null;
+  const closeness = closenessFactor(trustedPosition);
   const area = areaFactor(k.region);
   const score = Math.round(demand * closeness * area);
   const priority: Priority = score >= HIGH_AT ? "high" : score >= MEDIUM_AT ? "medium" : "low";

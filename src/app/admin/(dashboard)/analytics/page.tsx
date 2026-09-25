@@ -347,7 +347,7 @@ const PRIORITY_LEGEND: { key: string; label: string; description: string }[] = [
 
 // "Opportunity 48" chip; hovering shows the three parts it's built from.
 function OpportunityChip({ score }: { score: TrackedKeyword["score"] }) {
-  const why = `Opportunity ${score.score} = demand ${score.demand} (how many people search it, 0–100) × closeness ${score.closeness} (how near page 1 we rank) × area ${score.area} (1 = names a place we serve, 0.75 = no place, 0 = outside the area)`;
+  const why = `Opportunity ${score.score} = demand ${score.demand} (how many people search it, 0–100) × closeness ${score.closeness} (how near page 1 we rank; 0.6 when not ranking or under 30 appearances) × area ${score.area} (1 = names a place we serve, 0.75 = no place, 0 = outside the area)`;
   return (
     <span title={why} className="cursor-help rounded-full border border-gray-200 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
       Opportunity {score.score}
