@@ -81,23 +81,30 @@ export async function POST(req: NextRequest) {
   const sender = await getReviewSender(supabase, typeof body.senderId === "string" ? body.senderId : admin.id);
   if (!sender) return NextResponse.json({ error: "Pick who the email is from" }, { status: 400 });
 
+  // Record first, then send: an email must never go out without a row to
+  // track it. If sending fails, the row is removed again.
   const token = randomUUID();
+  const { data: row, error } = await supabase
+    .from("review_requests")
+    .insert({
+      customer_name: name,
+      customer_email: email,
+      note,
+      token,
+      sent_by: sender.fullName,
+      sender_id: sender.id,
+    })
+    .select("id")
+    .single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
   try {
     await sendReviewRequestEmail({ to: email, customerName: name, token, note, sender });
   } catch (err) {
     console.error("Review request email error:", err);
+    await supabase.from("review_requests").delete().eq("id", row.id);
     return NextResponse.json({ error: "The email couldn't be sent — try again in a minute" }, { status: 502 });
   }
-
-  const { error } = await supabase.from("review_requests").insert({
-    customer_name: name,
-    customer_email: email,
-    note,
-    token,
-    sent_by: sender.fullName,
-    sender_id: sender.id,
-  });
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   return NextResponse.json({ ok: true });
 }
