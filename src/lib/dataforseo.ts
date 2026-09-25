@@ -45,7 +45,12 @@ export async function fetchSearchVolumes(keywords: string[]): Promise<{ volumes:
   });
 
   const data = await res.json().catch(() => null);
-  if (!res.ok || !data) throw new Error(`DataForSEO request failed (${res.status})`);
+  if (!res.ok || !data) {
+    // Keep DataForSEO's own explanation (e.g. account not verified, no
+    // balance) — a bare status code isn't actionable.
+    const reason = data?.status_message ?? data?.tasks?.[0]?.status_message ?? "";
+    throw new Error(`DataForSEO request failed (${res.status})${reason ? `: ${reason}` : ""}`);
+  }
 
   const costUsd = typeof data.cost === "number" ? data.cost : ESTIMATED_COST_PER_REQUEST_USD;
   const task = data.tasks?.[0];
