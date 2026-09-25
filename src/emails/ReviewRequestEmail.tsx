@@ -38,16 +38,12 @@ export function ReviewRequestEmail({
 
   return (
     <EmailLayout preview="Would you share how we did? It takes about 30 seconds.">
-      {/* Rating card. Every piece is centered explicitly and linked on its
+      {/* Google logo + stars. Every piece is centered explicitly and linked on its
           own — some webmail (e.g. IONOS) ignores inherited text-align, and
           a link wrapping block elements breaks layout in others. */}
       <Section
         align="center"
         style={{
-          backgroundColor: COLORS.paperAlt,
-          border: `1px solid ${COLORS.line}`,
-          borderRadius: 16,
-          padding: "24px 16px 20px",
           marginBottom: 28,
           textAlign: "center",
         }}
