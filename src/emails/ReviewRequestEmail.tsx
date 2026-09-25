@@ -25,38 +25,56 @@ export function ReviewRequestEmail({
   senderName: string;
   isReminder?: boolean;
 }) {
-  const body = { margin: "0 0 20px", fontFamily: FONT_STACK, fontSize: 16, lineHeight: "26px", color: COLORS.ink };
+  // Every block sets text-align itself rather than inheriting it — some webmail
+  // (e.g. IONOS) drops inherited centering inside nested tables.
+  const body = {
+    margin: "0 0 20px",
+    fontFamily: FONT_STACK,
+    fontSize: 16,
+    lineHeight: "26px",
+    color: COLORS.ink,
+    textAlign: "center" as const,
+  };
 
   return (
     <EmailLayout preview="Would you share how we did? It takes about 30 seconds.">
-      {/* Rating card — the whole card links to the review page. */}
+      {/* Rating card. Every piece is centered explicitly and linked on its
+          own — some webmail (e.g. IONOS) ignores inherited text-align, and
+          a link wrapping block elements breaks layout in others. */}
       <Section
+        align="center"
         style={{
           backgroundColor: COLORS.paperAlt,
           border: `1px solid ${COLORS.line}`,
           borderRadius: 16,
           padding: "24px 16px 20px",
           marginBottom: 28,
+          textAlign: "center",
         }}
       >
-        <Link href={reviewLink} style={{ textDecoration: "none" }}>
+        <Link href={reviewLink} style={{ display: "block", textAlign: "center", textDecoration: "none" }}>
           <Img src={GOOGLE_G} width="44" height="44" alt="Google" style={{ display: "block", margin: "0 auto" }} />
-          <Text
-            style={{
-              margin: "12px 0 6px",
-              fontFamily: FONT_STACK,
-              fontSize: 34,
-              lineHeight: "36px",
-              letterSpacing: "6px",
-              color: STAR_GOLD,
-            }}
-          >
-            ★★★★★
-          </Text>
-          <Text style={{ margin: 0, fontFamily: FONT_STACK, fontSize: 13, color: COLORS.inkMuted }}>
-            Rate your experience with ONPRO IT on Google
-          </Text>
         </Link>
+        <Text
+          style={{
+            margin: "12px 0 6px",
+            fontFamily: FONT_STACK,
+            fontSize: 34,
+            lineHeight: "36px",
+            letterSpacing: "6px",
+            // letter-spacing adds a gap after the last star too; offset it so
+            // the row sits truly centered.
+            paddingLeft: "6px",
+            textAlign: "center",
+          }}
+        >
+          <Link href={reviewLink} style={{ color: STAR_GOLD, textDecoration: "none" }}>
+            ★★★★★
+          </Link>
+        </Text>
+        <Text style={{ margin: 0, fontFamily: FONT_STACK, fontSize: 13, color: COLORS.inkMuted, textAlign: "center" }}>
+          Rate your experience with ONPRO IT on Google
+        </Text>
       </Section>
 
       <Heading
@@ -67,6 +85,7 @@ export function ReviewRequestEmail({
           fontWeight: 700,
           letterSpacing: "-0.02em",
           color: COLORS.ink,
+          textAlign: "center",
         }}
       >
         {isReminder ? `Quick follow-up, ${firstName}` : `How did we do, ${firstName}?`}
@@ -81,43 +100,45 @@ export function ReviewRequestEmail({
       </Text>
 
       <Spacer height={8} />
-      <Button
-        href={reviewLink}
-        style={{
-          backgroundColor: COLORS.brand,
-          color: "#ffffff",
-          fontFamily: FONT_STACK,
-          fontSize: 15,
-          fontWeight: 600,
-          textDecoration: "none",
-          padding: "10px 26px 10px 10px",
-          borderRadius: 999,
-          display: "inline-block",
-          whiteSpace: "nowrap",
-        }}
-      >
-        <span
+      <Section align="center" style={{ textAlign: "center" }}>
+        <Button
+          href={reviewLink}
           style={{
-            display: "inline-block",
-            backgroundColor: "#ffffff",
+            backgroundColor: COLORS.brand,
+            color: "#ffffff",
+            fontFamily: FONT_STACK,
+            fontSize: 15,
+            fontWeight: 600,
+            textDecoration: "none",
+            padding: "10px 26px 10px 10px",
             borderRadius: 999,
-            padding: 6,
-            marginRight: 10,
-            verticalAlign: "middle",
-            lineHeight: 0,
+            display: "inline-block",
+            whiteSpace: "nowrap",
           }}
         >
-          <img src={GOOGLE_G} width="18" height="18" alt="" style={{ display: "block", border: 0 }} />
-        </span>
-        <span style={{ verticalAlign: "middle" }}>Review us on Google</span>
-      </Button>
+          <span
+            style={{
+              display: "inline-block",
+              backgroundColor: "#ffffff",
+              borderRadius: 999,
+              padding: 6,
+              marginRight: 10,
+              verticalAlign: "middle",
+              lineHeight: 0,
+            }}
+          >
+            <img src={GOOGLE_G} width="18" height="18" alt="" style={{ display: "block", border: 0 }} />
+          </span>
+          <span style={{ verticalAlign: "middle" }}>Review us on Google</span>
+        </Button>
+      </Section>
       <Spacer height={28} />
 
       <Text style={{ ...body, margin: "0 0 4px" }}>It only takes about 30 seconds. Thank you!</Text>
       <Text style={{ ...body, margin: 0, fontWeight: 600 }}>— {senderName}, ONPRO IT</Text>
 
       <Spacer height={36} />
-      <Text style={{ margin: 0, fontFamily: FONT_STACK, fontSize: 12, lineHeight: "20px", color: COLORS.inkMuted }}>
+      <Text style={{ margin: 0, fontFamily: FONT_STACK, fontSize: 12, lineHeight: "20px", color: COLORS.inkMuted, textAlign: "center" }}>
         ONPRO IT · {ADDRESS_FULL} · {PHONE_DISPLAY}
         <br />
         Something not right? Just reply to this email — it comes straight to us.
