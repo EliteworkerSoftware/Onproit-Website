@@ -500,6 +500,21 @@ const STATUS_BADGE: Record<string, { label: string; className: string }> = {
 };
 
 const KEYWORDS_PAGE_SIZE = 20;
+// Content Effort: how long published work stays in view before it folds
+// into "Past work", and how much of the archive to show at a time.
+const RECENT_DAYS = 14;
+const PAST_PAGE_SIZE = 20;
+
+function EffortGroup({ title, count, empty, children }: { title: string; count: number; empty: string; children: ReactNode }) {
+  return (
+    <div className="mt-4">
+      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+        {title} <span className="font-normal text-gray-400">({count})</span>
+      </p>
+      {count === 0 ? <p className="mt-2 text-sm text-gray-400">{empty}</p> : <ul className="mt-1 divide-y divide-brand/10">{children}</ul>}
+    </div>
+  );
+}
 
 function TargetKeywordsPanel() {
   const [keywords, setKeywords] = useState<TrackedKeyword[] | null>(null);
@@ -595,16 +610,33 @@ function TargetKeywordsPanel() {
   // most-recently-touched first. This is the "what have we actually done"
   // view, kept separate and always visible rather than buried behind the
   // filters used for browsing the much larger discovery list.
-  const inProgress = useMemo(() => {
-    if (!keywords) return [];
-    return keywords
-      .filter((k) => k.status === "queued" || k.status === "in_review" || k.status === "done")
-      .sort((a, b) => {
-        const aTime = a.content_published_at || a.queued_at || a.created_at;
-        const bTime = b.content_published_at || b.queued_at || b.created_at;
-        return bTime.localeCompare(aTime);
-      });
-  }, [keywords]);
+  // Content Effort splits into work in flight (always shown), what was
+  // published in the last RECENT_DAYS, and older published work, which stays
+  // folded away in "Past work" so the section doesn't grow forever.
+  const [loadedAt] = useState(() => Date.now());
+  const effort = useMemo(() => {
+    const empty = { active: [] as TrackedKeyword[], recent: [] as TrackedKeyword[], past: [] as TrackedKeyword[] };
+    if (!keywords) return empty;
+    const touched = (k: TrackedKeyword) => k.content_published_at || k.queued_at || k.created_at;
+    const newestFirst = (a: TrackedKeyword, b: TrackedKeyword) => touched(b).localeCompare(touched(a));
+    const cutoff = new Date(loadedAt - RECENT_DAYS * 86_400_000).toISOString();
+    const done = keywords.filter((k) => k.status === "done").sort(newestFirst);
+    return {
+      // Waiting on you first, then the queue.
+      active: keywords
+        .filter((k) => k.status === "queued" || k.status === "in_review")
+        .sort((a, b) => (a.status === b.status ? newestFirst(a, b) : a.status === "in_review" ? -1 : 1)),
+      recent: done.filter((k) => touched(k) >= cutoff),
+      past: done.filter((k) => touched(k) < cutoff),
+    };
+  }, [keywords, loadedAt]);
+  const [pastOpen, setPastOpen] = useState(false);
+  const [pastSearch, setPastSearch] = useState("");
+  const [pastShown, setPastShown] = useState(PAST_PAGE_SIZE);
+  const pastFiltered = useMemo(() => {
+    const q = pastSearch.trim().toLowerCase();
+    return q ? effort.past.filter((k) => k.keyword.toLowerCase().includes(q) || k.content_url?.toLowerCase().includes(q)) : effort.past;
+  }, [effort.past, pastSearch]);
 
   const regionSummary = useMemo(() => {
     if (!keywords || keywords.length === 0) return null;
@@ -689,6 +721,67 @@ function TargetKeywordsPanel() {
     setPage(1);
   }
 
+  function renderEffortRow(k: TrackedKeyword) {
+    const status = STATUS_BADGE[k.status] ?? STATUS_BADGE.discovered;
+    return (
+      <li key={k.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-medium text-gray-900">{k.keyword}</span>
+            <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${status.className}`}>
+              {status.label}
+            </span>
+          </div>
+          <p className="mt-0.5 text-xs text-gray-500">
+            {k.last_impressions != null
+              ? `${k.last_impressions} searches (30d) · #${Number(k.last_position).toFixed(1)} avg position · ${k.last_clicks} clicked`
+              : "No Search Console data yet"}
+            {k.status === "queued" && k.queued_at && ` · queued ${formatTimestamp(k.queued_at)}`}
+          </p>
+          {k.status === "in_review" && k.content_url && (
+            <p className="mt-0.5 text-xs text-purple-600">
+              Content is written and waiting for you on{" "}
+              <a href="/admin/content-review" className="underline">
+                Content Review
+              </a>
+              {" "}&mdash; publishing it marks this done automatically.
+            </p>
+          )}
+          {k.status === "done" && (
+            <p className="mt-0.5 text-xs text-green-600">
+              {k.content_url ? (
+                <>
+                  Published{k.content_published_at ? ` ${formatTimestamp(k.content_published_at)}` : ""}:{" "}
+                  <a href={k.content_url} target="_blank" rel="noopener noreferrer" className="underline">
+                    {k.content_url}
+                  </a>
+                </>
+              ) : (
+                "Marked done — no content URL recorded"
+              )}
+            </p>
+          )}
+        </div>
+        {(k.status === "queued" || k.status === "in_review") && (
+          <div className="flex shrink-0 items-center gap-3">
+            <button
+              onClick={() => handleMarkDone(k.id)}
+              className="text-xs font-medium text-green-600 hover:underline"
+            >
+              Mark done
+            </button>
+            <button
+              onClick={() => setStatus(k.id, k.status === "in_review" ? "queued" : "discovered")}
+              className="text-xs font-medium text-gray-500 hover:underline"
+            >
+              {k.status === "in_review" ? "Send back to queue" : "Unqueue"}
+            </button>
+          </div>
+        )}
+      </li>
+    );
+  }
+
   return (
     <>
       <Section
@@ -709,73 +802,62 @@ function TargetKeywordsPanel() {
 
         {!keywords ? (
           <p className="mt-4 text-sm text-gray-500">Loading…</p>
-        ) : inProgress.length === 0 ? (
+        ) : effort.active.length + effort.recent.length + effort.past.length === 0 ? (
           <p className="mt-4 text-sm text-gray-500">
             Nothing queued yet. Find a keyword worth targeting below and click &quot;Queue for content.&quot;
           </p>
         ) : (
-          <ul className="mt-4 divide-y divide-brand/10">
-            {inProgress.map((k) => {
-              const status = STATUS_BADGE[k.status] ?? STATUS_BADGE.discovered;
-              return (
-                <li key={k.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-medium text-gray-900">{k.keyword}</span>
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${status.className}`}>
-                        {status.label}
-                      </span>
-                    </div>
-                    <p className="mt-0.5 text-xs text-gray-500">
-                      {k.last_impressions != null
-                        ? `${k.last_impressions} searches (30d) · #${Number(k.last_position).toFixed(1)} avg position · ${k.last_clicks} clicked`
-                        : "No Search Console data yet"}
-                      {k.status === "queued" && k.queued_at && ` · queued ${formatTimestamp(k.queued_at)}`}
-                    </p>
-                    {k.status === "in_review" && k.content_url && (
-                      <p className="mt-0.5 text-xs text-purple-600">
-                        Content is written and waiting for you on{" "}
-                        <a href="/admin/content-review" className="underline">
-                          Content Review
-                        </a>
-                        {" "}&mdash; publishing it marks this done automatically.
-                      </p>
+          <>
+            <EffortGroup title="In progress" count={effort.active.length} empty="Nothing queued or waiting for review right now.">
+              {effort.active.map(renderEffortRow)}
+            </EffortGroup>
+            <EffortGroup
+              title={`Published in the last ${RECENT_DAYS} days`}
+              count={effort.recent.length}
+              empty="Nothing published in the last two weeks."
+            >
+              {effort.recent.map(renderEffortRow)}
+            </EffortGroup>
+
+            {effort.past.length > 0 && (
+              <div className="mt-5 border-t border-brand/10 pt-4">
+                <button
+                  onClick={() => setPastOpen(!pastOpen)}
+                  className="flex items-center gap-1.5 text-sm font-semibold text-brand hover:underline"
+                >
+                  <ChevronDown className={`h-4 w-4 transition-transform ${pastOpen ? "rotate-180" : ""}`} />
+                  {pastOpen ? "Hide past work" : `Past work (${effort.past.length} published earlier)`}
+                </button>
+                {pastOpen && (
+                  <div className="mt-3">
+                    <input
+                      value={pastSearch}
+                      onChange={(e) => {
+                        setPastSearch(e.target.value);
+                        setPastShown(PAST_PAGE_SIZE);
+                      }}
+                      placeholder="Search past work by keyword or page"
+                      className="w-full max-w-sm rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm"
+                    />
+                    {pastFiltered.length === 0 ? (
+                      <p className="mt-3 text-sm text-gray-500">No past work matches.</p>
+                    ) : (
+                      <ul className="mt-2 divide-y divide-brand/10">{pastFiltered.slice(0, pastShown).map(renderEffortRow)}</ul>
                     )}
-                    {k.status === "done" && (
-                      <p className="mt-0.5 text-xs text-green-600">
-                        {k.content_url ? (
-                          <>
-                            Published{k.content_published_at ? ` ${formatTimestamp(k.content_published_at)}` : ""}:{" "}
-                            <a href={k.content_url} target="_blank" rel="noopener noreferrer" className="underline">
-                              {k.content_url}
-                            </a>
-                          </>
-                        ) : (
-                          "Marked done — no content URL recorded"
-                        )}
-                      </p>
+                    {pastFiltered.length > pastShown && (
+                      <button
+                        onClick={() => setPastShown(pastShown + PAST_PAGE_SIZE)}
+                        className="mt-2 text-xs font-medium text-brand hover:underline"
+                      >
+                        Show {Math.min(PAST_PAGE_SIZE, pastFiltered.length - pastShown)} more of{" "}
+                        {pastFiltered.length - pastShown} remaining
+                      </button>
                     )}
                   </div>
-                  {(k.status === "queued" || k.status === "in_review") && (
-                    <div className="flex shrink-0 items-center gap-3">
-                      <button
-                        onClick={() => handleMarkDone(k.id)}
-                        className="text-xs font-medium text-green-600 hover:underline"
-                      >
-                        Mark done
-                      </button>
-                      <button
-                        onClick={() => setStatus(k.id, k.status === "in_review" ? "queued" : "discovered")}
-                        className="text-xs font-medium text-gray-500 hover:underline"
-                      >
-                        {k.status === "in_review" ? "Send back to queue" : "Unqueue"}
-                      </button>
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+                )}
+              </div>
+            )}
+          </>
         )}
       </Section>
 
