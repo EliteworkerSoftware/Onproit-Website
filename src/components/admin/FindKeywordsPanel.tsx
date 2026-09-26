@@ -158,7 +158,7 @@ export default function FindKeywordsPanel({ onAdded }: { onAdded: () => void }) 
             value={custom}
             onChange={(e) => setCustom(e.target.value)}
             rows={2}
-            placeholder="e.g. it support for dental offices nj"
+            placeholder="e.g. it support for restaurants nj"
             className="mt-1 w-full rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm"
           />
         </label>

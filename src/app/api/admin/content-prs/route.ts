@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/current-admin";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
-import { revisionsByTarget } from "@/lib/content-revisions";
+import { groupsFromFiles, revisionsByTarget } from "@/lib/content-revisions";
 import { getPreviewUrl, gh, isContentAgentPr, isGitHubConfigured, pathsInBody, type PullRequest } from "@/lib/github";
 
 // Open pull requests from the content agent, with what changed and a link to
@@ -18,7 +18,7 @@ export async function GET() {
     const prs = await Promise.all(
       open.map(async (pr) => {
         const [files, previewUrl] = await Promise.all([
-          gh<{ filename: string; status: string; additions: number; deletions: number }[]>(
+          gh<{ filename: string; status: string; additions: number; deletions: number; patch?: string }[]>(
             `/pulls/${pr.number}/files?per_page=100`
           ),
           getPreviewUrl(pr.head.sha).catch(() => null),
@@ -32,6 +32,7 @@ export async function GET() {
           previewUrl,
           pages: pathsInBody(pr.body),
           revisions: revisions[String(pr.number)] ?? [],
+          changes: groupsFromFiles(files),
           files: files.map((f) => ({ name: f.filename, status: f.status, additions: f.additions, deletions: f.deletions })),
         };
       })

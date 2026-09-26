@@ -240,7 +240,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Managed IT, cybersecurity, and structured cabling for Voorhees, NJ businesses along the Route 73 corridor, from ONPRO IT.",
     keywords: "managed IT services Voorhees NJ, IT support Voorhees, IT company Voorhees NJ",
     intro:
-      "Voorhees is home to a dense mix of medical offices, professional services firms, and retail businesses along the Route 73 corridor — all of which depend on technology that doesn't go down. ONPRO IT provides managed IT, cybersecurity, structured cabling, and network installation for Voorhees businesses, backed by a local team based just minutes away.",
+      "Voorhees is home to a dense mix of small businesses, service companies, retail shops, and restaurants along the Route 73 corridor — all of which depend on technology that doesn't go down. ONPRO IT provides managed IT, cybersecurity, structured cabling, and network installation for Voorhees businesses, backed by a local team based just minutes away.",
     areasServed: [
       "Voorhees (08043)",
       "Echelon",
@@ -251,15 +251,15 @@ export const LOCATIONS_DATA: LocationData[] = [
     ],
     whyChoose: [
       "Local response — headquartered nearby in Berlin Township, not a call center hours away",
-      "Experience with medical and professional offices common throughout the Voorhees business community",
+      "Experience with the small businesses, service companies, and retail shops common throughout the Voorhees business community",
       "One team for everything — managed IT, cabling, and network installation without juggling separate vendors",
       "Proactive monitoring that catches problems before they interrupt your day",
     ],
     faqs: [
       {
-        question: "Do you support medical and professional offices in Voorhees?",
+        question: "What kinds of Voorhees businesses do you support?",
         answer:
-          "Yes — we work with medical practices, professional services firms, and retail businesses throughout Voorhees, understanding the day-to-day demands each type of office places on its network and systems.",
+          "We work with small businesses, service companies, retail shops, and restaurants throughout Voorhees, and we understand the day-to-day demands each type of business places on its network and systems.",
       },
       {
         question: "How fast can you respond to an IT issue in Voorhees?",
@@ -295,7 +295,7 @@ export const LOCATIONS_DATA: LocationData[] = [
     ],
     whyChoose: [
       "Down the road, not across the state — our Berlin Township headquarters is minutes from Marlton",
-      "Familiar with the retail, medical, and office mix along Route 73 and Route 70",
+      "Familiar with the retail, restaurant, and small-office mix along Route 73 and Route 70",
       "One team for everything — managed IT, cabling, and network installation without juggling separate vendors",
       "Proactive monitoring that catches problems before they interrupt your day",
     ],
@@ -303,7 +303,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       {
         question: "Do you support small businesses along Route 73 and Route 70 in Marlton?",
         answer:
-          "Yes — we work with the mix of retail, medical, and professional office businesses common along the Route 73 and Route 70 corridors in Marlton and greater Evesham Township.",
+          "Yes — we work with the mix of retail, restaurant, service, and small office businesses common along the Route 73 and Route 70 corridors in Marlton and greater Evesham Township.",
       },
       {
         question: "How quickly can you respond to an IT issue in Marlton?",
@@ -370,7 +370,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Managed IT, cybersecurity, and structured cabling for Wilmington, DE businesses, from ONPRO IT — serving Delaware's financial and corporate hub.",
     keywords: "managed IT services Wilmington DE, IT support Wilmington Delaware, IT company Wilmington DE",
     intro:
-      "Wilmington's mix of financial, legal, and corporate offices depends on technology and security that can't afford downtime. ONPRO IT provides managed IT, cybersecurity, structured cabling, and network installation for Wilmington businesses, bringing the same full-service approach we provide throughout New Jersey and Pennsylvania into Delaware's largest city.",
+      "Wilmington's small businesses, service companies, and growing offices depend on technology and security that can't afford downtime. ONPRO IT provides managed IT, cybersecurity, structured cabling, and network installation for Wilmington businesses, bringing the same full-service approach we provide throughout New Jersey and Pennsylvania into Delaware's largest city.",
     areasServed: [
       "Wilmington",
       "Newark, DE",
@@ -566,7 +566,7 @@ export const LOCATIONS_DATA: LocationData[] = [
     ],
     whyChoose: [
       "We build the roadmap and then implement it ourselves — no separate consultant and IT vendor to coordinate between",
-      "Familiar with the law firms, healthcare practices, and professional services common throughout Philadelphia",
+      "Familiar with the small businesses, service companies, restaurants, and nonprofits common throughout Philadelphia",
       "Quarterly Business Reviews keep your technology budget and plans aligned as your business grows",
       "An unbiased second opinion if you already have an internal IT team or another provider",
     ],
@@ -579,7 +579,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       {
         question: "What industries do your Philadelphia IT consulting clients work in?",
         answer:
-          "We work with Philadelphia law firms, healthcare and dental practices, financial and professional services firms, and nonprofits — businesses that need a technology plan tied to their budget and compliance requirements, not just someone to call when something breaks.",
+          "We work with Philadelphia small businesses, service companies, restaurants, retailers, and nonprofits — businesses that need a technology plan tied to their budget and goals, not just someone to call when something breaks.",
       },
       {
         question: "Can IT consulting work alongside our current IT provider in Philadelphia?",
@@ -604,7 +604,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Managed IT, cybersecurity, and cabling for Toms River, Brick, and Lakewood businesses in Ocean County, NJ. Call ONPRO IT for a free assessment.",
     keywords: "managed IT services Ocean County NJ, IT support Toms River, IT company Brick NJ, IT services Lakewood NJ",
     intro:
-      "From the medical offices around Toms River to the retail and hospitality businesses along the Jersey Shore, Ocean County companies depend on technology that doesn't go down during their busiest season. ONPRO IT provides managed IT, cybersecurity, structured cabling, and network installation for Ocean County businesses, backed by a team headquartered a short drive away in Berlin Township.",
+      "From the service businesses around Toms River to the retail and hospitality businesses along the Jersey Shore, Ocean County companies depend on technology that doesn't go down during their busiest season. ONPRO IT provides managed IT, cybersecurity, structured cabling, and network installation for Ocean County businesses, backed by a team headquartered a short drive away in Berlin Township.",
     areasServed: [
       "Toms River",
       "Brick",
@@ -616,7 +616,7 @@ export const LOCATIONS_DATA: LocationData[] = [
       "Point Pleasant",
     ],
     whyChoose: [
-      "Experience with the healthcare, hospitality, and retail businesses common throughout Ocean County",
+      "Experience with the hospitality, restaurant, retail, and service businesses common throughout Ocean County",
       "Proactive monitoring that catches problems before a busy shore-season weekend, not after",
       "One team for everything — managed IT, cabling, and network installation without juggling separate vendors",
       "Predictable flat-rate monthly pricing — no surprise invoices",

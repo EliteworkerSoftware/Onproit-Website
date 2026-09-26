@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Loader2, MessageSquareWarning, XCircle } from "lucide-react";
+import { CheckCircle2, ChevronDown, Loader2, MessageSquareWarning, XCircle } from "lucide-react";
+import type { DiffGroup } from "@/lib/text-diff";
+import ChangesView from "./ChangesView";
 
 export interface RevisionItem {
   id: string;
@@ -15,6 +17,45 @@ export interface RevisionItem {
 
 function when(iso: string) {
   return new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+}
+
+// "See what changed" under a finished revision: loads the before/after text.
+function RevisionChanges({ id }: { id: string }) {
+  const [open, setOpen] = useState(false);
+  const [groups, setGroups] = useState<DiffGroup[] | null | undefined>(undefined);
+  const [error, setError] = useState("");
+
+  async function toggle() {
+    const next = !open;
+    setOpen(next);
+    if (!next || groups !== undefined) return;
+    const res = await fetch(`/api/admin/content-revisions/${id}/changes`);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) setError(data.error || "Couldn't load the changes");
+    else setGroups(data.changes);
+  }
+
+  return (
+    <div className="mt-2">
+      <button onClick={toggle} className="flex items-center gap-1 text-xs font-semibold text-brand hover:underline">
+        <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
+        {open ? "Hide what changed" : "See what changed"}
+      </button>
+      {open && (
+        <div className="mt-2 rounded-lg border border-gray-200 bg-white p-3">
+          {error ? (
+            <p className="text-sm text-red-600">{error}</p>
+          ) : groups === undefined ? (
+            <p className="text-sm text-gray-500">Loading…</p>
+          ) : groups === null ? (
+            <p className="text-sm text-gray-500">The before and after weren&apos;t recorded for this revision.</p>
+          ) : (
+            <ChangesView groups={groups} />
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
 
 // "Request changes" for one item on the Content Review page (a batch of
@@ -84,6 +125,7 @@ export default function RevisionControls({
                   {r.status === "failed" && `Couldn't revise${r.result_note ? `: ${r.result_note}` : ""}`}
                 </span>
               </p>
+              {r.status === "done" && <RevisionChanges id={r.id} />}
             </li>
           ))}
         </ul>
