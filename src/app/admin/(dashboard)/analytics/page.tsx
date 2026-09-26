@@ -4,6 +4,7 @@ import { Fragment, FormEvent, useEffect, useMemo, useRef, useState, type ReactNo
 import Image from "next/image";
 import FindKeywordsPanel from "@/components/admin/FindKeywordsPanel";
 import { KEYWORD_SOURCE_LABEL } from "@/lib/research-seeds";
+import { MIN_IMPRESSIONS_FOR_POSITION } from "@/lib/keyword-score";
 import {
   Bot,
   ChevronDown,
@@ -329,6 +330,33 @@ interface TrackedKeyword {
   score: { score: number; priority: string; demand: number; closeness: number; area: number };
 }
 
+
+// What Search Console says about a keyword, in words that can't mislead.
+// Impressions are times the site was SHOWN, not how many people searched.
+// And an average position from a handful of showings, like the searches
+// run next to the office, isn't a real ranking, so it's only shown once
+// there are enough of them.
+function searchConsoleSummary(k: TrackedKeyword): string {
+  if (k.last_impressions == null) return "No Search Console data yet";
+  const clicks = `${k.last_clicks ?? 0} click${k.last_clicks === 1 ? "" : "s"}`;
+  if (k.last_impressions >= MIN_IMPRESSIONS_FOR_POSITION && k.last_position != null) {
+    return `Shown in Google ${k.last_impressions} times (30d) · #${Number(k.last_position).toFixed(1)} avg position · ${clicks}`;
+  }
+  return `Shown in Google only ${k.last_impressions} time${k.last_impressions === 1 ? "" : "s"} (30d) · ${clicks} · too few to judge ranking. Most searchers aren't seeing the site yet`;
+}
+
+// An average position only once there are enough showings for it to mean
+// something (see searchConsoleSummary).
+function AvgPosition({ impressions, position, change }: { impressions: number; position: number; change: number | null }) {
+  if (impressions < MIN_IMPRESSIONS_FOR_POSITION) {
+    return <span title="A position from this few showings (often searches made near the office) isn't a real ranking.">too few showings to judge ranking</span>;
+  }
+  return (
+    <>
+      #{position.toFixed(1)} avg (<PositionChangeBadge change={change} /> vs. prior period)
+    </>
+  );
+}
 
 const PRIORITY_BADGE_CLASSES: Record<string, string> = {
   high: "rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-red-600",
@@ -734,8 +762,9 @@ function TargetKeywordsPanel() {
           </div>
           <p className="mt-0.5 text-xs text-gray-500">
             {k.last_impressions != null
-              ? `${k.last_impressions} searches (30d) · #${Number(k.last_position).toFixed(1)} avg position · ${k.last_clicks} clicked`
+              ? searchConsoleSummary(k)
               : "No Search Console data yet"}
+            {k.search_volume != null && ` · ~${k.search_volume.toLocaleString()}/mo searches in your market`}
             {k.status === "queued" && k.queued_at && ` · queued ${formatTimestamp(k.queued_at)}`}
           </p>
           {k.status === "in_review" && k.content_url && (
@@ -1108,7 +1137,7 @@ function TargetKeywordsPanel() {
                   {k.target_url && <p className="text-xs text-gray-400">{k.target_url}</p>}
                   <p className="mt-0.5 text-xs text-gray-500">
                     {k.last_impressions != null
-                      ? `${k.last_impressions} searches (30d) · #${Number(k.last_position).toFixed(1)} avg position · ${k.last_clicks} clicked (last synced ${k.last_synced_at ? formatTimestamp(k.last_synced_at) : "—"})`
+                      ? `${searchConsoleSummary(k)} (last synced ${k.last_synced_at ? formatTimestamp(k.last_synced_at) : "—"})`
                       : "No Search Console data recorded yet"}
                     {k.search_volume != null && ` · ~${k.search_volume.toLocaleString()}/mo searches in your market`}
                     {" · "}added {formatTimestamp(k.created_at)}
@@ -1789,8 +1818,8 @@ export default function AdminAnalyticsPage() {
                       <li key={q.query} className="text-sm">
                         <p className="wrap-break-word text-gray-700">{q.query}</p>
                         <p className="mt-0.5 text-xs text-gray-400">
-                          {q.impressions} shown · {q.clicks} clicked · #{q.position.toFixed(1)} avg{" "}
-                          (<PositionChangeBadge change={q.positionChange} /> vs. prior period)
+                          {q.impressions} shown · {q.clicks} clicked ·{" "}
+                          <AvgPosition impressions={q.impressions} position={q.position} change={q.positionChange} />
                         </p>
                       </li>
                     ))}
@@ -1821,8 +1850,7 @@ export default function AdminAnalyticsPage() {
                         </div>
                         <p className="mt-0.5 wrap-break-word text-xs text-gray-500">&quot;{p.query}&quot;</p>
                         <p className="mt-0.5 text-xs text-gray-400">
-                          #{p.position.toFixed(1)} avg (<PositionChangeBadge change={p.positionChange} /> vs. prior
-                          period)
+                          <AvgPosition impressions={p.impressions} position={p.position} change={p.positionChange} />
                         </p>
                       </li>
                     ))}
