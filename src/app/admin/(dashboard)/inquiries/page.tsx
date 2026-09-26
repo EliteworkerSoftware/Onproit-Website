@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Archive, ArchiveRestore, Inbox, Mail, Trash2 } from "lucide-react";
 import ReplyForm from "@/components/admin/ReplyForm";
+import InfoTip from "@/components/admin/InfoTip";
 
 interface ContactMessage {
   id: string;
@@ -100,7 +101,10 @@ export default function AdminInquiriesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Inquiries</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900">
+        Inquiries
+        <InfoTip text={"Every message sent through the Contact form on onproit.com. You're also emailed each one as it arrives. Inbox holds messages you haven't dealt with; Archive holds ones you've handled. Nothing here is deleted unless you click Delete."} />
+      </h1>
       <p className="mt-1 text-sm text-gray-500">Messages submitted through the contact form.</p>
 
       <div className="mt-6 inline-flex rounded-lg border border-gray-200 bg-white p-1">
@@ -114,6 +118,13 @@ export default function AdminInquiriesPage() {
           >
             {t === "inbox" ? <Inbox className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
             {t}
+            <InfoTip
+              text={
+                t === "inbox"
+                  ? "Messages you haven't archived yet: new ones and ones you're still working on."
+                  : "Messages you've archived because they're handled. They're kept here so you can look them up later, and Restore moves one back to the Inbox."
+              }
+            />
           </button>
         ))}
       </div>
@@ -140,12 +151,12 @@ export default function AdminInquiriesPage() {
                 <p className="text-base font-semibold text-gray-900">
                   {m.name}
                   {!m.read && (
-                    <span className="ml-2 rounded-full bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand">
-                      New
-                    </span>
+                    <InfoTip text="You haven't seen this message yet. The badge clears a moment after it's shown on your screen here.">
+                      <span className="ml-2 rounded-full bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand">New</span>
+                    </InfoTip>
                   )}
                 </p>
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-gray-400" title="When the message was submitted">
                   {new Date(m.created_at).toLocaleString("en-US", {
                     month: "short",
                     day: "numeric",
@@ -157,7 +168,9 @@ export default function AdminInquiriesPage() {
 
               <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
                 <div>
-                  <dt className={FIELD_LABEL_CLASSES}>Email</dt>
+                  <dt className={`flex items-center gap-1 ${FIELD_LABEL_CLASSES}`}>
+                    Email <InfoTip text={"The email address they typed into the form. Click it to write to them from your own email program, or use Reply below to send from the ONPRO IT inbox."} />
+                  </dt>
                   <dd className={FIELD_VALUE_CLASSES}>
                     <a href={`mailto:${m.email}`} className="hover:text-brand">
                       {m.email}
@@ -165,7 +178,9 @@ export default function AdminInquiriesPage() {
                   </dd>
                 </div>
                 <div>
-                  <dt className={FIELD_LABEL_CLASSES}>Phone</dt>
+                  <dt className={`flex items-center gap-1 ${FIELD_LABEL_CLASSES}`}>
+                    Phone <InfoTip text={"The phone number they left, if any. Click it to call (on a phone or a computer set up for calling)."} />
+                  </dt>
                   <dd className={FIELD_VALUE_CLASSES}>
                     {m.phone ? (
                       <a href={`tel:${m.phone}`} className="hover:text-brand">
@@ -177,13 +192,17 @@ export default function AdminInquiriesPage() {
                   </dd>
                 </div>
                 <div>
-                  <dt className={FIELD_LABEL_CLASSES}>Company</dt>
+                  <dt className={`flex items-center gap-1 ${FIELD_LABEL_CLASSES}`}>
+                    Company <InfoTip text={"The business name they entered. It's optional on the form, so it may be blank."} />
+                  </dt>
                   <dd className={FIELD_VALUE_CLASSES}>
                     {m.company || <span className="text-gray-400">—</span>}
                   </dd>
                 </div>
                 <div>
-                  <dt className={FIELD_LABEL_CLASSES}>Service Interest</dt>
+                  <dt className={`flex items-center gap-1 ${FIELD_LABEL_CLASSES}`}>
+                    Service Interest <InfoTip text={"The service they picked from the dropdown on the contact form, which tells you what they were asking about."} />
+                  </dt>
                   <dd className={FIELD_VALUE_CLASSES}>
                     {m.service || <span className="text-gray-400">—</span>}
                   </dd>
@@ -191,7 +210,9 @@ export default function AdminInquiriesPage() {
               </dl>
 
               <div className="mt-4">
-                <p className={FIELD_LABEL_CLASSES}>Message</p>
+                <p className={`flex items-center gap-1 ${FIELD_LABEL_CLASSES}`}>
+                  Message {<InfoTip text={"What they wrote in the message box on the contact form, word for word."} />}
+                </p>
                 {m.message ? (
                   <p className="mt-1 rounded-lg border border-gray-100 bg-gray-50 p-3 text-sm text-gray-700">
                     {m.message}
@@ -202,6 +223,7 @@ export default function AdminInquiriesPage() {
               </div>
 
               <div className="mt-4 flex flex-wrap justify-end gap-2">
+                <InfoTip text="Write a reply here and it's emailed to them from the ONPRO IT inbox, so their answer comes back to that inbox. Replying also marks the message as read. It stays in the Inbox until you archive it.">
                 <button
                   onClick={() => setReplyingTo(m)}
                   className="flex items-center gap-1.5 rounded-md bg-brand px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-dark"
@@ -209,7 +231,9 @@ export default function AdminInquiriesPage() {
                   <Mail className="h-3.5 w-3.5" />
                   Reply
                 </button>
+                </InfoTip>
                 {!m.archived ? (
+                  <InfoTip text="Move this message out of the Inbox once it's handled. It's kept under Archived, not deleted, and you can restore it any time.">
                   <button
                     onClick={() => setArchived(m.id, true)}
                     className="flex items-center gap-1.5 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
@@ -217,7 +241,9 @@ export default function AdminInquiriesPage() {
                     <Archive className="h-3.5 w-3.5" />
                     Archive
                   </button>
+                  </InfoTip>
                 ) : (
+                  <InfoTip text="Move this message back to the Inbox.">
                   <button
                     onClick={() => setArchived(m.id, false)}
                     className="flex items-center gap-1.5 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
@@ -225,7 +251,9 @@ export default function AdminInquiriesPage() {
                     <ArchiveRestore className="h-3.5 w-3.5" />
                     Restore
                   </button>
+                  </InfoTip>
                 )}
+                <InfoTip text="Permanently delete this message. This can't be undone. Use Archive instead if you might want it later.">
                 <button
                   onClick={() => remove(m.id)}
                   className="flex items-center gap-1.5 rounded-md border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
@@ -233,6 +261,7 @@ export default function AdminInquiriesPage() {
                   <Trash2 className="h-3.5 w-3.5" />
                   Delete
                 </button>
+                </InfoTip>
               </div>
             </div>
           ))

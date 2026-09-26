@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Camera } from "lucide-react";
+import InfoTip from "@/components/admin/InfoTip";
 
 interface Profile {
   id: string;
@@ -76,7 +77,10 @@ export default function AdminProfilePage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Profile</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900">
+        Profile
+        <InfoTip text={"Your own admin account: the photo and name shown in the admin menu. Other admins' profiles are theirs to change."} />
+      </h1>
       <p className="mt-1 text-sm text-gray-500">Update your avatar and display name.</p>
 
       <div className="mt-6 max-w-md rounded-xl border border-gray-200 bg-white p-6">
@@ -110,13 +114,18 @@ export default function AdminProfilePage() {
           </div>
           <div>
             <p className="text-sm font-medium text-gray-900">{profile.email}</p>
-            <p className="text-xs text-gray-500">{uploading ? "Uploading…" : "PNG, JPEG, WebP, or GIF — under 2MB"}</p>
+            <p className="flex items-center gap-1 text-xs text-gray-500">
+              {uploading ? "Uploading…" : "PNG, JPEG, WebP, or GIF — under 2MB"}
+              <InfoTip text={"Click the camera button on your picture to upload a new photo. It's shown next to your name in the admin menu."} />
+            </p>
           </div>
         </div>
 
         <form onSubmit={handleSave} className="mt-6 space-y-4">
           <div>
-            <label className="text-sm font-medium text-gray-700">Display Name</label>
+            <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+              Display Name <InfoTip text={"Your name as shown in the admin dashboard. It's also used when you send review requests (the email is signed with your first name) and on content revision requests."} />
+            </label>
             <input
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}

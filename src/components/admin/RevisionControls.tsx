@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CheckCircle2, ChevronDown, Loader2, MessageSquareWarning, XCircle } from "lucide-react";
 import type { DiffGroup } from "@/lib/text-diff";
 import ChangesView from "./ChangesView";
+import InfoTip from "@/components/admin/InfoTip";
 
 export interface RevisionItem {
   id: string;
@@ -101,7 +102,8 @@ export default function RevisionControls({
         <ul className="mb-3 space-y-2">
           {[...revisions].reverse().map((r) => (
             <li key={r.id} className="rounded-lg border border-gray-100 bg-gray-50 p-3 text-sm">
-              <p className="text-xs text-gray-400">
+              <p className="flex items-center gap-1 text-xs text-gray-400">
+                <InfoTip text="A change you (or another admin) asked for, and what the agent did about it. Waiting = not started yet; spinning = the agent is working on it; green = done (see what changed below); red = it couldn't, and says why." />
                 Changes requested {when(r.created_at)}
                 {r.requested_by && ` by ${r.requested_by}`}
               </p>
@@ -132,6 +134,7 @@ export default function RevisionControls({
       )}
 
       {!open ? (
+        <InfoTip text={"Tell the content agent what's wrong, in your own words. It edits this same item (no new copy), usually within a few minutes, and shows you exactly what it changed. Corrections about ONPRO IT itself are saved so future content gets them right. Turned off while a revision is already running."}>
         <button
           onClick={() => setOpen(true)}
           disabled={working}
@@ -141,6 +144,7 @@ export default function RevisionControls({
           <MessageSquareWarning className="h-4 w-4" />
           Request changes
         </button>
+        </InfoTip>
       ) : (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
           <label className="text-sm font-medium text-gray-800">What needs to change?</label>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
+import InfoTip from "@/components/admin/InfoTip";
 
 interface Submission {
   id: string;
@@ -49,7 +50,10 @@ export default function ReplyForm({
             <X className="h-5 w-5" />
           </button>
         </div>
-        <p className="mb-4 text-sm text-gray-500">Sending to {submission.email}</p>
+        <p className="mb-4 flex items-center gap-1 text-sm text-gray-500">
+          Sending to {submission.email}
+          <InfoTip text={"Your reply is emailed to this address from the ONPRO IT inbox, with the subject “Re: Your message to ONPRO IT”. When they answer, it lands in that inbox, not here."} />
+        </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <textarea
             required

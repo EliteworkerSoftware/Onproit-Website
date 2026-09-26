@@ -9,12 +9,12 @@ import clsx from "clsx";
 import type { AdminUser } from "@/lib/current-admin";
 
 const NAV_LINKS = [
-  { title: "Inquiries", href: "/admin/inquiries" },
-  { title: "Analytics", href: "/admin/analytics" },
-  { title: "Content Review", href: "/admin/content-review" },
-  { title: "Reviews", href: "/admin/reviews" },
-  { title: "Admin Users", href: "/admin/admin-users" },
-  { title: "Settings", href: "/admin/settings" },
+  { title: "Inquiries", href: "/admin/inquiries", help: "Messages from the website's Contact form. Read, reply, and archive them." },
+  { title: "Analytics", href: "/admin/analytics", help: "Website visits, Google search rankings, and the keywords you're targeting with content." },
+  { title: "Content Review", href: "/admin/content-review", help: "New and improved pages and blog posts the content agent wrote. Preview, request changes, then publish or reject." },
+  { title: "Reviews", href: "/admin/reviews", help: "Email customers a request to review ONPRO IT on Google, and track who opened it." },
+  { title: "Admin Users", href: "/admin/admin-users", help: "Who can sign in to this dashboard. Invite or remove admins." },
+  { title: "Settings", href: "/admin/settings", help: "Website contact info and hours, lead email recipients, service area, password, and system status." },
 ];
 
 const POLL_INTERVAL_MS = 30_000;
@@ -83,6 +83,7 @@ export default function AdminNav({ admin }: { admin: AdminUser }) {
               <Link
                 key={link.href}
                 href={link.href}
+                title={link.help}
                 className={clsx(
                   "flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   active ? "bg-white/10 text-white" : "text-white/60 hover:text-white"
@@ -177,6 +178,7 @@ export default function AdminNav({ admin }: { admin: AdminUser }) {
             <Link
               key={link.href}
               href={link.href}
+              title={link.help}
               className={clsx(
                 "flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium",
                 active ? "bg-white/10 text-white" : "text-white/60 hover:text-white"

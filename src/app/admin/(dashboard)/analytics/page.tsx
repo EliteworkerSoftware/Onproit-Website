@@ -3,13 +3,13 @@
 import { Fragment, FormEvent, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import FindKeywordsPanel from "@/components/admin/FindKeywordsPanel";
+import InfoTip from "@/components/admin/InfoTip";
 import { KEYWORD_SOURCE_LABEL } from "@/lib/research-seeds";
 import { MIN_IMPRESSIONS_FOR_POSITION } from "@/lib/keyword-score";
 import {
   Bot,
   ChevronDown,
   Eye,
-  Info,
   MapPin,
   MessageSquare,
   Monitor,
@@ -215,27 +215,8 @@ function ChartYAxis({ max, heightClass }: { max: number; heightClass: string }) 
   );
 }
 
-function InfoTooltip({ text }: { text: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <span className="relative inline-flex">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        onBlur={() => setOpen(false)}
-        aria-label="More info"
-        className="flex items-center justify-center text-gray-400 hover:text-gray-600"
-      >
-        <Info className="h-3.5 w-3.5 cursor-help" />
-      </button>
-      {open && (
-        <span className="absolute left-1/2 top-full z-20 mt-2 w-64 -translate-x-1/2 rounded-lg bg-gray-900 px-3 py-2 text-xs font-normal normal-case leading-snug text-white shadow-lg">
-          {text}
-        </span>
-      )}
-    </span>
-  );
-}
+// Section explanations use the shared hover tip.
+const InfoTooltip = InfoTip;
 
 const SECTION_STORAGE_PREFIX = "onproit-analytics-open:";
 const TOGGLE_ALL_EVENT = "onproit-analytics-toggle-all";
@@ -372,11 +353,13 @@ const PRIORITY_LEGEND: { key: string; label: string; description: string }[] = [
 
 // "Opportunity 48" chip; hovering shows the three parts it's built from.
 function OpportunityChip({ score }: { score: TrackedKeyword["score"] }) {
-  const why = `Opportunity ${score.score} = demand ${score.demand} (how many people search it, 0–100) × closeness ${score.closeness} (how near page 1 we rank; 0.6 when not ranking or under 30 appearances) × area ${score.area} (1 = names a place we serve, 0.75 = no place, 0 = outside the area)`;
+  const why = `How worth chasing this keyword is, 0–100 (45+ = High priority, 25–44 = Medium). Opportunity ${score.score} = demand ${score.demand} (how many people search it, 0–100) × closeness ${score.closeness} (how near page 1 we rank; 0.6 when not ranking or under 30 showings) × area ${score.area} (1 = names a place we serve, 0.75 = no place named, 0 = outside your service area).`;
   return (
-    <span title={why} className="cursor-help rounded-full border border-gray-200 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
-      Opportunity {score.score}
-    </span>
+    <InfoTip text={why}>
+      <span className="cursor-help rounded-full border border-gray-200 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
+        Opportunity {score.score}
+      </span>
+    </InfoTip>
   );
 }
 
@@ -442,7 +425,9 @@ function DataForSeoActivity() {
     >
       <div className="mt-4 grid grid-cols-1 gap-4 text-sm sm:grid-cols-3">
         <div>
-          <p className="text-xs text-gray-400">This month ({data.budget.month})</p>
+          <p className="flex items-center gap-1 text-xs text-gray-400">
+            This month ({data.budget.month}) {<InfoTip text={"What DataForSEO has cost so far this month against your monthly cap. Once the cap is reached, requests stop until next month. Nothing can overspend."} />}
+          </p>
           <p className="font-semibold text-gray-900">
             ${data.budget.spent.toFixed(2)} of ${data.budget.budget} · {data.budget.calls} request{data.budget.calls === 1 ? "" : "s"}
           </p>
@@ -451,11 +436,15 @@ function DataForSeoActivity() {
           </div>
         </div>
         <div>
-          <p className="text-xs text-gray-400">Search volumes measured in</p>
+          <p className="flex items-center gap-1 text-xs text-gray-400">
+            Search volumes measured in {<InfoTip text={"The area the monthly search counts come from: Google's Philadelphia TV market, which covers South Jersey, Philadelphia, and Delaware. So “90/mo” means 90 searches a month from around your service area, not nationwide."} />}
+          </p>
           <p className="font-semibold text-gray-900">{data.market}</p>
         </div>
         <div>
-          <p className="text-xs text-gray-400">When it runs</p>
+          <p className="flex items-center gap-1 text-xs text-gray-400">
+            When it runs {<InfoTip text={"It runs automatically only at these times. Your own “Find new keywords” searches also show up in the list below when you use them."} />}
+          </p>
           <p className="text-gray-700">Daily 7 AM (volumes for new keywords) · Mondays (agent research)</p>
         </div>
       </div>
@@ -469,8 +458,15 @@ function DataForSeoActivity() {
           {data.calls.map((c) => (
             <li key={c.id} className="py-2.5 text-sm">
               <button onClick={() => setOpenId(openId === c.id ? null : c.id)} className="flex w-full flex-wrap items-center gap-x-3 gap-y-1 text-left">
-                <span className="w-36 shrink-0 text-xs text-gray-400">{formatTimestamp(c.created_at)}</span>
+                <span className="w-36 shrink-0 text-xs text-gray-400" title="When this request was made. Click the row for details.">
+                  {formatTimestamp(c.created_at)}
+                </span>
                 <span
+                  title={
+                    c.kind === "volume"
+                      ? "Looked up how many people search each keyword per month in your market"
+                      : "Asked for new, related searches people make, from a few starting phrases"
+                  }
                   className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${
                     c.kind === "volume" ? "bg-brand/10 text-brand" : "bg-purple-50 text-purple-600"
                   }`}
@@ -478,7 +474,10 @@ function DataForSeoActivity() {
                   {c.kind === "volume" ? "Search volumes" : "Keyword research"}
                 </span>
                 <span className="min-w-0 flex-1 text-gray-700">{c.detail}</span>
-                <span className={`shrink-0 text-xs font-medium ${c.ok ? "text-gray-600" : "text-red-600"}`}>
+                <span
+                  title={c.ok ? "What this request cost" : "The request didn't go through (or was skipped to stay under budget), so it cost nothing"}
+                  className={`shrink-0 text-xs font-medium ${c.ok ? "text-gray-600" : "text-red-600"}`}
+                >
                   {c.ok ? `$${Number(c.cost_usd).toFixed(3)}` : "failed / skipped"}
                 </span>
               </button>
@@ -527,17 +526,47 @@ const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   new: { label: "New", className: "bg-green-600 text-white" },
 };
 
+// What each keyword status means, for the hover tips on its badge.
+const STATUS_HELP: Record<string, string> = {
+  new: "Found since you last looked at this list. The badge clears once it's been on your screen. Otherwise it's Discovered: nobody has decided to chase it yet.",
+  discovered: "Found in Google searches or keyword research, but nobody has queued it for content. Click Queue for content if it's worth chasing.",
+  queued: "Waiting for the content agent. It checks the queue every morning and writes whatever this keyword needs: a new page, a stronger existing page, or a blog post.",
+  in_review: "The agent wrote the content and it's waiting for you on Content Review. Nothing is live until you click Publish there.",
+  done: "Content for this keyword is live on the website. Watch its ranking over the next 2–6 weeks as Google re-ranks the page.",
+};
+
+// Where a keyword came from, for the hover tip on its source label.
+const SOURCE_HELP: Record<string, string> = {
+  search_console: "Google Search Console reported a real search where your site was shown. The daily sync adds these automatically.",
+  dataforseo: "Found with “Find new keywords” (DataForSEO) and added by you. It's a real search people make, even if your site isn't showing for it yet.",
+  agent: "Found by the content agent's weekly DataForSEO research: a real search related to your services.",
+  manual: "You typed this keyword in yourself with “Add keyword to track”.",
+};
+
 const KEYWORDS_PAGE_SIZE = 20;
 // Content Effort: how long published work stays in view before it folds
 // into "Past work", and how much of the archive to show at a time.
 const RECENT_DAYS = 14;
 const PAST_PAGE_SIZE = 20;
 
-function EffortGroup({ title, count, empty, children }: { title: string; count: number; empty: string; children: ReactNode }) {
+function EffortGroup({
+  title,
+  count,
+  empty,
+  help,
+  children,
+}: {
+  title: string;
+  count: number;
+  empty: string;
+  help?: string;
+  children: ReactNode;
+}) {
   return (
     <div className="mt-4">
       <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
         {title} <span className="font-normal text-gray-400">({count})</span>
+        {help && <> {" "}<InfoTip text={help} /></>}
       </p>
       {count === 0 ? <p className="mt-2 text-sm text-gray-400">{empty}</p> : <ul className="mt-1 divide-y divide-brand/10">{children}</ul>}
     </div>
@@ -756,9 +785,11 @@ function TargetKeywordsPanel() {
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-medium text-gray-900">{k.keyword}</span>
-            <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${status.className}`}>
-              {status.label}
-            </span>
+            <InfoTip text={STATUS_HELP[k.status] ?? status.label}>
+              <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${status.className}`}>
+                {status.label}
+              </span>
+            </InfoTip>
           </div>
           <p className="mt-0.5 text-xs text-gray-500">
             {k.last_impressions != null
@@ -793,18 +824,22 @@ function TargetKeywordsPanel() {
         </div>
         {(k.status === "queued" || k.status === "in_review") && (
           <div className="flex shrink-0 items-center gap-3">
+<InfoTip text={"Mark it done yourself, e.g. if you wrote the content some other way. Normally you don't need this: publishing on Content Review marks it done automatically."}>
             <button
               onClick={() => handleMarkDone(k.id)}
               className="text-xs font-medium text-green-600 hover:underline"
             >
               Mark done
             </button>
+</InfoTip>
+<InfoTip text={"Unqueue: take it out of the queue before the agent writes it. Send back to queue: the agent will write it again on its next run (reject the old version on Content Review too)."}>
             <button
               onClick={() => setStatus(k.id, k.status === "in_review" ? "queued" : "discovered")}
               className="text-xs font-medium text-gray-500 hover:underline"
             >
               {k.status === "in_review" ? "Send back to queue" : "Unqueue"}
             </button>
+</InfoTip>
           </div>
         )}
       </li>
@@ -837,11 +872,17 @@ function TargetKeywordsPanel() {
           </p>
         ) : (
           <>
-            <EffortGroup title="In progress" count={effort.active.length} empty="Nothing queued or waiting for review right now.">
+            <EffortGroup
+              title="In progress"
+              count={effort.active.length}
+              empty="Nothing queued or waiting for review right now."
+              help="Keywords the content agent is working on (Queued) or has finished and is waiting for you to publish (Ready for review). Ready for review is listed first."
+            >
               {effort.active.map(renderEffortRow)}
             </EffortGroup>
             <EffortGroup
               title={`Published in the last ${RECENT_DAYS} days`}
+              help="Content that went live in the last two weeks. After that it moves to Past work below, so this list stays short."
               count={effort.recent.length}
               empty="Nothing published in the last two weeks."
             >
@@ -856,6 +897,7 @@ function TargetKeywordsPanel() {
                 >
                   <ChevronDown className={`h-4 w-4 transition-transform ${pastOpen ? "rotate-180" : ""}`} />
                   {pastOpen ? "Hide past work" : `Past work (${effort.past.length} published earlier)`}
+                  <InfoTip text="Everything published more than two weeks ago, kept out of the way but still searchable. Nothing is ever deleted from here." />
                 </button>
                 {pastOpen && (
                   <div className="mt-3">
@@ -898,7 +940,7 @@ function TargetKeywordsPanel() {
           <>
             <Search className="h-4 w-4 text-gray-500" />
             <h2 className="text-sm font-semibold text-gray-900">Target Keywords</h2>
-            <InfoTooltip text="This list populates itself — a daily job pulls every real query Search Console sees for your site (at least 3 impressions in the trailing 30 days) with no manual entry. Priority is computed automatically from real numbers, not a guess: High = 50+ impressions and within reach of page 1 (position ≤30). Medium = decent demand (15+ impressions) further out. Low = everything else. Search Console only reports the searcher's country, never city/state, so 'Outside service area' is detected by parsing the town name in the query text itself against your real coverage area — any North/Central Jersey town gets forced to Low priority automatically regardless of demand, since you don't want to pursue that. Green 'New' means you haven't seen it yet. Click 'Queue for content' on anything worth chasing — the content agent picks it up on its next morning run and prepares the content for you to review and publish on the Content Review page." />
+            <InfoTooltip text="Every keyword being tracked. Most come in automatically: a daily job adds every real Google search your site was shown for (3+ times in 30 days), and DataForSEO research adds real searches you're not showing for yet. Each gets an Opportunity score (demand × how close to page 1 × whether it's in your service area) and a priority from that score. Keywords naming towns outside your Service Area (Settings) are always Low. Green “New” means you haven't seen it yet. Click “Queue for content” on anything worth chasing: the content agent writes it the next morning, and you publish it from Content Review." />
           </>
         }
       >
@@ -909,12 +951,14 @@ function TargetKeywordsPanel() {
       </p>
 
       {!showAddForm ? (
+<InfoTip text={"Type in a keyword yourself, e.g. one a customer used or a town + service you want to rank for. It's scored like the rest and starts showing Google data once the site appears for it."}>
         <button
           onClick={() => setShowAddForm(true)}
           className="mt-3 text-xs font-medium text-brand hover:underline"
         >
           + Add keyword to track
         </button>
+</InfoTip>
       ) : (
         <form onSubmit={handleAdd} className="mt-3 flex flex-wrap items-start gap-2 rounded-lg border border-gray-200 bg-gray-50 p-3">
           <div className="flex-1 min-w-40">
@@ -979,6 +1023,7 @@ function TargetKeywordsPanel() {
             regionSummary.inAreaPct >= 50 ? "bg-green-50 text-green-700" : "bg-amber-50 text-amber-700"
           }`}
         >
+          <InfoTip text="Of all the Google showings across your tracked keywords, how much came from searches naming places you serve (or no place at all) versus places outside your Service Area. Higher is better: it means the site is being found by customers you can actually serve." />
           {regionSummary.inAreaPct}% of search demand is inside your real service area
           {regionSummary.outOfAreaPct > 0 && ` · ${regionSummary.outOfAreaPct}% is out-of-area (North/Central Jersey, deprioritized automatically)`}
         </p>
@@ -995,50 +1040,65 @@ function TargetKeywordsPanel() {
           {counts && (
             <div className="mt-4 flex flex-wrap gap-2 text-xs">
               {counts.new > 0 && (
+<InfoTip text={"Keywords found since you last looked. Click to show only those."}>
                 <button
                   onClick={() => updateFilter(setStatusFilter, "new")}
                   className="rounded-full bg-green-600 px-3 py-1 font-medium text-white hover:bg-green-700"
                 >
                   {counts.new} new
                 </button>
+</InfoTip>
               )}
+<InfoTip text={"Keywords waiting for the content agent's next morning run. Click to show only those."}>
               <button
                 onClick={() => updateFilter(setStatusFilter, "queued")}
                 className="rounded-full bg-brand/10 px-3 py-1 font-medium text-brand hover:bg-brand/20"
               >
                 {counts.queued} queued
               </button>
+</InfoTip>
+<InfoTip text={"Keywords with an Opportunity score of 45+: real local demand and already close to page 1. The best ones to queue. Click to show only those."}>
               <button
                 onClick={() => updateFilter(setPriorityFilter, "high")}
                 className="rounded-full bg-red-50 px-3 py-1 font-medium text-red-600 hover:bg-red-100"
               >
                 {counts.high} high priority
               </button>
+</InfoTip>
+<InfoTip text={"Keywords whose content is already live on the site. Click to show only those."}>
               <button
                 onClick={() => updateFilter(setStatusFilter, "done")}
                 className="rounded-full bg-green-50 px-3 py-1 font-medium text-green-600 hover:bg-green-100"
               >
                 {counts.done} done
               </button>
+</InfoTip>
+<InfoTip text={"Keywords naming a town outside your Service Area (Settings). They're always Low priority and never get content. Click to show only those."}>
               <button
                 onClick={() => updateFilter(setRegionFilter, "out_of_area")}
                 className="rounded-full bg-orange-50 px-3 py-1 font-medium text-orange-600 hover:bg-orange-100"
               >
                 {counts.outOfArea} outside area
               </button>
+</InfoTip>
               {counts.research > 0 && (
+<InfoTip text={"Keywords found through DataForSEO research (yours or the agent's) instead of Search Console. Click to show only those."}>
                 <button
                   onClick={() => updateFilter(setSourceFilter, "research")}
                   className="rounded-full bg-purple-50 px-3 py-1 font-medium text-purple-600 hover:bg-purple-100"
                 >
                   {counts.research} from DataForSEO
                 </button>
+</InfoTip>
               )}
-              <span className="rounded-full bg-gray-100 px-3 py-1 font-medium text-gray-500">{counts.total} total</span>
+              <InfoTip text="Every keyword being tracked, in any status.">
+                <span className="rounded-full bg-gray-100 px-3 py-1 font-medium text-gray-500">{counts.total} total</span>
+              </InfoTip>
             </div>
           )}
 
           <div className="mt-3 flex flex-wrap items-center gap-2">
+            <InfoTip text={"Narrow the list. Search matches any part of the keyword. Status = where it is in the content process. Priority = its Opportunity band. Region = whether it names a place you serve. Source = where it was found. Hover any badge in the list for what it means."} />
             <input
               value={search}
               onChange={(e) => updateFilter(setSearch, e.target.value)}
@@ -1118,24 +1178,31 @@ function TargetKeywordsPanel() {
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-medium text-gray-900">{k.keyword}</span>
-                    <span className={PRIORITY_BADGE_CLASSES[k.priority] ?? PRIORITY_BADGE_CLASSES.medium}>
-                      {k.priority}
-                    </span>
+                    <InfoTip text={PRIORITY_LEGEND.find((p) => p.key === k.priority)?.description ?? "Priority from the Opportunity score."}>
+                      <span className={PRIORITY_BADGE_CLASSES[k.priority] ?? PRIORITY_BADGE_CLASSES.medium}>{k.priority}</span>
+                    </InfoTip>
                     <OpportunityChip score={k.score} />
-                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${status.className}`}>
-                      {status.label}
-                    </span>
-                    <span className="text-[10px] uppercase tracking-wide text-gray-400">
-                      {KEYWORD_SOURCE_LABEL[k.source] ?? k.source}
-                    </span>
-                    {k.region === "out_of_area" && (
-                      <span className="rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-orange-600">
-                        Outside service area
+                    <InfoTip text={STATUS_HELP[k.status === "discovered" && newIds.has(k.id) ? "new" : k.status] ?? status.label}>
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${status.className}`}>
+                        {status.label}
                       </span>
+                    </InfoTip>
+                    <InfoTip text={SOURCE_HELP[k.source] ?? "Where this keyword came from."}>
+                      <span className="cursor-help text-[10px] uppercase tracking-wide text-gray-400">
+                        {KEYWORD_SOURCE_LABEL[k.source] ?? k.source}
+                      </span>
+                    </InfoTip>
+                    {k.region === "out_of_area" && (
+                      <InfoTip text="This keyword names a place that isn't in your Service Area (Settings), so it's always Low priority and the content agent won't build pages for it. If you do serve that place, add it under Settings → Service Area.">
+                        <span className="rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-orange-600">
+                          Outside service area
+                        </span>
+                      </InfoTip>
                     )}
                   </div>
                   {k.target_url && <p className="text-xs text-gray-400">{k.target_url}</p>}
                   <p className="mt-0.5 text-xs text-gray-500">
+                    <InfoTip text="“Shown in Google” = how many times Google showed onproit.com for this search in the last 30 days (not how many people searched). Avg position = where the site appeared (1–10 is page 1), only shown once there are 30+ showings. “/mo searches in your market” = how many people search it per month around Philadelphia and South Jersey (DataForSEO), whether or not they saw you." />{" "}
                     {k.last_impressions != null
                       ? `${searchConsoleSummary(k)} (last synced ${k.last_synced_at ? formatTimestamp(k.last_synced_at) : "—"})`
                       : "No Search Console data recorded yet"}
@@ -1172,32 +1239,40 @@ function TargetKeywordsPanel() {
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
                   {k.status === "discovered" && (
+<InfoTip text={"Ask the content agent to write for this keyword. It runs every morning and decides what's needed: a new page, a stronger existing page, or a blog post. You'll get an email when it's ready on Content Review."}>
                     <button
                       onClick={() => setStatus(k.id, "queued")}
                       className="text-xs font-medium text-brand hover:underline"
                     >
                       Queue for content
                     </button>
+</InfoTip>
                   )}
                   {(k.status === "queued" || k.status === "in_review") && (
                     <>
+<InfoTip text={"Mark it done yourself, e.g. if you wrote the content some other way. Normally you don't need this: publishing on Content Review marks it done automatically."}>
                       <button
                         onClick={() => handleMarkDone(k.id)}
                         className="text-xs font-medium text-green-600 hover:underline"
                       >
                         Mark done
                       </button>
+</InfoTip>
+<InfoTip text={"Unqueue: take it out of the queue before the agent writes it. Send back to queue: the agent will write it again on its next run (reject the old version on Content Review too)."}>
                       <button
                         onClick={() => setStatus(k.id, k.status === "in_review" ? "queued" : "discovered")}
                         className="text-xs font-medium text-gray-500 hover:underline"
                       >
                         {k.status === "in_review" ? "Send back to queue" : "Unqueue"}
                       </button>
+</InfoTip>
                     </>
                   )}
+<InfoTip text={"Stop tracking this keyword and delete it from the list. If Google keeps showing the site for it, the daily sync may add it back."}>
                   <button onClick={() => handleRemove(k.id)} className="text-xs font-medium text-red-600 hover:underline">
                     Remove
                   </button>
+</InfoTip>
                 </div>
               </li>
             );
@@ -1320,16 +1395,21 @@ export default function AdminAnalyticsPage() {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
+        <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900">
+          Analytics
+          <InfoTip text={"Everything about how onproit.com is doing: visits, calls, and leads (top), the keywords you're chasing and the content built for them (Content Effort, Target Keywords), and what people searched on Google. Every section can be collapsed; hover any ⓘ for what it means."} />
+        </h1>
         <div className="flex gap-2">
           <button
             onClick={() => toggleAllSections(false)}
+            title="Fold every section below down to its title bar, so you can jump to the one you want"
             className="rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:border-brand hover:text-brand"
           >
             Collapse all
           </button>
           <button
             onClick={() => toggleAllSections(true)}
+            title="Open every section below"
             className="rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:border-brand hover:text-brand"
           >
             Expand all
@@ -1343,6 +1423,7 @@ export default function AdminAnalyticsPage() {
 
       <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-gray-200 bg-white p-4">
         <div className="flex items-center gap-2">
+          <InfoTip text={"The date range for the visit numbers, charts, visitors, and Top Search Queries. The keyword sections (Content Effort, Target Keywords) don't use it: they always show Google's last 30 days."} />
           <label className="text-xs font-medium text-gray-500">From</label>
           <input
             type="date"
@@ -1655,13 +1736,41 @@ export default function AdminAnalyticsPage() {
                   <table className="w-full min-w-180 text-left text-sm">
                     <thead>
                       <tr className="border-b border-gray-200 text-xs uppercase tracking-wide text-gray-400">
-                        <th className="pb-2 pr-4 font-medium">First Seen</th>
-                        <th className="pb-2 pr-4 font-medium">Location</th>
-                        <th className="pb-2 pr-4 font-medium">Source</th>
-                        <th className="pb-2 pr-4 font-medium">Device</th>
-                        <th className="pb-2 pr-4 font-medium">Pages</th>
-                        <th className="pb-2 pr-4 font-medium">CTA Clicks</th>
-                        <th className="pb-2 pr-4 font-medium">Time on Site</th>
+                        <th className="pb-2 pr-4 font-medium">
+                          <span className="inline-flex items-center gap-1">
+                            First Seen <InfoTip text={"When this visit started."} />
+                          </span>
+                        </th>
+                        <th className="pb-2 pr-4 font-medium">
+                          <span className="inline-flex items-center gap-1">
+                            Location <InfoTip text={"Roughly where the visitor was (city/state), worked out from their internet connection. Can be off by a few towns, or show the office location of a company network."} />
+                          </span>
+                        </th>
+                        <th className="pb-2 pr-4 font-medium">
+                          <span className="inline-flex items-center gap-1">
+                            Source <InfoTip text={"How they arrived: Google search, a link on another site, a direct visit (typed the address or used a bookmark), etc."} />
+                          </span>
+                        </th>
+                        <th className="pb-2 pr-4 font-medium">
+                          <span className="inline-flex items-center gap-1">
+                            Device <InfoTip text={"Phone, tablet, or computer, and the operating system."} />
+                          </span>
+                        </th>
+                        <th className="pb-2 pr-4 font-medium">
+                          <span className="inline-flex items-center gap-1">
+                            Pages <InfoTip text={"How many pages they looked at during this visit."} />
+                          </span>
+                        </th>
+                        <th className="pb-2 pr-4 font-medium">
+                          <span className="inline-flex items-center gap-1">
+                            CTA Clicks <InfoTip text={"How many buttons or links they clicked, including the phone number. Click the row to see exactly what."} />
+                          </span>
+                        </th>
+                        <th className="pb-2 pr-4 font-medium">
+                          <span className="inline-flex items-center gap-1">
+                            Time on Site <InfoTip text={"Roughly how long the visit lasted, from the first page to leaving the last one."} />
+                          </span>
+                        </th>
                         <th className="pb-2 font-medium" />
                       </tr>
                     </thead>
@@ -1792,6 +1901,7 @@ export default function AdminAnalyticsPage() {
                   <span className="text-xs text-gray-400">
                   ({searchData.topQueries.length} queries · {searchData.topQueriesByPage.length} pages)
                   </span>
+                  <InfoTip text={"What people typed into Google when your site was shown, for the date range at the top of the page, plus which search brought the most clicks to each page. From Google Search Console, which runs about 3 days behind."} />
                 </>
               }
             >

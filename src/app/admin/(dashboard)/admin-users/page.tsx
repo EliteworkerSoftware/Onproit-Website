@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Plus, Trash2, X } from "lucide-react";
+import InfoTip from "@/components/admin/InfoTip";
 
 interface AdminUserRow {
   id: string;
@@ -81,9 +82,13 @@ export default function AdminUsersPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Admin Users</h1>
+          <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900">
+            Admin Users
+            <InfoTip text={"Everyone who can sign in to this admin dashboard. Every admin has full access: inquiries, analytics, publishing content, sending review requests, and settings. Admins also show up in the “Send as” list on Reviews."} />
+          </h1>
           <p className="mt-1 text-sm text-gray-500">Users with full access to this dashboard.</p>
         </div>
+<InfoTip text={"Invite someone by email. They get a secure link to set their own password, and then have full access to this dashboard."}>
         <button
           onClick={() => {
             setInviting(true);
@@ -94,6 +99,7 @@ export default function AdminUsersPage() {
           <Plus className="h-4 w-4" />
           Add New Admin
         </button>
+</InfoTip>
       </div>
 
       {notice && <p className="mt-4 rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">{notice}</p>}
@@ -103,7 +109,11 @@ export default function AdminUsersPage() {
           <thead className="border-b border-gray-100 bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
             <tr>
               <th className="px-4 py-3">User</th>
-              <th className="px-4 py-3">Joined</th>
+              <th className="px-4 py-3">
+                <span className="inline-flex items-center gap-1">
+                  Joined {<InfoTip text={"The date this person's admin account was created."} />}
+                </span>
+              </th>
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
@@ -126,10 +136,13 @@ export default function AdminUsersPage() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     {u.id === currentUserId ? (
+<InfoTip text={"This is you. You can't remove your own account from here."}>
                       <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
                         Current User
                       </span>
+</InfoTip>
                     ) : (
+<InfoTip text={"Take away this person's access to the admin dashboard. They can no longer sign in. Anything they already did (replies, review requests) stays."}>
                       <button
                         onClick={() => remove(u)}
                         className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
@@ -137,6 +150,7 @@ export default function AdminUsersPage() {
                         <Trash2 className="h-3.5 w-3.5" />
                         Remove
                       </button>
+</InfoTip>
                     )}
                   </td>
                 </tr>
@@ -161,7 +175,9 @@ export default function AdminUsersPage() {
             </p>
             <form onSubmit={handleInvite} className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700">Email Address</label>
+                <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+                  Email Address <InfoTip text={"The invite is sent here, and it becomes their sign-in email."} />
+                </label>
                 <input
                   required
                   type="email"

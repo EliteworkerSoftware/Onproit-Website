@@ -102,7 +102,13 @@ export async function GET() {
     present("Google Search Console", isSearchConsoleConfigured(), "Search Console credentials are missing"),
     present("Content agent access", Boolean(process.env.CONTENT_AGENT_SECRET), "CONTENT_AGENT_SECRET is missing"),
     present("Scheduled jobs", Boolean(process.env.CRON_SECRET), "CRON_SECRET is missing"),
-    present("Instant indexing (IndexNow)", isIndexNowConfigured(), "Not connected (optional)", true)
+    present("Instant indexing (IndexNow)", isIndexNowConfigured(), "Not connected (optional)", true),
+    present(
+      "Instant content revisions",
+      Boolean(process.env.REVISION_WEBHOOK_URL),
+      "Not connected (optional) — Request changes waits for the revision agent's 3-hourly check",
+      true
+    )
   );
 
   return NextResponse.json({ checks, checkedAt: new Date().toISOString() });

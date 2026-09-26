@@ -1,14 +1,18 @@
 import Link from "next/link";
-import { ArrowRight, BarChart3, Eye, Inbox, MessageSquare, MousePointerClick, Phone, Search, Settings, Shield } from "lucide-react";
+import { ArrowRight, BarChart3, Eye, FileCheck, Inbox, MessageSquare, MousePointerClick, Phone, Search, Settings, Shield, Star } from "lucide-react";
+import { MIN_IMPRESSIONS_FOR_POSITION } from "@/lib/keyword-score";
 import { getCurrentAdmin } from "@/lib/current-admin";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
 import { isSearchConsoleConfigured, querySearchAnalytics } from "@/lib/search-console";
+import InfoTip from "@/components/admin/InfoTip";
 
 const NAV_CARDS = [
   { title: "Inquiries", description: "Contact form messages, inbox and archived.", href: "/admin/inquiries", Icon: Inbox },
-  { title: "Analytics", description: "Site visits, top pages, and referrers.", href: "/admin/analytics", Icon: BarChart3 },
+  { title: "Analytics", description: "Site visits, Google rankings, and the keywords you're targeting.", href: "/admin/analytics", Icon: BarChart3 },
+  { title: "Content Review", description: "Pages and blog posts the content agent wrote, waiting for you to publish.", href: "/admin/content-review", Icon: FileCheck },
+  { title: "Reviews", description: "Send customers a request to review ONPRO IT on Google.", href: "/admin/reviews", Icon: Star },
   { title: "Admin Users", description: "Manage who can access this dashboard.", href: "/admin/admin-users", Icon: Shield },
-  { title: "Settings", description: "Public contact info and business hours.", href: "/admin/settings", Icon: Settings },
+  { title: "Settings", description: "Contact info, business hours, service area, and system status.", href: "/admin/settings", Icon: Settings },
 ];
 
 function isoDateNDaysAgo(n: number) {
@@ -113,8 +117,12 @@ async function getKeywordMovers(): Promise<KeywordMover[]> {
       }),
     ]);
 
-    const currentPos = new Map(current.map((r) => [r.keys[0], r.position]));
-    const prevPos = new Map(previous.map((r) => [r.keys[0], r.position]));
+    // Only positions backed by enough showings to be a real ranking; a few
+    // searches made near the office can otherwise look like a jump to #1.
+    const reliable = (rows: typeof current) =>
+      new Map(rows.filter((r) => r.impressions >= MIN_IMPRESSIONS_FOR_POSITION).map((r) => [r.keys[0], r.position]));
+    const currentPos = reliable(current);
+    const prevPos = reliable(previous);
 
     return keywords
       .map((k) => {
@@ -154,6 +162,7 @@ export default async function AdminDashboardPage() {
             <div className="flex items-center gap-2">
               <Inbox className="h-4 w-4 text-brand" />
               <h2 className="text-sm font-semibold text-gray-900">New Inquiries</h2>
+              <InfoTip text={"Messages from the Contact form on onproit.com that nobody has opened yet. The three newest are listed. Click the card to read and reply on the Inquiries page."} />
             </div>
             <ArrowRight className="h-4 w-4 text-gray-400" />
           </div>
@@ -184,6 +193,7 @@ export default async function AdminDashboardPage() {
             <div className="flex items-center gap-2">
               <Search className="h-4 w-4 text-brand" />
               <h2 className="text-sm font-semibold text-gray-900">Ranking Changes</h2>
+              <InfoTip text={"Your target keywords whose average Google position moved by at least one spot: the last 30 days compared with the 30 days before. Green +2.0 means the site moved up two spots (closer to #1); red means it dropped. Only keywords Google showed the site for at least 30 times in both periods count, so a few searches made near the office can't fake a jump. Search Console data runs about 3 days behind."} />
             </div>
             <ArrowRight className="h-4 w-4 text-gray-400" />
           </div>
@@ -215,6 +225,7 @@ export default async function AdminDashboardPage() {
           <div className="flex items-center gap-2 text-gray-500">
             <Eye className="h-4 w-4" />
             <span className="text-sm font-medium">Page Views</span>
+            <InfoTip text={"How many times a page on onproit.com was opened in the last 7 days. Every page counts, so one visitor reading 3 pages counts as 3. Bots and search-engine crawlers are filtered out as well as possible."} />
           </div>
           <p className="mt-2 text-2xl font-bold text-gray-900">{stats.views}</p>
           <p className="mt-1 text-xs text-gray-400">last 7 days</p>
@@ -223,6 +234,7 @@ export default async function AdminDashboardPage() {
           <div className="flex items-center gap-2 text-brand">
             <Phone className="h-4 w-4" />
             <span className="text-sm font-medium">Call Clicks</span>
+            <InfoTip text={"How many times someone clicked or tapped the phone number on the website in the last 7 days. On a phone that opens the dialer, so it's the closest thing to a phone call the website can measure. It can't tell whether the call actually went through."} />
           </div>
           <p className="mt-2 text-2xl font-bold text-gray-900">{stats.callClicks}</p>
           <p className="mt-1 text-xs text-gray-400">last 7 days</p>
@@ -231,6 +243,7 @@ export default async function AdminDashboardPage() {
           <div className="flex items-center gap-2 text-brand">
             <MessageSquare className="h-4 w-4" />
             <span className="text-sm font-medium">Leads</span>
+            <InfoTip text={"Contact form messages received in the last 7 days, read or unread. They're the same messages as on the Inquiries page."} />
           </div>
           <p className="mt-2 text-2xl font-bold text-gray-900">{stats.leads}</p>
           <p className="mt-1 text-xs text-gray-400">last 7 days</p>
@@ -239,6 +252,7 @@ export default async function AdminDashboardPage() {
           <div className="flex items-center gap-2 text-gray-500">
             <MousePointerClick className="h-4 w-4" />
             <span className="text-sm font-medium">Other CTA Clicks</span>
+            <InfoTip text={"Clicks on any other link or button on the website in the last 7 days: menu links, “Get a Free Assessment”, service links, and so on. Phone number clicks aren't included; they're under Call Clicks."} />
           </div>
           <p className="mt-2 text-2xl font-bold text-gray-900">{stats.ctaClicks}</p>
           <p className="mt-1 text-xs text-gray-400">last 7 days</p>

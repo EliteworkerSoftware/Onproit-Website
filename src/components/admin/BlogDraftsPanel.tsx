@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ChevronDown, FileText, Send, Trash2 } from "lucide-react";
 import RevisionControls, { type RevisionItem } from "./RevisionControls";
+import InfoTip from "@/components/admin/InfoTip";
 
 interface BlogDraft {
   id: string;
@@ -103,7 +104,10 @@ export default function BlogDraftsPanel() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold text-gray-900">Blog posts</h2>
+      <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+        Blog posts
+        <InfoTip text={"Articles the content agent wrote, usually for question-style keywords (“how much does managed IT cost”). They're saved as drafts, invisible to the public, until you click Publish."} />
+      </h2>
       <p className="mt-1 text-sm text-gray-500">
         Articles the content agent wrote for question-style keywords. Nothing is on the site until you publish it.
       </p>
@@ -140,13 +144,19 @@ export default function BlogDraftsPanel() {
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="text-base font-semibold text-gray-900">{d.title}</p>
                       {d.category && (
+                        <InfoTip text="The blog category it'll be filed under on the website's blog page.">
                         <span className="rounded-full bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand">
                           {d.category}
                         </span>
+                        </InfoTip>
                       )}
                     </div>
                     <p className="mt-1 text-xs text-gray-400">
-                      /blog/{d.slug} · {wordCount(d.content).toLocaleString()} words · written{" "}
+                      <span title="The web address the post will have once published">/blog/{d.slug}</span> ·{" "}
+                      <span title="Length of the article. 800–1,500 words is typical for posts that rank.">
+                        {wordCount(d.content).toLocaleString()} words
+                      </span>{" "}
+                      · written{" "}
                       {new Date(d.created_at).toLocaleString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -157,6 +167,7 @@ export default function BlogDraftsPanel() {
                     {d.excerpt && <p className="mt-2 text-sm text-gray-600">{d.excerpt}</p>}
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
+<InfoTip text={"Publish this post on the live blog now. Its keyword is marked done on Analytics with the post's link."}>
                     <button
                       onClick={() => publish(d)}
                       disabled={busyId === d.id}
@@ -165,6 +176,8 @@ export default function BlogDraftsPanel() {
                       <Send className="h-4 w-4" />
                       Publish
                     </button>
+</InfoTip>
+<InfoTip text={"Throw this draft away. It never goes live, and its keyword goes back in the queue so the agent writes a new one. To fix specific problems instead, use Request changes."}>
                     <button
                       onClick={() => remove(d)}
                       disabled={busyId === d.id}
@@ -173,6 +186,7 @@ export default function BlogDraftsPanel() {
                       <Trash2 className="h-4 w-4" />
                       Delete
                     </button>
+</InfoTip>
                   </div>
                 </div>
 
@@ -184,6 +198,7 @@ export default function BlogDraftsPanel() {
                 >
                   <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
                   {open ? "Hide preview" : "Read the full post"}
+                  <InfoTip text="Shows the whole article right here, formatted as it will look on the blog." />
                 </button>
 
                 {open && (

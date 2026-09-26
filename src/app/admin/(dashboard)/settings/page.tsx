@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import SystemStatusPanel from "@/components/admin/SystemStatusPanel";
 import ServiceAreaCard from "@/components/admin/ServiceAreaCard";
+import InfoTip from "@/components/admin/InfoTip";
 
 interface Settings {
   contact_email: string;
@@ -58,18 +59,26 @@ export default function AdminSettingsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900">
+        Settings
+        <InfoTip text={"Business details shown on the public website, who gets emailed about new leads, your service area for SEO, your password, and a health check of every connected system."} />
+      </h1>
       <p className="mt-1 text-sm text-gray-500">
         Update your public contact details and business hours — shown on the Contact page and footer.
       </p>
 
       <form onSubmit={handleSave} className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="rounded-xl border border-gray-200 bg-white p-6">
-          <h2 className="text-lg font-semibold text-gray-900">Contact Details</h2>
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+            Contact Details
+            <InfoTip text={"The contact information visitors see on the Contact page and in the website footer. Changes appear on the live site right after you click Save Information."} />
+          </h2>
           <p className="mt-1 text-sm text-gray-500">Primary contact information displayed on the website.</p>
           <div className="mt-4 space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-700">Email Address</label>
+              <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+                Email Address <InfoTip text={"The public email address shown on the website for customers to write to."} />
+              </label>
               <input
                 value={settings.contact_email}
                 onChange={(e) => update("contact_email", e.target.value)}
@@ -77,7 +86,9 @@ export default function AdminSettingsPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Phone Number</label>
+              <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+                Phone Number <InfoTip text={"The public phone number shown on the website. Write it the way you want it displayed, e.g. (856) 555-0123."} />
+              </label>
               <input
                 value={settings.contact_phone}
                 onChange={(e) => update("contact_phone", e.target.value)}
@@ -85,7 +96,9 @@ export default function AdminSettingsPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Physical Address</label>
+              <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+                Physical Address <InfoTip text={"Your business address, shown on the Contact page with the map. Keep it identical to your Google Business Profile address; matching addresses help local rankings."} />
+              </label>
               <textarea
                 value={settings.contact_address}
                 onChange={(e) => update("contact_address", e.target.value)}
@@ -98,12 +111,17 @@ export default function AdminSettingsPage() {
         </div>
 
         <div className="rounded-xl border border-gray-200 bg-white p-6">
-          <h2 className="text-lg font-semibold text-gray-900">Lead Notifications</h2>
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+            Lead Notifications
+            <InfoTip text={"When someone submits the Contact form, an email with their message goes to every address listed here, right away. The message is also saved on the Inquiries page."} />
+          </h2>
           <p className="mt-1 text-sm text-gray-500">
             Who gets emailed when someone submits the contact form.
           </p>
           <div className="mt-4">
-            <label className="text-sm font-medium text-gray-700">Notification Email(s)</label>
+            <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+              Notification Email(s) <InfoTip text={"The addresses that get new-lead emails. Separate several with commas. These are private: they're never shown on the website."} />
+            </label>
             <textarea
               value={settings.contact_notification_emails}
               onChange={(e) => update("contact_notification_emails", e.target.value)}
@@ -118,11 +136,16 @@ export default function AdminSettingsPage() {
         </div>
 
         <div className="rounded-xl border border-gray-200 bg-white p-6">
-          <h2 className="text-lg font-semibold text-gray-900">Business Hours</h2>
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+            Business Hours
+            <InfoTip text={"The hours shown to visitors on the Contact page and in the footer. Type them exactly as you want them to read, e.g. 8:00 AM – 5:00 PM, or Closed."} />
+          </h2>
           <p className="mt-1 text-sm text-gray-500">Operating hours shown to customers.</p>
           <div className="mt-4 space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-700">Monday - Friday</label>
+              <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+                Monday - Friday <InfoTip text={"Your weekday hours as they'll appear on the website."} />
+              </label>
               <input
                 value={settings.hours_weekdays}
                 onChange={(e) => update("hours_weekdays", e.target.value)}
@@ -130,7 +153,9 @@ export default function AdminSettingsPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Saturday</label>
+              <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+                Saturday <InfoTip text={"Saturday hours as they'll appear on the website, or Closed."} />
+              </label>
               <input
                 value={settings.hours_saturday}
                 onChange={(e) => update("hours_saturday", e.target.value)}
@@ -138,7 +163,9 @@ export default function AdminSettingsPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Sunday</label>
+              <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+                Sunday <InfoTip text={"Sunday hours as they'll appear on the website, or Closed."} />
+              </label>
               <input
                 value={settings.hours_sunday}
                 onChange={(e) => update("hours_sunday", e.target.value)}
@@ -151,6 +178,7 @@ export default function AdminSettingsPage() {
         <div className="lg:col-span-2">
           {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
           {status === "saved" && <p className="mb-3 text-sm text-green-600">Saved.</p>}
+<InfoTip text={"Saves Contact Details, Lead Notifications, and Business Hours together. The public website updates right away."}>
           <button
             type="submit"
             disabled={status === "saving"}
@@ -158,6 +186,7 @@ export default function AdminSettingsPage() {
           >
             {status === "saving" ? "Saving…" : "Save Information"}
           </button>
+</InfoTip>
         </div>
       </form>
 
@@ -217,11 +246,16 @@ function ChangePasswordCard() {
 
   return (
     <form onSubmit={handleSubmit} className="rounded-xl border border-gray-200 bg-white p-6">
-      <h2 className="text-lg font-semibold text-gray-900">Change Password</h2>
+      <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+        Change Password
+        <InfoTip text={"Changes the password you use to sign in to this dashboard. It only affects your account, not other admins'."} />
+      </h2>
       <p className="mt-1 text-sm text-gray-500">Update the password for your own admin account.</p>
       <div className="mt-4 space-y-4">
         <div>
-          <label className="text-sm font-medium text-gray-700">Current Password</label>
+          <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+            Current Password <InfoTip text={"The password you use to sign in now, to confirm it's really you."} />
+          </label>
           <input
             type="password"
             value={currentPassword}
@@ -231,7 +265,9 @@ function ChangePasswordCard() {
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-gray-700">New Password</label>
+          <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+            New Password <InfoTip text={"Your new password: at least 8 characters."} />
+          </label>
           <input
             type="password"
             value={newPassword}
@@ -242,7 +278,9 @@ function ChangePasswordCard() {
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-gray-700">Confirm New Password</label>
+          <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+            Confirm New Password <InfoTip text={"Type the new password again to make sure there's no typo."} />
+          </label>
           <input
             type="password"
             value={confirmPassword}

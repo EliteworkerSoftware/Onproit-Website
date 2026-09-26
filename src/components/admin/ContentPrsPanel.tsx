@@ -5,6 +5,7 @@ import { ChevronDown, ExternalLink, Eye, Globe, Send, X } from "lucide-react";
 import RevisionControls, { type RevisionItem } from "./RevisionControls";
 import ChangesView from "./ChangesView";
 import type { DiffGroup } from "@/lib/text-diff";
+import InfoTip from "@/components/admin/InfoTip";
 
 interface ContentPr {
   number: number;
@@ -124,7 +125,10 @@ export default function ContentPrsPanel() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold text-gray-900">Website changes</h2>
+      <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+        Website changes
+        <InfoTip text={"New pages, or improvements to existing pages (service pages, location pages), that the content agent prepared. Each card is one batch of changes. Until you publish, they exist only in a private preview copy of the site."} />
+      </h2>
       <p className="mt-1 text-sm text-gray-500">
         New and improved pages from the content agent. Preview them, then publish or reject.
       </p>
@@ -155,7 +159,10 @@ export default function ContentPrsPanel() {
                   <div className="min-w-0">
                     <p className="text-base font-semibold text-gray-900">{pr.title}</p>
                     <p className="mt-1 text-xs text-gray-400">
-                      {pr.files.length} file{pr.files.length === 1 ? "" : "s"} changed · prepared{" "}
+                      <span title="How many of the website's code/content files this batch edits. One file can hold many pages (e.g. all service pages).">
+                        {pr.files.length} file{pr.files.length === 1 ? "" : "s"} changed
+                      </span>{" "}
+                      · prepared{" "}
                       {new Date(pr.created_at).toLocaleString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -165,6 +172,7 @@ export default function ContentPrsPanel() {
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
+<InfoTip text={"Put these changes on the live website. It updates in about 2 minutes, and the keywords this was written for are marked done on Analytics with the page's link."}>
                     <button
                       onClick={() => publish(pr)}
                       disabled={busy === pr.number}
@@ -173,6 +181,8 @@ export default function ContentPrsPanel() {
                       <Send className="h-4 w-4" />
                       {busy === pr.number ? "Working…" : "Publish"}
                     </button>
+</InfoTip>
+<InfoTip text={"Throw these changes away. Nothing goes live, and the keywords go back in the queue so the agent tries again on its next run. To fix specific problems instead, use Request changes."}>
                     <button
                       onClick={() => reject(pr)}
                       disabled={busy === pr.number}
@@ -181,13 +191,15 @@ export default function ContentPrsPanel() {
                       <X className="h-4 w-4" />
                       Reject
                     </button>
+</InfoTip>
                   </div>
                 </div>
 
                 {pr.pages.length > 0 && (
                   <div className="mt-4">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                    <p className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-gray-400">
                       {pr.previewUrl ? "Preview the pages before publishing" : "Pages affected (preview still building)"}
+                      <InfoTip text={"Each button opens that page in a private preview of the site with these changes applied, exactly as it'll look when published. The public can't see previews. After a revision, the preview rebuilds in about 2 minutes, so refresh it."} />
                     </p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {pr.pages.map((path) =>
@@ -220,6 +232,7 @@ export default function ContentPrsPanel() {
                     >
                       <ChevronDown className={`h-4 w-4 transition-transform ${textOpen === pr.number ? "rotate-180" : ""}`} />
                       {textOpen === pr.number ? "Hide the wording changes" : "Read the wording changes"}
+                      <InfoTip text="The actual text this update changes on the website, compared with what's live now. Red is removed, green is added, and highlighted words are exactly what changed in a sentence." />
                     </button>
                     {textOpen === pr.number && (
                       <div className="mt-2 rounded-lg border border-gray-200 p-3">
@@ -240,6 +253,7 @@ export default function ContentPrsPanel() {
                 >
                   <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
                   {open ? "Hide details" : "What the agent did"}
+                      <InfoTip text="The agent's own summary of what it changed and why, plus the exact files it edited (+ lines added, − lines removed)." />
                 </button>
 
                 {open && (
