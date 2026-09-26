@@ -29,6 +29,9 @@ async function startRevisionAgent(revisionId: string): Promise<boolean> {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        // Required by Claude routine API triggers; harmless for other webhooks.
+        "anthropic-version": "2023-06-01",
+        "anthropic-beta": "experimental-cc-routine-2026-04-01",
         ...(process.env.REVISION_WEBHOOK_TOKEN ? { Authorization: `Bearer ${process.env.REVISION_WEBHOOK_TOKEN}` } : {}),
       },
       body: JSON.stringify({ text: `Content revision requested (id ${revisionId}). Process all pending revisions.` }),
