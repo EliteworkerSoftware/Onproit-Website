@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ChevronDown, FileText, Send, Trash2 } from "lucide-react";
+import RevisionControls, { type RevisionItem } from "./RevisionControls";
 
 interface BlogDraft {
   id: string;
@@ -11,6 +12,7 @@ interface BlogDraft {
   content: string | null;
   category: string | null;
   created_at: string;
+  revisions: RevisionItem[];
 }
 
 function wordCount(html: string | null) {
@@ -62,6 +64,19 @@ export default function BlogDraftsPanel() {
       cancelled = true;
     };
   }, []);
+
+
+  // While a revision is pending or running, check back every 20s so the
+  // card updates on its own when the agent finishes.
+  const revising = drafts?.some((x) => x.revisions?.some((r) => r.status === "pending" || r.status === "in_progress"));
+  useEffect(() => {
+    if (!revising) return;
+    const timer = setInterval(() => {
+      load();
+    }, 20_000);
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [revising]);
 
   async function publish(draft: BlogDraft) {
     if (!confirm(`Publish "${draft.title}" to the blog now?`)) return;
@@ -160,6 +175,8 @@ export default function BlogDraftsPanel() {
                     </button>
                   </div>
                 </div>
+
+                <RevisionControls endpoint={`/api/admin/blog-drafts/${d.id}/revise`} revisions={d.revisions} onChanged={load} />
 
                 <button
                   onClick={() => setOpenId(open ? null : d.id)}

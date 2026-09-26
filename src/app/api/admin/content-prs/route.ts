@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/current-admin";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { revisionsByTarget } from "@/lib/content-revisions";
 import { getPreviewUrl, gh, isContentAgentPr, isGitHubConfigured, pathsInBody, type PullRequest } from "@/lib/github";
 
 // Open pull requests from the content agent, with what changed and a link to
@@ -11,6 +13,7 @@ export async function GET() {
 
   try {
     const open = (await gh<PullRequest[]>("/pulls?state=open&per_page=30")).filter(isContentAgentPr);
+    const revisions = await revisionsByTarget(getSupabaseAdmin(), "pr").catch(() => ({}) as Record<string, never[]>);
 
     const prs = await Promise.all(
       open.map(async (pr) => {
@@ -28,6 +31,7 @@ export async function GET() {
           created_at: pr.created_at,
           previewUrl,
           pages: pathsInBody(pr.body),
+          revisions: revisions[String(pr.number)] ?? [],
           files: files.map((f) => ({ name: f.filename, status: f.status, additions: f.additions, deletions: f.deletions })),
         };
       })

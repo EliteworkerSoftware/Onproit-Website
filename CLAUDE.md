@@ -1,1 +1,3 @@
 @AGENTS.md
+
+@CONTENT-GUIDELINES.md

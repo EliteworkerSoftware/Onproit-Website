@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/current-admin";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { revisionsByTarget } from "@/lib/content-revisions";
 
 // Unpublished blog posts (published_at is null) — drafts waiting for review.
 export async function GET() {
@@ -15,5 +16,6 @@ export async function GET() {
     .order("created_at", { ascending: false });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ drafts: data });
+  const revisions = await revisionsByTarget(supabase, "blog").catch(() => ({}) as Record<string, never[]>);
+  return NextResponse.json({ drafts: data.map((d) => ({ ...d, revisions: revisions[d.id] ?? [] })) });
 }
