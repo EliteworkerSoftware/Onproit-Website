@@ -12,4 +12,8 @@ dated bullet. Don't add one-off edits that only apply to a single page.
 
 ## Facts and rules
 
-_None yet._
+- 2026-09-26: ONPRO IT does not take on clients that require specific
+  regulatory/compliance expertise for sensitive data (e.g. medical offices,
+  law firms — HIPAA and similar compliance is out of scope). Target and
+  reference other business types instead: small businesses, service
+  businesses, restaurants, retail, distribution, etc.
