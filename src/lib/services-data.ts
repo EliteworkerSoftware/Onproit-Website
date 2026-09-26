@@ -221,24 +221,25 @@ export const SERVICES_DATA: ServiceData[] = [
     slug: "it-support",
     navTitle: "IT Help Desk",
     h1: "IT Support & Help Desk Services in NJ, PA & DE",
-    metaTitle: "IT Help Desk & Support NJ | ONPRO IT",
+    metaTitle: "IT Support Services in NJ, PA & DE | ONPRO IT",
     metaDescription:
-      "Fast, local IT help desk support for Southern NJ, Philadelphia, and Delaware businesses. Remote and on-site technicians who actually answer the phone.",
-    keywords: "IT help desk NJ, IT support Southern NJ, computer support New Jersey",
+      "Need IT support in South Jersey, Philadelphia, or Delaware? ONPRO IT answers fast, fixes it right, and keeps your team working. Call for a free quote.",
+    keywords: "IT support, IT help desk NJ, IT support Southern NJ, computer support New Jersey",
     Icon: Headphones,
     color: "cyan",
     heroImage: "/images/hero-it-support.png",
     intro:
-      "Fast, reliable, and local tech support for your business. From rapid remote fixes to hands-on onsite troubleshooting, we keep your team productive.",
+      "Need IT support that actually picks up the phone? ONPRO IT provides fast, local IT support for businesses across South Jersey, Philadelphia, and Delaware — from rapid remote fixes to hands-on onsite troubleshooting that keeps your team productive.",
     whatIsIt: [
-      "When technology fails, your business stops. Employees can't work, customers can't be served, and frustration mounts. Our IT Support & Help Desk Services provide you with a dedicated team of technical experts ready to resolve issues the moment they arise.",
-      "Unlike generic call centers, our help desk is staffed by local, certified technicians based in the Philadelphia and South Jersey area who understand your specific business environment. We handle everything from simple password resets to complex server outages with a focus on first-call resolution.",
+      "When technology fails, your business stops. Employees can't work, customers can't be served, and frustration mounts. Our IT support and help desk services provide you with a dedicated team of technical experts ready to resolve issues the moment they arise.",
+      "Unlike generic call centers, our IT support desk is staffed by local, certified technicians based in the Philadelphia and South Jersey area who understand your specific business environment. We handle everything from simple password resets to complex server outages with a focus on first-call resolution — whether you're a medical office in Cherry Hill, a law firm in Philadelphia, or a distribution company in Ocean County.",
     ],
     whoItsFor: [
       "You need faster response times than your current provider offers",
       "Your employees are wasting time trying to fix computer issues themselves",
       "You want a friendly, local team that speaks plain English, not \"geek speak\"",
       "You have a mix of remote and in-office staff needing support",
+      "Your current IT support is a single freelancer who's hard to reach when something breaks",
     ],
     risks: [
       "Lost productivity — every hour an employee spends fighting with a slow computer is an hour of lost work",
@@ -268,6 +269,26 @@ export const SERVICES_DATA: ServiceData[] = [
         question: "Do you support remote and hybrid employees?",
         answer:
           "Yes — our help desk supports employees wherever they're working, with remote access tools that let us troubleshoot laptops and home office setups just as easily as in-office workstations.",
+      },
+      {
+        question: "What does IT support from ONPRO IT actually include?",
+        answer:
+          "Unlimited phone and remote support for your team, onsite dispatch when hardware or network issues need hands-on work, and a technician who already knows your setup instead of starting from scratch on every call.",
+      },
+      {
+        question: "Is IT support billed hourly or as a flat monthly rate?",
+        answer:
+          "We offer both. Many clients prefer a flat-rate support plan so there are no surprise invoices when things go wrong, but we can also scope one-off IT support projects if that fits your business better.",
+      },
+      {
+        question: "Can you take over IT support from our current provider or in-house tech?",
+        answer:
+          "Yes — this is one of the most common ways clients start with us. We handle the transition, document your environment, and become the single point of contact for your team going forward.",
+      },
+      {
+        question: "Do you offer IT support for businesses with multiple office locations?",
+        answer:
+          "Yes. Because we cover South Jersey, Philadelphia, and Delaware with local technicians, we regularly support businesses with more than one office across our service area from a single support agreement.",
       },
     ],
   },
