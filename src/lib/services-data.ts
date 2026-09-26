@@ -232,7 +232,7 @@ export const SERVICES_DATA: ServiceData[] = [
       "Need IT support that actually picks up the phone? ONPRO IT provides fast, local IT support for businesses across South Jersey, Philadelphia, and Delaware — from rapid remote fixes to hands-on onsite troubleshooting that keeps your team productive.",
     whatIsIt: [
       "When technology fails, your business stops. Employees can't work, customers can't be served, and frustration mounts. Our IT support and help desk services provide you with a dedicated team of technical experts ready to resolve issues the moment they arise.",
-      "Unlike generic call centers, our IT support desk is staffed by local, certified technicians based in the Philadelphia and South Jersey area who understand your specific business environment. We handle everything from simple password resets to complex server outages with a focus on first-call resolution — whether you're a medical office in Cherry Hill, a law firm in Philadelphia, or a distribution company in Ocean County.",
+      "Unlike generic call centers, our IT support desk is staffed by local, certified technicians based in the Philadelphia and South Jersey area who understand your specific business environment. We handle everything from simple password resets to complex server outages with a focus on first-call resolution — whether you're a retail shop in Cherry Hill, a restaurant in Philadelphia, or a distribution company in Ocean County.",
     ],
     whoItsFor: [
       "You need faster response times than your current provider offers",
