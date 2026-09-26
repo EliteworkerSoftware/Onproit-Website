@@ -1532,8 +1532,11 @@ export default function AdminAnalyticsPage() {
                         className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
                         style={{ height: `${Math.max(4, (d.count / maxDayCount) * 100)}%` }}
                       />
-                      <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
-                        {d.day}: {d.count}
+                      <div
+                        className="pointer-events-none absolute left-1/2 hidden -translate-x-1/2 text-[10px] font-semibold text-brand-dark group-hover:block"
+                        style={{ bottom: `calc(${Math.max(4, (d.count / maxDayCount) * 100)}% + 2px)` }}
+                      >
+                        {d.count}
                       </div>
                     </div>
                   ))}
@@ -1576,8 +1579,11 @@ export default function AdminAnalyticsPage() {
                         className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
                         style={{ height: `${Math.max(3, (d.count / maxHourCount) * 100)}%` }}
                       />
-                      <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
-                        {formatHour(d.hour)}: {d.count}
+                      <div
+                        className="pointer-events-none absolute left-1/2 hidden -translate-x-1/2 text-[10px] font-semibold text-brand-dark group-hover:block"
+                        style={{ bottom: `calc(${Math.max(3, (d.count / maxHourCount) * 100)}% + 2px)` }}
+                      >
+                        {d.count}
                       </div>
                     </div>
                   ))}
@@ -1615,7 +1621,10 @@ export default function AdminAnalyticsPage() {
                           className="absolute bottom-0 w-full rounded-t bg-brand transition-colors group-hover:bg-brand-dark"
                           style={{ height: `${Math.max(3, (d.count / maxDowCount) * 100)}%` }}
                         />
-                        <div className="pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block">
+                        <div
+                          className="pointer-events-none absolute left-1/2 hidden -translate-x-1/2 text-[10px] font-semibold text-brand-dark group-hover:block"
+                          style={{ bottom: `calc(${Math.max(3, (d.count / maxDowCount) * 100)}% + 2px)` }}
+                        >
                           {d.count}
                         </div>
                       </div>
