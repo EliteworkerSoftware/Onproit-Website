@@ -832,19 +832,19 @@ export const SERVICES_DATA: ServiceData[] = [
     slug: "voip",
     navTitle: "VoIP Phone Systems",
     h1: "VoIP Phone Systems for New Jersey Businesses",
-    metaTitle: "VoIP Phone Systems in New Jersey | ONPRO IT",
+    metaTitle: "VoIP Phone Service & Systems in NJ | ONPRO IT",
     metaDescription:
-      "Reliable, feature-rich VoIP business phone systems for companies across New Jersey, Philadelphia, and Delaware. Call ONPRO IT for a free quote.",
+      "Reliable VoIP phone service and business phone systems for companies across New Jersey, Philadelphia, and Delaware. Call ONPRO IT for a free quote.",
     keywords:
-      "VoIP New Jersey, VoIP NJ, hosted PBX Philadelphia, business phone systems Southern NJ, VoIP phone systems South Jersey, VoIP installation New Jersey, hosted VoIP Delaware",
+      "VoIP New Jersey, VoIP NJ, VoIP phone service, VoIP phone system, voice over IP phone service, voice over IP telephone system, hosted PBX Philadelphia, business phone systems Southern NJ, VoIP phone systems South Jersey, VoIP installation New Jersey, hosted VoIP Delaware",
     Icon: PhoneCall,
     color: "green",
     heroImage: "/images/hero-voip.jpg",
     brandsWeUse: ["Yealink", "Cisco", "Ubiquiti"],
     intro:
-      "One business phone system for New Jersey companies, answered from a desk phone, a mobile app, or a laptop — with an auto-attendant, call routing, and voicemail transcription built in, and every user and device managed from one simple dashboard.",
+      "One VoIP phone service for New Jersey companies, answered from a desk phone, a mobile app, or a laptop — with an auto-attendant, call routing, and voicemail transcription built in, and every user and device managed from one simple dashboard.",
     whatIsIt: [
-      "Your phone system is the lifeline of your business. In today's hybrid work environment, being tied to a single desk phone is no longer an option. Our hosted VoIP (Voice over IP) solutions let your team make and receive calls on a full-featured desk phone, the mobile app on their cell, or a softphone on their desktop — all ringing on the same business number, wherever they're standing.",
+      "Your phone system is the lifeline of your business. In today's hybrid work environment, being tied to a single desk phone is no longer an option. Our hosted VoIP phone service — a voice over IP telephone system delivered and managed for you, not a box of hardware you're left to configure — lets your team make and receive calls on a full-featured desk phone, the mobile app on their cell, or a softphone on their desktop, all ringing on the same business number wherever they're standing.",
       "Every plan includes a custom-recorded auto-attendant that greets callers by name and routes them with real business rules — by department, by business hours, by holiday schedule — before a call ever reaches a person. Voicemails are transcribed and emailed straight to the right inbox, and every phone, extension, and employee is managed from one simple online dashboard instead of a call to the phone company.",
       "We don't just sell you phones; we deliver a fully managed communication platform that integrates perfectly with your existing IT infrastructure. Because we also manage your network, we can guarantee Quality of Service settings are correct, preventing choppy calls and eliminating \"vendor ping-pong\" between your phone company and IT provider.",
     ],
@@ -905,6 +905,16 @@ export const SERVICES_DATA: ServiceData[] = [
         question: "Why should a New Jersey business choose ONPRO IT for VoIP instead of a national phone provider?",
         answer:
           "Because we also manage your network, we can guarantee the Quality of Service settings that keep calls clear — a national VoIP-only provider can't touch your network configuration, so when call quality suffers, you're stuck between two vendors pointing fingers at each other.",
+      },
+      {
+        question: "What's included with ONPRO IT's VoIP phone service?",
+        answer:
+          "Every VoIP phone service plan includes the desk phones, the mobile and desktop softphone apps, number porting, and the hosted PBX itself — auto-attendant, business-rule call routing, voicemail transcription, and the online dashboard for managing users and extensions — set up and supported as one package instead of separate phone and service bills.",
+      },
+      {
+        question: "How is a VoIP phone system different from a traditional business phone line?",
+        answer:
+          "A traditional phone line ties each call to a physical wire at one desk, while a VoIP phone system routes calls over your internet connection so the same business number rings a desk phone, a mobile app, and a desktop softphone at once — with features like auto-attendants, call routing, and voicemail transcription that traditional lines don't offer.",
       },
     ],
     productShowcase: [
