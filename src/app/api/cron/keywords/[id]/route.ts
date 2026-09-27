@@ -1,7 +1,5 @@
-import { NextRequest, NextResponse, after } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
-import { notifyContentReview } from "@/lib/notify-content-review";
-import { SITE_URL } from "@/lib/constants";
 
 // Narrow write path for the content-writing automation — the only thing it's
 // allowed to do is flag a queued keyword as "in_review" with a link to the PR
@@ -30,21 +28,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("target_keywords")
-    .update({ status: "in_review", content_url: prUrl })
+    .update({ status: "in_review", content_url: prUrl, review_notified_at: null })
     .eq("id", id)
     .eq("status", "queued")
     .select("keyword");
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // Only notify when a row actually flipped — a repeat call on a keyword
-  // that's already in_review matches nothing and shouldn't re-send.
-  const keyword = data?.[0]?.keyword;
-  // The email points at the admin Content Review page (preview + publish
-  // button), not GitHub.
-  const prNumber = prUrl.match(/\/pull\/(\d+)/)?.[1];
-  const reviewUrl = `${SITE_URL}/admin/content-review${prNumber ? `#pr-${prNumber}` : ""}`;
-  if (keyword) after(() => notifyContentReview({ keyword, reviewUrl, kind: "pr" }));
-
-  return NextResponse.json({ ok: true });
+  // No email here: the owner gets one summary per run from
+  // /api/cron/content-review-digest instead of one email per keyword.
+  return NextResponse.json({ ok: true, updated: data?.length ?? 0 });
 }

@@ -1,8 +1,7 @@
-import { NextRequest, NextResponse, after } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase-admin";
 import { sanitizePostHtml } from "@/lib/sanitize-post-html";
 import { BLOG_CATEGORIES, draftReviewUrl } from "@/lib/blog-drafts";
-import { notifyContentReview } from "@/lib/notify-content-review";
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 // Unpublished drafts allowed to pile up before the agent is told to stop —
@@ -73,18 +72,16 @@ export async function POST(req: NextRequest) {
 
   // Tie the draft to the keyword it targets: in_review now, done when the
   // draft is published (see /api/admin/blog-drafts/[id]).
-  let keyword: string | null = null;
   if (keywordId) {
-    const { data } = await supabase
+    await supabase
       .from("target_keywords")
-      .update({ status: "in_review", content_url: reviewUrl })
+      .update({ status: "in_review", content_url: reviewUrl, review_notified_at: null })
       .eq("id", keywordId)
-      .eq("status", "queued")
-      .select("keyword");
-    keyword = data?.[0]?.keyword ?? null;
+      .eq("status", "queued");
   }
 
-  after(() => notifyContentReview({ keyword: keyword ?? title, reviewUrl, kind: "blog" }));
+  // No email here: the owner gets one summary per run from
+  // /api/cron/content-review-digest instead of one email per keyword.
 
   return NextResponse.json({ ok: true, id: draft.id, review_url: reviewUrl });
 }
