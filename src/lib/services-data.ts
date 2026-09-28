@@ -831,18 +831,18 @@ export const SERVICES_DATA: ServiceData[] = [
   {
     slug: "voip",
     navTitle: "VoIP Phone Systems",
-    h1: "VoIP Phone Systems for New Jersey Businesses",
-    metaTitle: "VoIP Phone Service & Systems in NJ | ONPRO IT",
+    h1: "Voice Over IP Telephone Systems for New Jersey Businesses",
+    metaTitle: "Voice Over IP Telephone Systems NJ | ONPRO IT",
     metaDescription:
-      "Reliable VoIP phone service and business phone systems for companies across New Jersey, Philadelphia, and Delaware. Call ONPRO IT for a free quote.",
+      "Voice over IP telephone systems for NJ, Philadelphia, and Delaware businesses — reliable VoIP service, fully managed. Call ONPRO IT for a free quote.",
     keywords:
-      "VoIP New Jersey, VoIP NJ, VoIP phone service, VoIP phone system, voice over IP phone service, voice over IP telephone system, hosted PBX Philadelphia, business phone systems Southern NJ, VoIP phone systems South Jersey, VoIP installation New Jersey, hosted VoIP Delaware",
+      "VoIP New Jersey, VoIP NJ, VoIP phone service, VoIP phone system, voice over IP phone service, voice over IP telephone system, voice over IP telephone systems, hosted PBX Philadelphia, business phone systems Southern NJ, VoIP phone systems South Jersey, VoIP installation New Jersey, hosted VoIP Delaware",
     Icon: PhoneCall,
     color: "green",
     heroImage: "/images/hero-voip.jpg",
     brandsWeUse: ["Yealink", "Cisco", "Ubiquiti"],
     intro:
-      "One VoIP phone service for New Jersey companies, answered from a desk phone, a mobile app, or a laptop — with an auto-attendant, call routing, and voicemail transcription built in, and every user and device managed from one simple dashboard.",
+      "A fully managed voice over IP telephone system for New Jersey companies, answered from a desk phone, a mobile app, or a laptop — with an auto-attendant, call routing, and voicemail transcription built in, and every user and device managed from one simple dashboard.",
     whatIsIt: [
       "Your phone system is the lifeline of your business. In today's hybrid work environment, being tied to a single desk phone is no longer an option. Our hosted VoIP phone service — a voice over IP telephone system delivered and managed for you, not a box of hardware you're left to configure — lets your team make and receive calls on a full-featured desk phone, the mobile app on their cell, or a softphone on their desktop, all ringing on the same business number wherever they're standing.",
       "Every plan includes a custom-recorded auto-attendant that greets callers by name and routes them with real business rules — by department, by business hours, by holiday schedule — before a call ever reaches a person. Voicemails are transcribed and emailed straight to the right inbox, and every phone, extension, and employee is managed from one simple online dashboard instead of a call to the phone company.",
@@ -876,6 +876,11 @@ export const SERVICES_DATA: ServiceData[] = [
     ],
     areasServed: SERVICE_AREA_LIST,
     faqs: [
+      {
+        question: "What is a voice over IP telephone system?",
+        answer:
+          "A voice over IP (VoIP) telephone system routes calls over your business internet connection instead of a traditional copper phone line, so the same business number can ring a desk phone, a mobile app, and a desktop softphone at once. ONPRO IT designs, installs, and manages the full system — desk phones, mobile and desktop apps, and the hosted PBX behind them — for New Jersey, Philadelphia, and Delaware businesses.",
+      },
       {
         question: "Will VoIP call quality be as good as a traditional phone line?",
         answer:
