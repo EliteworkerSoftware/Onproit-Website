@@ -10,7 +10,7 @@ import { PHONE_DISPLAY, PHONE_HREF, SITE_URL } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "IT Services in Southern NJ & Philadelphia | ONPRO IT",
   description:
-    "Explore ONPRO IT's full range of IT services for Southern NJ and Philadelphia businesses — managed IT, cybersecurity, cabling, cloud, VoIP, and more.",
+    "ONPRO IT provides IT services — managed IT, cybersecurity, cabling, cloud & VoIP — for South Jersey, Philly & Delaware businesses. Call for a free quote.",
   keywords: "IT services NJ, managed IT Philadelphia, business technology services Southern NJ",
   openGraph: {
     title: "IT Services in Southern NJ & Philadelphia | ONPRO IT",
@@ -32,9 +32,57 @@ const DIFFERENTIATORS = [
   "No Long-Term Contracts Required",
 ];
 
+const FAQS = [
+  {
+    question: "What IT services does ONPRO IT provide?",
+    answer:
+      "ONPRO IT provides managed IT services, IT support and help desk, cybersecurity, network and WiFi design, cloud and Microsoft 365, data backup and disaster recovery, structured cabling, AV and conference room systems, network security cameras, entry access control, IT consulting, VoIP phone systems, and AI integration — all delivered and supported by one local team.",
+  },
+  {
+    question: "Do I need to combine multiple vendors to get all of these IT services?",
+    answer:
+      "No. One of the main advantages of working with ONPRO IT is that the same team designs, installs, and manages all of it — your network, security, phones, and cameras — so you have one company to call instead of juggling separate vendors who point fingers at each other.",
+  },
+  {
+    question: "Are your IT services billed hourly or at a flat monthly rate?",
+    answer:
+      "Most of our IT services are billed at a flat, predictable monthly rate rather than by the hour, so you don't get a surprise invoice when something goes wrong. We can also scope one-off projects separately when that fits better.",
+  },
+  {
+    question: "What areas do you provide IT services in?",
+    answer:
+      "We provide IT services to businesses throughout South Jersey, the Greater Philadelphia area, and Delaware — with local technicians based in the region, not a remote call center.",
+  },
+  {
+    question: "Do you offer IT services for small businesses, or only larger companies?",
+    answer:
+      "We work with small and mid-sized businesses across a range of industries. Whether you have a handful of employees or a few hundred, we scale the mix of IT services to fit your team and budget.",
+  },
+  {
+    question: "Is there a long-term contract required for IT services?",
+    answer:
+      "No — we don't require long-term contracts. We earn your business every month on the strength of the service itself.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map((f) => ({
+    "@type": "Question",
+    name: f.question,
+    acceptedAnswer: { "@type": "Answer", text: f.answer },
+  })),
+};
+
 export default function ServicesOverviewPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
       <section className="relative overflow-hidden bg-dark py-20 text-white">
         <Image
           src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1632&q=80"
@@ -45,12 +93,13 @@ export default function ServicesOverviewPage() {
         />
         <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Every System, Designed, Installed & Managed by One Team
+            IT Services, Designed, Installed & Managed by One Local Team
           </h1>
           <p className="mt-6 text-lg text-gray-300">
             From the network cabling in your walls to the help desk ticket you file next year,
-            ONPRO IT is the local technology partner that builds and supports it all for
-            businesses in South Jersey and the Philadelphia Metro area.
+            ONPRO IT delivers the full range of IT services — managed IT, cybersecurity, cabling,
+            cloud, VoIP, and more — as the local technology partner that builds and supports it
+            all for businesses in South Jersey, Philadelphia, and Delaware.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <ConsultationButton href={`tel:${PHONE_HREF}`} variant="primary">
@@ -110,6 +159,20 @@ export default function ServicesOverviewPage() {
             <Link href="/about-us" className="text-sm font-semibold text-brand hover:underline">
               Learn More About Us →
             </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-16">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900">Frequently Asked Questions</h2>
+          <div className="mt-6 space-y-6">
+            {FAQS.map((faq) => (
+              <div key={faq.question} className="rounded-lg bg-gray-50 p-6">
+                <h3 className="text-lg font-semibold text-gray-900">{faq.question}</h3>
+                <p className="mt-2 text-sm text-gray-600">{faq.answer}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
